@@ -29,7 +29,7 @@ namespace AlumnoEjemplos.RenderGroup
         /// </summary>
         public override string getName()
         {
-            return "Grupo 99";
+            return "RenderGroup";
         }
 
         /// <summary>
