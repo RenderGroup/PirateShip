@@ -1,6 +1,6 @@
 ﻿Nombre: RenderGroup
 
-encargado del grupo: Julián Selser
+Encargado del grupo: Julián Selser
 
 Integrantes:
 
