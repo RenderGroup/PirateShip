@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         //------------------------------------
         TgcScene scene;
-        TgcMesh mesh;
+        //TgcMesh mesh;
         TgcSimpleTerrain terrain;
         Microsoft.DirectX.Direct3D.Effect efectoLuz;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
@@ -74,25 +74,38 @@ namespace AlumnoEjemplos.RenderGroup
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
+            currentScaleXZ = 100f;
+            currentScaleY = 1.3f;
+
+            crearHeightmaps();
+
+            crearSkybox();
+
+            cargarMeshes();
+
+            cargarShaders();
+
+            crearModifiers();
+
+            configurarCamara(true);
+
+            crearUserVars();
+            /*
             //Cargar modelo estatico
             TgcSceneLoader loader = new TgcSceneLoader();
             TgcScene scene = loader.loadSceneFromFile(
             GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirata-TgcScene.xml");
             barco = scene.Meshes[0];
             barco.Position = new Vector3(0, 600, 0);
-
-
-            barco.AutoUpdateBoundingBox = true;
-            characterElipsoid = new TgcElipsoid(barco.BoundingBox.calculateBoxCenter() + new Vector3(0, 0, 0), new Vector3(85, 115, 165));
-
+            
 
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\SkyBoxLostAtSeaDay\\Down.jpg");
             piso = TgcBox.fromSize(new Vector3(8500, 1, 8500), pisoTexture);
-
+            */
 
             //Almacenar volumenes de colision del escenario
             objetosColisionables.Add(BoundingBoxCollider.fromBoundingBox(barco.BoundingBox));
-            objetosColisionables.Add(BoundingBoxCollider.fromBoundingBox(piso.BoundingBox));
+            //objetosColisionables.Add(TriangleMeshCollider.fromMesh(terrain));
 
 
 
@@ -109,16 +122,6 @@ namespace AlumnoEjemplos.RenderGroup
 
             //Caja para marcar punto de colision
             collisionPoint = TgcBox.fromSize(new Vector3(4, 4, 4), Color.Red);
-
-
-
-            //Camara rotacional segun tamaño del BoundingBox del objeto. Esta se puede usar para ver el entorno libremente...
-            //GuiController.Instance.RotCamera.targetObject(barco.BoundingBox);
-
-            //Esta es la camara que va
-            GuiController.Instance.ThirdPersonCamera.Enable = true;
-            GuiController.Instance.ThirdPersonCamera.setCamera(barco.Position, 200, -480);
-            GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
             
             /*
             skyBox = new TgcSkyBox();
@@ -137,35 +140,16 @@ namespace AlumnoEjemplos.RenderGroup
             //Modifiers para desplazamiento del personaje
             GuiController.Instance.Modifiers.addFloat("VelocidadCaminar", 100, 1000, 500);
             GuiController.Instance.Modifiers.addFloat("VelocidadRotacion", 100f, 1500f, 1200f);
-            GuiController.Instance.Modifiers.addBoolean("HabilitarGravedad", "Habilitar Gravedad", true);
+            GuiController.Instance.Modifiers.addBoolean("HabilitarGravedad", "Habilitar Gravedad", false);
             GuiController.Instance.Modifiers.addVertex3f("Gravedad", new Vector3(-50, -50, -50), new Vector3(50, 50, 50), new Vector3(0, -4, 0));
             GuiController.Instance.Modifiers.addFloat("SlideFactor", 0f, 2f, 1f);
             GuiController.Instance.Modifiers.addFloat("Pendiente", 0f, 1f, 0.72f);
             GuiController.Instance.Modifiers.addFloat("VelocidadSalto", 0f, 50f, 10f);
             GuiController.Instance.Modifiers.addFloat("TiempoSalto", 0f, 2f, 0.5f);
 
-            //Modifier para ver BoundingBox
-            GuiController.Instance.Modifiers.addBoolean("Collisions", "Collisions", true);
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bouding Box", true);
 
             GuiController.Instance.UserVars.addVar("Movement");
             
-            currentScaleXZ = 100f;
-            currentScaleY = 1.3f;
-
-            crearHeightmaps();
-
-            crearSkybox();
-
-            cargarMeshes();
-
-            cargarShaders();
-
-            crearModifiers();
-
-            configurarCamara(true);
-
-            crearUserVars();
         }
 
 
@@ -196,6 +180,7 @@ namespace AlumnoEjemplos.RenderGroup
             bool moving = false;
             bool rotating = false;
             float jump = 0;
+            float nivelDelMar = 50;  //HAY QUE CALCULARLO
 
             //Adelante
             if (d3dInput.keyDown(Key.W))
@@ -247,7 +232,7 @@ namespace AlumnoEjemplos.RenderGroup
                 GuiController.Instance.ThirdPersonCamera.rotateY(rotAngle);
             }
 
-            /* PODRIA IR DISPARO
+            /* PODRIA IR LOGICA DE DISPARO
             //Saltando
             if (jumping)
             {
@@ -290,7 +275,7 @@ namespace AlumnoEjemplos.RenderGroup
                 //Aplicar movimiento, desplazarse en base a la rotacion actual del personaje
                 movementVector = new Vector3(
                     FastMath.Sin(barco.Rotation.Y) * moveForward,
-                    jump,
+                    nivelDelMar,
                     FastMath.Cos(barco.Rotation.Y) * moveForward
                     );
             }
@@ -310,6 +295,7 @@ namespace AlumnoEjemplos.RenderGroup
             */
             
             //Mover personaje con detección de colisiones, sliding y gravedad
+
             if ((bool)GuiController.Instance.Modifiers["Collisions"])
             {
                 //Aca se aplica toda la lógica de detección de colisiones del CollisionManager. Intenta mover el Elipsoide
@@ -375,7 +361,7 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.dispose();
             efectoLuz.Dispose();
             efectoOlas.Dispose();
-            mesh.dispose();
+            //mesh.dispose();
         }
 
 //--------------------------nuevo---------------------------------
@@ -390,9 +376,11 @@ namespace AlumnoEjemplos.RenderGroup
         {
             TgcSceneLoader loader = new TgcSceneLoader();
             scene = loader.loadSceneFromFile(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Meshes\\barcoPirata-TgcScene.xml");
-            mesh = scene.Meshes[0];
-            mesh.Scale = new Vector3(4f, 4f, 4f);
-            mesh.Position = new Vector3(0, 400, 0);
+            barco = scene.Meshes[0];
+            barco.Scale = new Vector3(1f, 1f, 1f);
+            barco.Position = new Vector3(0, 500, 0);
+            barco.AutoUpdateBoundingBox = true;
+            characterElipsoid = new TgcElipsoid(barco.BoundingBox.calculateBoxCenter() + new Vector3(0, 0, 0), new Vector3(85, 125, 125));
         }
 
         private void cargarShaders()//Cargar Shaders y aplicarselos a los objetos
@@ -401,8 +389,8 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderOlas.fx");
             terrain.Effect = efectoOlas;
             terrain.Technique = "RenderScene";
-            mesh.Effect = efectoLuz;
-            mesh.Technique = "DefaultTechnique";
+            barco.Effect = efectoLuz;
+            barco.Technique = "DefaultTechnique";
         }
 
         private void configurarCamara(Boolean camara3persona)
@@ -410,7 +398,8 @@ namespace AlumnoEjemplos.RenderGroup
             if (camara3persona)
             {
                 GuiController.Instance.ThirdPersonCamera.Enable = true;
-                GuiController.Instance.ThirdPersonCamera.setCamera(mesh.Position, 3000f, -3000f);
+                GuiController.Instance.ThirdPersonCamera.setCamera(barco.Position, 2000f, -3000f);
+                GuiController.Instance.ThirdPersonCamera.TargetDisplacement = new Vector3(0, 45, 0);
             }
             else
             {
@@ -421,16 +410,16 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void crearHeightmaps() //Carga los terrenos y aplica los mapas de altura y texturas 
         {
-            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra1.jpg";
+            /*currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra1.jpg";
             currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
             terrain = new TgcSimpleTerrain();
             terrain.loadHeightmap(currentHeightmap, 100f, 1.6f, new Vector3(0, 5, 0)); //150f, 1.3f, new Vector3(0, 5, 0));
             terrain.loadTexture(currentTexture);
-
+            */
             currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\piedra1.jpg";
             currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
             terrain = new TgcSimpleTerrain();
-            terrain.loadHeightmap(currentHeightmap, 150f, 5f, new Vector3(0, 0, 0));
+            terrain.loadHeightmap(currentHeightmap, 150f, 1.3f, new Vector3(0, 0, 0));
             terrain.loadTexture(currentTexture);
         }
 
@@ -447,6 +436,9 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0, 1, 0.6f);
             GuiController.Instance.Modifiers.addFloat("Specular", 0, 1, 0.5f);
             GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 100);
+            //Modifier para ver BoundingBox
+            GuiController.Instance.Modifiers.addBoolean("Collisions", "Collisions", true);
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bouding Box", true);
         }
 
         public void crearSkybox()
@@ -492,7 +484,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             Microsoft.DirectX.Direct3D.Device device = GuiController.Instance.D3dDevice;
             skyBox.render();
-            mesh.render();
+            barco.render();
             terrain.render();
         }
 
