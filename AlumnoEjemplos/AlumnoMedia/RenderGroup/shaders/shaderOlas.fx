@@ -125,12 +125,11 @@ VS_OUTPUT vs_main3( VS_INPUT Input )
 
     // Se aplica una transformación variable y periódica
 
-    Input.Position.y = Input.Position.y  * (cos(time) + 1.2) ;
+   Input.Position.y = Input.Position.y  * (cos(time) + 1.2) * 0.2;
 
     // Se establece el vértice transformado como nueva posición
 
     Output.Position = mul( Input.Position, matWorldViewProj);
-
 
 
       Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/5)) + 1.2  ;
