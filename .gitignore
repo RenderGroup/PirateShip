@@ -1,4 +1,4 @@
-# solo nos interesa el proyecto "AlumnoEjemplos" dentro de la solución TgcViewer
+﻿# solo nos interesa el proyecto "AlumnoEjemplos" dentro de la solución TgcViewer
 # con los archivos de proyecto de VisualStudio...
 *
 !.gitignore
@@ -9,12 +9,15 @@
 # con la carpeta RenderGroup con nuestro código
 !AlumnoEjemplos/RenderGroup
 !AlumnoEjemplos/RenderGroup/*
+!AlumnoEjemplos/RenderGroup/*/
+!AlumnoEjemplos/RenderGroup/*/*
 
 # y dentro de la carpeta AlumnosMedia, la carpeta RenderGroup para nuestros recursos
 !AlumnoEjemplos/AlumnoMedia
 !AlumnoEjemplos/AlumnoMedia/RenderGroup
 !AlumnoEjemplos/AlumnoMedia/RenderGroup/*
-!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/ # todos las subcarpetas que aparezcan
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/ 
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*
 
 # una carpeta estrategia para ir armando el PDF que piden en la entrega
 !AlumnoEjemplos/Estrategia
