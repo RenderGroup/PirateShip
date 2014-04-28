@@ -35,6 +35,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void A_apretado(float elapsedTime)
         {
             this.rotateY(-velocidadRotacion * elapsedTime);
+            GuiController.Instance.ThirdPersonCamera.rotateY(-velocidadRotacion * elapsedTime);
         }
 
         public void S_apretado(float elapsedTime)
@@ -44,7 +45,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void D_apretado(float elapsedTime) 
         {
-            this.rotateY(velocidadRotacion * elapsedTime);
+            this.rotateY(velocidadRotacion * elapsedTime); 
+            GuiController.Instance.ThirdPersonCamera.rotateY(velocidadRotacion * elapsedTime);
         }
         #endregion
 
