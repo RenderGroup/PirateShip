@@ -19,7 +19,7 @@ namespace AlumnoEjemplos.RenderGroup
         public TgcBoundingSphere boundingSphere;
 
         //variables de velocidad modificables por el usuario
-        public float velocidadRotacion = 2f;
+        public float velocidadRotacion = .7f;
         public float velocidad = 500f;
 
         //metodo que se ayuda del SmartTerrain para calcular la altura en un punto
