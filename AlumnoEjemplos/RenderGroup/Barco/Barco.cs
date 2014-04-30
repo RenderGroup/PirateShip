@@ -18,9 +18,15 @@ namespace AlumnoEjemplos.RenderGroup
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
 
-        //variables de velocidad modificables por el usuario
-        public float velocidadRotacion = .7f;
-        public float velocidad = 500f;
+        //constantes
+        public const float COTA_DESACELERACION = 0.01f;
+        public const float FACTOR_DESACELERATIVO = 1.015f;
+        public const float VELOCIDAD_ROTACION = .7f;
+        public const float VELOCIDAD = 300f;
+        public const float ACELERACION_MAX = 3f;
+
+        //variables
+        public float aceleracion = 0f;
 
         //metodo que se ayuda del SmartTerrain para calcular la altura en un punto
         public float alturaEnPunto(float X, float Z)
@@ -34,7 +40,7 @@ namespace AlumnoEjemplos.RenderGroup
             return Y;
         }
  
-        //mueve el barco y su boundingspehere en Y; el metodo es horrible y hay que refactorearlo
+        //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
         virtual public void flotar()
         {
             float time = (float)GuiController.Instance.UserVars.getValue("time");
@@ -43,7 +49,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             Y *= (FastMath.Cos(time) + 1.2f) * 0.2f - 0.03f;
 
-            this.Position = new Vector3(this.Position.X, Y, this.Position.Z);
+            this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);
 
             float MovimientoEnY = Y - boundingSphere.Position.Y + 50; //el +50 es por que sino lo mueve hasta la superficie
 
@@ -57,7 +63,7 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         //cada barco por separada se encarga de actualizarse antes de su render
-        new public void UpdateRender()
+        public void UpdateRender()
         {
             this.update();
 
@@ -68,13 +74,33 @@ namespace AlumnoEjemplos.RenderGroup
             base.render();
         }
 
-        //redefine "moveOrientedY" para incluir en el movimiento al bounding sphere
-        new public void moveOrientedY(float movimiento)
+        //metodo que maneja la aceleracion...de mala manera...por ahora...
+        public float acelerar(float aceleracionInstantanea) 
+        {
+            if (aceleracionInstantanea > 0 && aceleracionInstantanea <= ACELERACION_MAX)
+                return aceleracion < ACELERACION_MAX ? aceleracion += aceleracionInstantanea : ACELERACION_MAX;
+
+            if (aceleracionInstantanea < 0 && aceleracionInstantanea >= -ACELERACION_MAX)
+                return aceleracion > -ACELERACION_MAX ? aceleracion += aceleracionInstantanea : -ACELERACION_MAX;
+
+            throw new Exception("La aceleracion instantanea debe ser: -MAX < aceleracionInstantanea < MAX");
+        }
+
+        public float desacelerar() 
+        {
+            //si aceleracion > 0.01 || -0.01 < aceleracion dividirla hasta que lo este...en ese intervalo la seteamos a cero
+            return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= FACTOR_DESACELERATIVO : aceleracion = 0;
+        }
+
+        //movimiento lineal en la direccion que apunte el barco con una aceleracion
+        public void mover(float aceleracion)
         {
             Vector3 direccion = new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y));
 
-            base.move(direccion * movimiento);
-            boundingSphere.moveCenter(direccion * movimiento);
+            Vector3 movimiento = direccion * VELOCIDAD * aceleracion * GuiController.Instance.ElapsedTime;
+
+            base.move(movimiento);
+            boundingSphere.moveCenter(movimiento);
         }
 
         //redefine dispose para incluir al boundingsphere

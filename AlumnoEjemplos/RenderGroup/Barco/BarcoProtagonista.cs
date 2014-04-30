@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
 using TgcViewer.Utils.TgcGeometry;
@@ -14,6 +15,8 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class BarcoProtagonista : Barco, IReceptorInput
     {
+        public const float ACELERACION_PROTA = 0.02f;
+
         bool camaraEnBarco;
 
         #region CONSTRUCTORES
@@ -27,26 +30,30 @@ namespace AlumnoEjemplos.RenderGroup
 
         #region MANEJO DE INPUT
 
-        public void W_apretado(float elapsedTime) 
+        public void W_apretado() 
         {
-            this.moveOrientedY(velocidad * elapsedTime);
+            this.mover(acelerar(ACELERACION_PROTA));
         }
 
-        public void A_apretado(float elapsedTime)
+        public void A_apretado()
         {
-            this.rotateY(-velocidadRotacion * elapsedTime);
-            GuiController.Instance.ThirdPersonCamera.rotateY(-velocidadRotacion * elapsedTime);
+            float rotacion = -VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
+
+            this.rotateY(rotacion);
+            GuiController.Instance.ThirdPersonCamera.rotateY(rotacion);
         }
 
-        public void S_apretado(float elapsedTime)
+        public void S_apretado()
         {
-            this.moveOrientedY(-velocidad * elapsedTime);
+            this.mover(acelerar(-ACELERACION_PROTA));
         }
 
-        public void D_apretado(float elapsedTime) 
+        public void D_apretado() 
         {
-            this.rotateY(velocidadRotacion * elapsedTime); 
-            GuiController.Instance.ThirdPersonCamera.rotateY(velocidadRotacion * elapsedTime);
+            float rotacion = VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
+
+            this.rotateY(rotacion);
+            GuiController.Instance.ThirdPersonCamera.rotateY(rotacion);
         }
         #endregion
 
@@ -56,7 +63,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void camaraDefaultConfig()
         {
             GuiController.Instance.ThirdPersonCamera.Enable = this.camaraEnBarco = true;
-            this.setearCamara(200, -480, new Vector3(0, 0, 0));
+            this.setearCamara(200, -580, new Vector3(0, 0, 0));
         }
 
         public void setearCamara(float offsetHeight, float offsetForward, Vector3 displacement)
@@ -66,15 +73,8 @@ namespace AlumnoEjemplos.RenderGroup
         }
         #endregion
 
-        override public void flotar()
-        {
-            //si el usuario quiere la camara en 3ra persona, entonces targetear al barco
-            if (this.camaraEnBarco)
-                GuiController.Instance.ThirdPersonCamera.Target = this.Position;
-
-            base.flotar();
-        }
-
+        //la idea es que cada barquito tenga su propio update...
+        //puede parecer una boludez, pero quizas haya varios tipos de enemigos y protagonistas
         override public void update()
         {
             //si el usuario quiere cambiar la camara, el barco ya no le dice a la camara que lo siga y pone una cam rotacional
@@ -88,6 +88,17 @@ namespace AlumnoEjemplos.RenderGroup
                 {
                     GuiController.Instance.RotCamera.CameraCenter = new Vector3(0, 1200, 0);
                 }
+            }
+
+            //si el barco no esta llendo ni para adelante ni atras (segun botones apretados), desaceelerar...
+            if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyUp(Key.W))
+            {
+                this.mover(desacelerar());
+            }
+
+            if (this.camaraEnBarco)
+            {
+                GuiController.Instance.ThirdPersonCamera.Target = this.Position;
             }
 
             this.flotar();
