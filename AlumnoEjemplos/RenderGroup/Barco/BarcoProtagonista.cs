@@ -89,7 +89,7 @@ namespace AlumnoEjemplos.RenderGroup
             }
 
             //si el barco no esta llendo ni para adelante ni atras (segun botones apretados), desaceelerar...
-            if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyUp(Key.W))
+            if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyDown(Key.W))
             {
                 this.mover(desacelerar());
             }
