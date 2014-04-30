@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.RenderGroup
     {
         static List<IReceptorInput> interesados = new List<IReceptorInput>();
 
-        static TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+        static public TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
 
         public static void Add(IReceptorInput i)
@@ -26,19 +26,17 @@ namespace AlumnoEjemplos.RenderGroup
 
         public static void ManejarInput() 
         {
-            float elapsedTime = GuiController.Instance.ElapsedTime;
-
             if (d3dInput.keyDown(Key.W))
-                foreach (IReceptorInput i in interesados) { i.W_apretado(elapsedTime); }            
+                foreach (IReceptorInput i in interesados) { i.W_apretado(); }            
 
             if (d3dInput.keyDown(Key.S))
-                foreach (IReceptorInput i in interesados) { i.S_apretado(elapsedTime); }
+                foreach (IReceptorInput i in interesados) { i.S_apretado(); }
 
             if (d3dInput.keyDown(Key.D))
-                foreach (IReceptorInput i in interesados) { i.D_apretado(elapsedTime); }
+                foreach (IReceptorInput i in interesados) { i.D_apretado(); }
 
             if (d3dInput.keyDown(Key.A))
-                foreach (IReceptorInput i in interesados) { i.A_apretado(elapsedTime); }            
+                foreach (IReceptorInput i in interesados) { i.A_apretado(); }            
         }
 
     }
@@ -46,10 +44,10 @@ namespace AlumnoEjemplos.RenderGroup
     //interfaz que implementan los interesados en actuar sobre el input
     public interface IReceptorInput
     {
-        void W_apretado(float elapsedTime);
-        void A_apretado(float elapsedTime);
-        void S_apretado(float elapsedTime);
-        void D_apretado(float elapsedTime);
+        void W_apretado();
+        void A_apretado();
+        void S_apretado();
+        void D_apretado();
     }
 
 }
