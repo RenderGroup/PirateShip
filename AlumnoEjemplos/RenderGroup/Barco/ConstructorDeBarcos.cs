@@ -80,21 +80,29 @@ namespace AlumnoEjemplos.RenderGroup
 
         TgcMesh TgcSceneLoader.IMeshFactory.createNewMesh(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
         {
+            Barco mesh;
+
             switch (this.tipo) 
             {
                 case TipoBarco.BarcoProtagonista:
-                    return (TgcMesh)new BarcoProtagonista(d3dMesh, meshName, renderType);
+                    mesh = new BarcoProtagonista();
+                    break;
 
                 case TipoBarco.BarcoEnemigo:
-                    return (TgcMesh)new BarcoEnemigo(d3dMesh, meshName, renderType);
+                    mesh = new BarcoEnemigo();
+                    break;
+
+                default: throw new Exception("No existe ningun barco del tipo pedido"); //hacer esta excepcion mas espefica?
             }
 
-            throw new Exception("No existe ningun barco del tipo pedido"); //hacer esta excepcion mas espefica?
+            mesh.initData(d3dMesh, meshName, renderType);
+
+            return (TgcMesh)mesh;
         }
 
         public TgcMesh createNewMeshInstance(string meshName, TgcMesh originalMesh, Vector3 translation, Vector3 rotation, Vector3 scale)
         {
-            return (TgcMesh)new Barco(meshName, originalMesh, translation, rotation, scale);
+            return (TgcMesh)new Barco();
         }
     }
     #endregion

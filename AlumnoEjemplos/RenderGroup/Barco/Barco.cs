@@ -106,13 +106,9 @@ namespace AlumnoEjemplos.RenderGroup
             base.dispose();
         }
 
-        #region CONSTRUCTORES
-
-        //constructor requeridos por el factory para crear TgcMesh
-        public Barco(Mesh mesh, string meshName, TgcMesh.MeshRenderType renderType) : base(mesh, meshName, renderType) { }
-        //constructor requeridos por el factory para crear TgcMesh
-        public Barco(string meshName, TgcMesh originalMesh, Vector3 translation, Vector3 rotation, Vector3 scale) : base(meshName, originalMesh, translation, rotation, scale) { }
-        
-        #endregion
+        new public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
+        {
+            base.initData(d3dMesh, meshName, renderType);
+        }
     }
 }

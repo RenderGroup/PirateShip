@@ -19,14 +19,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         bool camaraEnBarco;
 
-        #region CONSTRUCTORES
-
-        //constructor requeridos por el factory para crear TgcMesh
-        public BarcoProtagonista(Mesh mesh, string meshName, TgcMesh.MeshRenderType renderType) : base(mesh, meshName, renderType) { this.camaraDefaultConfig(); }
-        //constructor requeridos por el factory para crear TgcMesh
-        public BarcoProtagonista(string meshName, TgcMesh originalMesh, Vector3 translation, Vector3 rotation, Vector3 scale) : base(meshName, originalMesh, translation, rotation, scale) { this.camaraDefaultConfig(); }
-
-        #endregion
+        public BarcoProtagonista() { this.camaraDefaultConfig(); }
 
         #region MANEJO DE INPUT
 
@@ -37,10 +30,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void A_apretado()
         {
-            float rotacion = -VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
-
-            this.rotateY(rotacion);
-            GuiController.Instance.ThirdPersonCamera.rotateY(rotacion);
+            this.rotateY(-VELOCIDAD_ROTACION);
         }
 
         public void S_apretado()
@@ -50,10 +40,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void D_apretado() 
         {
-            float rotacion = VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
-
-            this.rotateY(rotacion);
-            GuiController.Instance.ThirdPersonCamera.rotateY(rotacion);
+            this.rotateY(VELOCIDAD_ROTACION);
         }
         #endregion
 
@@ -72,6 +59,17 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.ThirdPersonCamera.TargetDisplacement = displacement;
         }
         #endregion
+
+        //metodo de rotacion del protagonista que gira a la camara consigo
+        new public void rotateY(float velocidadAngular)
+        {
+            float rotacion = velocidadAngular * GuiController.Instance.ElapsedTime;
+
+            base.rotateY(rotacion);
+
+            if (camaraEnBarco)
+                GuiController.Instance.ThirdPersonCamera.rotateY(rotacion);
+        }
 
         //la idea es que cada barquito tenga su propio update...
         //puede parecer una boludez, pero quizas haya varios tipos de enemigos y protagonistas
