@@ -24,8 +24,8 @@ namespace AlumnoEjemplos.RenderGroup
     public class EjemploAlumno : TgcExample
     {
 
-        BarcoProtagonista barcoProtagonista;        
-        Barco b1, b2, b3;       
+        BarcoProtagonista barcoProtagonista;
+        Barco b1, b2, b3;
 
         #region DECLARACIONES DEL ESCENARIO
 
@@ -114,12 +114,9 @@ namespace AlumnoEjemplos.RenderGroup
         {
             InputManager.ManejarInput();
 
-            //mantenemos el tiempo a nivel global con una userVar, muestra el timer y lo usan otras clases, no sacar
-            GuiController.Instance.UserVars.setValue("time", ((float)GuiController.Instance.UserVars.getValue("time") + elapsedTime));
+            setUsersVars();
 
             recargarHeightMap();
-
-            setUsersVars();
 
             setShadersValues();
 
@@ -242,7 +239,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setUsersVars()
         {
-            GuiController.Instance.UserVars.setValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
+            //mantenemos el tiempo a nivel global con una userVar, muestra el timer y lo usan otras clases, no sacar
+            GuiController.Instance.UserVars.setValue("time", ((float)GuiController.Instance.UserVars.getValue("time") + GuiController.Instance.ElapsedTime));
         }
 
         #endregion
