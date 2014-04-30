@@ -101,7 +101,7 @@ namespace AlumnoEjemplos.RenderGroup
                 GuiController.Instance.ThirdPersonCamera.Target = this.Position;
             }
 
-            this.flotar();
+            base.update();
         }
 
     }

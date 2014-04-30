@@ -17,16 +17,15 @@ namespace AlumnoEjemplos.RenderGroup
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
+        public float aceleracion = 0f;
 
-        //constantes
+        #region CONSTANTES
         public const float COTA_DESACELERACION = 0.01f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
         public const float VELOCIDAD_ROTACION = .7f;
         public const float VELOCIDAD = 300f;
         public const float ACELERACION_MAX = 3f;
-
-        //variables
-        public float aceleracion = 0f;
+        #endregion
 
         //metodo que se ayuda del SmartTerrain para calcular la altura en un punto
         public float alturaEnPunto(float X, float Z)
@@ -47,18 +46,20 @@ namespace AlumnoEjemplos.RenderGroup
 
             float Y = alturaEnPunto(this.Position.X, this.Position.Z);
 
-            Y *= (FastMath.Cos(time) + 1.2f) * 0.2f - 0.03f;
+            Y *= (FastMath.Cos(time) + 1.2f) * 0.2f - 0.03f; //simulacion del shader
 
             this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);
 
-            float MovimientoEnY = Y - boundingSphere.Position.Y + 50; //el +50 es por que sino lo mueve hasta la superficie
-
-            this.boundingSphere.moveCenter(new Vector3(0, MovimientoEnY, 0));
+            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 50, 0));
         }
 
         //define un update overrideable para todos los barcos
         virtual public void update()
         {
+            //si el usuario quiere ver el bounding sphere...renderizarlo
+            if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
+                this.boundingSphere.render();
+
             this.flotar();
         }
 
@@ -66,11 +67,6 @@ namespace AlumnoEjemplos.RenderGroup
         public void UpdateRender()
         {
             this.update();
-
-            //si el usuario quiere ver el bounding sphere...renderizarlo
-            if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
-                this.boundingSphere.render();
-
             base.render();
         }
 
