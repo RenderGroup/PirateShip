@@ -11,6 +11,8 @@
 !AlumnoEjemplos/RenderGroup/*
 !AlumnoEjemplos/RenderGroup/*/
 !AlumnoEjemplos/RenderGroup/*/*
+!AlumnoEjemplos/RenderGroup/*/*/
+!AlumnoEjemplos/RenderGroup/*/*/*
 
 # y dentro de la carpeta AlumnosMedia, la carpeta RenderGroup para nuestros recursos
 !AlumnoEjemplos/AlumnoMedia
