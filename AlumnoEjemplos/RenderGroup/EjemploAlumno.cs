@@ -131,13 +131,6 @@ namespace AlumnoEjemplos.RenderGroup
             efectoLuz.Dispose();
             efectoOlas.Dispose();
             
-            
-
-            julian(); //veinte lineas mas
-
-            
-            repo();
-            
         }
 
         #region NUEVO
