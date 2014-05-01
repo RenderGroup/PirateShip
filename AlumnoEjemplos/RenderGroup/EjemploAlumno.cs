@@ -130,6 +130,9 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.dispose();
             efectoLuz.Dispose();
             efectoOlas.Dispose();
+
+            julian();
+
         }
 
         #region NUEVO
