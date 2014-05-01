@@ -15,6 +15,7 @@ using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Collision.ElipsoidCollision;
 using TgcViewer.Utils.Shaders;
 using System.Windows.Forms;
+using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.RenderGroup
 {
@@ -33,13 +34,18 @@ namespace AlumnoEjemplos.RenderGroup
 
         TgcBox piso;
         SmartTerrain terrain;
-        Microsoft.DirectX.Direct3D.Effect efectoLuz;
+        TgcSimpleTerrain terrain2;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
 
         string currentHeightmap;
         string currentTexture;
+        string currentHeightmap2;
+        string currentTexture2;
         float currentScaleXZ = 100f;
         float currentScaleY = 1.3f;
+        TgcBox lightMesh;
+        TgcSprite boton1;
+        TgcSprite boton2;
 
         #endregion
 
@@ -67,34 +73,20 @@ namespace AlumnoEjemplos.RenderGroup
 
             #region INICIALIZACIONES PISO
 
-            /*
-            skyBox = new TgcSkyBox();
-            skyBox.Center = new Vector3(0, 0, 0);
-            skyBox.Size = new Vector3(9000, 9000, 9000);
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "Rendergroup\\Texturas\\SkyBoxLostAtSeaDay\\";
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "Up.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "Down.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "Left.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "Right.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "Back.jpg");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "Front.jpg");
-            skyBox.updateValues();
-            */
-
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\SkyBoxLostAtSeaDay\\Down.jpg");
             piso = TgcBox.fromSize(new Vector3(8500, 1, 8500), pisoTexture);
 
             #endregion
 
+            //Mesh para la luz
+            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
             crearHeightmaps();
 
             crearSkybox();
-
             cargarShaders();
-
             crearModifiers();
-
             crearUserVars();
+            crearSprites();
 
             #region INICIALIZACIONES BARCO
 
@@ -121,6 +113,7 @@ namespace AlumnoEjemplos.RenderGroup
             setShadersValues();
 
             renderizar();
+            coordenadasMouse();
         }
 
         public override void close()
@@ -128,20 +121,48 @@ namespace AlumnoEjemplos.RenderGroup
             barcoProtagonista.dispose();
             piso.dispose();
             terrain.dispose();
-            efectoLuz.Dispose();
             efectoOlas.Dispose();
-            
+            terrain2.dispose();
+            boton1.dispose();
+            boton2.dispose();
         }
 
         #region NUEVO
 
         private void cargarShaders()
         {
-            efectoLuz = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\PhongShading.fx");
             efectoOlas = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderOlas.fx");
             terrain.Effect = efectoOlas;
             //terrain.Effect = TgcShaders.loadEffect("C:\\Users\\Julio\\Desktop\\materias\\TGC\\TgcViewer\\Examples\\Shaders\\WorkshopShaders\\Shaders\\BasicShader.fx");
             terrain.Technique = "RenderScene";
+        }
+
+        private void coordenadasMouse() //se fija si hace clic sobre un boton
+        {
+            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+            //Obtener variacion XY del mouse
+            float mouseX = 0f;
+            float mouseY = 0f;
+            float botonX = boton1.Position.X + boton1.Texture.Width;
+            float botonY = boton1.Position.Y + boton1.Texture.Height;
+
+            float boton2X = boton2.Position.X + boton2.Texture.Width;
+            float boton2Y = boton2.Position.Y + boton2.Texture.Height;
+
+            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            {
+                mouseX = d3dInput.Xpos;// XposRelative;
+                mouseY = d3dInput.Ypos;// YposRelative;
+
+                if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
+                {
+                    MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
+                }
+                if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
+                {
+                    MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
+                }
+            }
         }
 
         public void crearHeightmaps()
@@ -152,11 +173,11 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.loadHeightmap(currentHeightmap, 100f, 1.6f, new Vector3(0, 0, 0)); //150f, 1.3f, new Vector3(0, 5, 0));
             terrain.loadTexture(currentTexture);
 
-            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\piedra1.jpg";
-            currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
-            terrain = new SmartTerrain();
-            terrain.loadHeightmap(currentHeightmap, 150f, 5f, new Vector3(0, 0, 0));
-            terrain.loadTexture(currentTexture);
+            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra2.jpg";
+            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.png";
+            terrain2 = new TgcSimpleTerrain();
+            terrain2.loadHeightmap(currentHeightmap2, 30f,2.3f, new Vector3(50, 0, 30));
+            terrain2.loadTexture(currentTexture2);
 
             GuiController.Instance.UserVars.addVar("terreno", terrain); //NO TOCAR LINEA - HERE BE DRAGONS - EL TP EXPLOTA
         }
@@ -169,22 +190,23 @@ namespace AlumnoEjemplos.RenderGroup
             //modifiers para el mar
             GuiController.Instance.Modifiers.addFloat("XZ", 0.1f, 1000f, currentScaleXZ); //modifica el tama�o del terreno (mar)
             GuiController.Instance.Modifiers.addFloat("Y", 0.1f, 10f, currentScaleY); //modifica la altura de las olas
-            //modifiers para el shader de iluminacion dinamica(del barco)
-            GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 1000), new Vector3(50, 4000, 0));
+            GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0, 1, 0.5f);
             GuiController.Instance.Modifiers.addFloat("Diffuse", 0, 1, 0.6f);
-            GuiController.Instance.Modifiers.addFloat("Specular", 0, 1, 0.5f);
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 100);
-        }
+            GuiController.Instance.Modifiers.addFloat("Specular", 0, 1, 1f);
+            GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 20);
+           //modifiers para la transparencia del agua
+            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.8f);
+}
 
         public void crearSkybox()
         {
             skyBox = new TgcSkyBox();
-            skyBox.Center = new Vector3(0, 3990, 0);
-            skyBox.Size = new Vector3(10000, 10000, 10000);
+            skyBox.Center = new Vector3(0, 2000, 0);
+            skyBox.Size = new Vector3(10000, 5000, 10000);
             string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "cielo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
@@ -193,8 +215,23 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
             //Configurar color  
             //skyBox.Color = Color.OrangeRed;
-            skyBox.SkyEpsilon = 50f; //para que no se noten las aristas del box
+            skyBox.SkyEpsilon = 5f; //para que no se noten las aristas del box
             skyBox.updateValues();
+        }
+
+        private void crearSprites()
+        {
+            Size screenSize = GuiController.Instance.Panel3d.Size;
+
+            boton1 = new TgcSprite();
+            boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
+            Size textureSize = boton1.Texture.Size;
+            boton1.Position = new Vector2(screenSize.Width - textureSize.Width  , screenSize.Height - textureSize.Height);
+
+            boton2 = new TgcSprite();
+            boton2.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
+            textureSize = boton2.Texture.Size;
+            boton2.Position = new Vector2((screenSize.Width - boton1.Texture.Size.Width) - textureSize.Width, screenSize.Height - textureSize.Height);
         }
 
         private void crearUserVars()
@@ -217,25 +254,33 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
+            terrain2.render();
             skyBox.render();
             terrain.render();            
             b1.UpdateRender();
             b2.UpdateRender();
             b3.UpdateRender();
             barcoProtagonista.UpdateRender();
+            lightMesh.render();
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+            boton1.render();
+            boton2.render(); 
+            GuiController.Instance.Drawer2D.endDrawSprite();
         }
 
         public void setShadersValues()
         {
             Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
-            //Cargar variables de shader para la iluminacion dinamica
-            efectoLuz.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
-            efectoLuz.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
-            efectoLuz.SetValue("k_ld", (float)GuiController.Instance.Modifiers["Diffuse"]);
-            efectoLuz.SetValue("k_ls", (float)GuiController.Instance.Modifiers["Specular"]);
-            efectoLuz.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
-            //Cargar variables de shader para el mar
+            lightMesh.Position = lightPosition;
+           
             efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
+            efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
+            efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
+            efectoOlas.SetValue("k_ld", (float)GuiController.Instance.Modifiers["Diffuse"]);
+            efectoOlas.SetValue("k_ls", (float)GuiController.Instance.Modifiers["Specular"]);
+            efectoOlas.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
+            efectoOlas.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
+            efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
         }
 
         public void setUsersVars()
