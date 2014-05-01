@@ -19,7 +19,7 @@ using System.Windows.Forms;
 namespace AlumnoEjemplos.RenderGroup
 {
     /// <summary>
-    /// TP del barco pirata que lucha a cañonazos en mar
+    /// TP del barco pirata que lucha a caï¿½onazos en mar
     /// </summary>
     public class EjemploAlumno : TgcExample
     {
@@ -130,6 +130,9 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.dispose();
             efectoLuz.Dispose();
             efectoOlas.Dispose();
+            
+            repo();
+            
         }
 
         #region NUEVO
@@ -164,9 +167,9 @@ namespace AlumnoEjemplos.RenderGroup
         {
             GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bouding Box", false); //
             //modifiers para la camara
-            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3ª persona", true);//
+            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3ï¿½ persona", true);//
             //modifiers para el mar
-            GuiController.Instance.Modifiers.addFloat("XZ", 0.1f, 1000f, currentScaleXZ); //modifica el tamaño del terreno (mar)
+            GuiController.Instance.Modifiers.addFloat("XZ", 0.1f, 1000f, currentScaleXZ); //modifica el tamaï¿½o del terreno (mar)
             GuiController.Instance.Modifiers.addFloat("Y", 0.1f, 10f, currentScaleY); //modifica la altura de las olas
             //modifiers para el shader de iluminacion dinamica(del barco)
             GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 1000), new Vector3(50, 4000, 0));
