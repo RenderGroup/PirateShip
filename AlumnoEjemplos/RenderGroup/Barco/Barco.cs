@@ -46,7 +46,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             float Y = alturaEnPunto(this.Position.X, this.Position.Z);
 
-            Y *= (FastMath.Cos(time) + 1.2f) * 0.2f - 0.03f; //simulacion del shader
+            Y *= (FastMath.Cos(time) + 1.2f); //simulacion del shader
 
             this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);
 

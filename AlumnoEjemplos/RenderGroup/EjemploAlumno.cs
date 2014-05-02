@@ -33,19 +33,18 @@ namespace AlumnoEjemplos.RenderGroup
         TgcSkyBox skyBox;
 
         TgcBox piso;
-        SmartTerrain terrain;
-        TgcSimpleTerrain terrain2;
-        Microsoft.DirectX.Direct3D.Effect efectoOlas;
 
-        string currentHeightmap;
-        string currentTexture;
-        string currentHeightmap2;
-        string currentTexture2;
         float currentScaleXZ = 100f;
         float currentScaleY = 1.3f;
         TgcBox lightMesh;
         TgcSprite boton1;
         TgcSprite boton2;
+        Oceano oceano;
+        Isla isla;
+        Vector3 lightPosition;
+        ///////////////////////
+        TgcArrow collisionNormalArrow;
+        TgcBox collisionPoint;
 
         #endregion
 
@@ -80,13 +79,24 @@ namespace AlumnoEjemplos.RenderGroup
 
             //Mesh para la luz
             lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
-            crearHeightmaps();
 
-            crearSkybox();
-            cargarShaders();
             crearModifiers();
+            oceano = new Oceano(currentScaleXZ, currentScaleY);
+            isla = new Isla();
+            crearSkybox();
             crearUserVars();
             crearSprites();
+
+            #region FLECHA NORMAL
+            collisionNormalArrow = new TgcArrow();
+            collisionNormalArrow.BodyColor = Color.Blue;
+            collisionNormalArrow.HeadColor = Color.Yellow;
+            collisionNormalArrow.Thickness = 1f;
+            collisionNormalArrow.HeadSize = new Vector2(2, 5);
+
+            //Caja para marcar punto de colision
+            collisionPoint = TgcBox.fromSize(new Vector3(4, 4, 4), Color.Red);
+            #endregion
 
             #region INICIALIZACIONES BARCO
 
@@ -99,43 +109,41 @@ namespace AlumnoEjemplos.RenderGroup
 
             #endregion
 
+
         }
 
 
         public override void render(float elapsedTime)
         {
             InputManager.ManejarInput();
-
             setUsersVars();
-
-            recargarHeightMap();
-
-            setShadersValues();
-
             renderizar();
             coordenadasMouse();
+
+            ////Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
+            Vector3 normal = oceano.normalEnPuntoXZ(barcoProtagonista.Position.X, barcoProtagonista.Position.Z);
+            collisionNormalArrow.PStart = barcoProtagonista.Position;
+            collisionNormalArrow.PEnd = barcoProtagonista.Position + Vector3.Multiply(normal, 500);
+            collisionNormalArrow.updateValues();
+            collisionNormalArrow.render();
+
+            collisionPoint.Position = barcoProtagonista.Position;
+            collisionPoint.render();
+
         }
 
         public override void close()
         {
             barcoProtagonista.dispose();
             piso.dispose();
-            terrain.dispose();
-            efectoOlas.Dispose();
-            terrain2.dispose();
+            oceano.dispose();
+            isla.dispose();
             boton1.dispose();
             boton2.dispose();
         }
 
         #region NUEVO
 
-        private void cargarShaders()
-        {
-            efectoOlas = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderOlas.fx");
-            terrain.Effect = efectoOlas;
-            //terrain.Effect = TgcShaders.loadEffect("C:\\Users\\Julio\\Desktop\\materias\\TGC\\TgcViewer\\Examples\\Shaders\\WorkshopShaders\\Shaders\\BasicShader.fx");
-            terrain.Technique = "RenderScene";
-        }
 
         private void coordenadasMouse() //se fija si hace clic sobre un boton
         {
@@ -165,49 +173,24 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-        public void crearHeightmaps()
-        {
-            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra1.jpg";
-            currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
-            terrain = new SmartTerrain();
-            terrain.loadHeightmap(currentHeightmap, 100f, 1.6f, new Vector3(0, 0, 0)); //150f, 1.3f, new Vector3(0, 5, 0));
-            terrain.loadTexture(currentTexture);
-
-            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra2.jpg";
-            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.png";
-            terrain2 = new TgcSimpleTerrain();
-            terrain2.loadHeightmap(currentHeightmap2, 30f,2.3f, new Vector3(50, 0, 30));
-            terrain2.loadTexture(currentTexture2);
-
-            GuiController.Instance.UserVars.addVar("terreno", terrain); //NO TOCAR LINEA - HERE BE DRAGONS - EL TP EXPLOTA
-        }
 
         private void crearModifiers()
         {
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bouding Box", false); //
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); //
             //modifiers para la camara
             GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3� persona", true);//
-            //modifiers para el mar
-            GuiController.Instance.Modifiers.addFloat("XZ", 0.1f, 1000f, currentScaleXZ); //modifica el tama�o del terreno (mar)
-            GuiController.Instance.Modifiers.addFloat("Y", 0.1f, 10f, currentScaleY); //modifica la altura de las olas
-            GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
-            GuiController.Instance.Modifiers.addFloat("Ambient", 0, 1, 0.5f);
-            GuiController.Instance.Modifiers.addFloat("Diffuse", 0, 1, 0.6f);
-            GuiController.Instance.Modifiers.addFloat("Specular", 0, 1, 1f);
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 20);
-           //modifiers para la transparencia del agua
-            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.8f);
-}
+
+        }
 
         public void crearSkybox()
         {
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 2000, 0);
-            skyBox.Size = new Vector3(10000, 5000, 10000);
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
+            skyBox.Size = new Vector3(currentScaleXZ * 62, 5000, currentScaleXZ * 62);
+            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\celeste\\";
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "algo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "topax2.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
@@ -216,9 +199,9 @@ namespace AlumnoEjemplos.RenderGroup
             //Configurar color  
             //skyBox.Color = Color.OrangeRed;
             skyBox.SkyEpsilon = 5f; //para que no se noten las aristas del box
-            skyBox.updateValues();
+            //skyBox.updateValues();
         }
-
+        
         private void crearSprites()
         {
             Size screenSize = GuiController.Instance.Panel3d.Size;
@@ -239,24 +222,14 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.UserVars.addVar("time", 0f);
         }
 
-        public void recargarHeightMap()
-        {
-            float selectedScaleXZ = (float)GuiController.Instance.Modifiers["XZ"];
-            float selectedScaleY = (float)GuiController.Instance.Modifiers["Y"];
-            if (currentScaleXZ != selectedScaleXZ || currentScaleY != selectedScaleY)
-            {
-                //Volver a cargar el Heightmap si cambiaron los modifiers
-                currentScaleXZ = selectedScaleXZ;
-                currentScaleY = selectedScaleY;
-                terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 5, 0));
-            }
-        }
-
         public void renderizar()
         {
-            terrain2.render();
+            isla.render();
+            oceano.setShadersValues(lightPosition);
+            oceano.render();
+            skyBox.Size = new Vector3((float)GuiController.Instance.Modifiers["WorldSize"] * 62, 5000, (float)GuiController.Instance.Modifiers["WorldSize"] * 62);
+            skyBox.updateValues();
             skyBox.render();
-            terrain.render();            
             b1.UpdateRender();
             b2.UpdateRender();
             b3.UpdateRender();
@@ -270,17 +243,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
-            Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
+            lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
             lightMesh.Position = lightPosition;
-           
-            efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
-            efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
-            efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
-            efectoOlas.SetValue("k_ld", (float)GuiController.Instance.Modifiers["Diffuse"]);
-            efectoOlas.SetValue("k_ls", (float)GuiController.Instance.Modifiers["Specular"]);
-            efectoOlas.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
-            efectoOlas.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
-            efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
         }
 
         public void setUsersVars()
