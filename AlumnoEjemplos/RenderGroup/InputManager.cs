@@ -36,7 +36,10 @@ namespace AlumnoEjemplos.RenderGroup
                 foreach (IReceptorInput i in interesados) { i.D_apretado(); }
 
             if (d3dInput.keyDown(Key.A))
-                foreach (IReceptorInput i in interesados) { i.A_apretado(); }            
+                foreach (IReceptorInput i in interesados) { i.A_apretado(); }
+
+            if (d3dInput.keyDown(Key.P))
+                foreach (IReceptorInput i in interesados) { i.P_apretado(); }
         }
 
     }
@@ -48,6 +51,7 @@ namespace AlumnoEjemplos.RenderGroup
         void A_apretado();
         void S_apretado();
         void D_apretado();
+        void P_apretado();
     }
 
 }

@@ -93,32 +93,36 @@ namespace AlumnoEjemplos.RenderGroup
             cargarShaders();
 
             crearModifiers();
-
+            
             crearUserVars();
 
             #region INICIALIZACIONES BARCO
 
-            barcoProtagonista = ConstructorDeBarcos.ConstruirProtagonista(new Vector2(0, -930f));
-            b1 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(500, 500));
-            b2 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(-700, 960));
-            b3 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(100, 880));
+            barcoProtagonista = ConstructorDeElementos.ConstruirProtagonista(new Vector2(0, -930f));
+            b1 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(500, 500));
+            b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960));
+            b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880));
+
+            InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,b3,barcoProtagonista});
 
             InputManager.Add(barcoProtagonista);
 
             #endregion
-
         }
-
 
         public override void render(float elapsedTime)
         {
             InputManager.ManejarInput();
+
+            InteractionManager.UpdateElementos();
 
             setUsersVars();
 
             recargarHeightMap();
 
             setShadersValues();
+
+            InteractionManager.RenderElementos();
 
             renderizar();
         }
@@ -130,14 +134,6 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.dispose();
             efectoLuz.Dispose();
             efectoOlas.Dispose();
-            
-            
-
-            julian(); //veinte lineas mas
-
-            
-            repo();
-            
         }
 
         #region NUEVO
@@ -225,11 +221,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void renderizar()
         {
             skyBox.render();
-            terrain.render();            
-            b1.UpdateRender();
-            b2.UpdateRender();
-            b3.UpdateRender();
-            barcoProtagonista.UpdateRender();
+            terrain.render();
         }
 
         public void setShadersValues()
