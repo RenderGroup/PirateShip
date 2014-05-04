@@ -94,6 +94,8 @@
     <Compile Include="RenderGroup\Barco\ConstructorDeBarcos.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />
     <Compile Include="RenderGroup\InputManager.cs" />
+    <Compile Include="RenderGroup\Isla.cs" />
+    <Compile Include="RenderGroup\Oceano.cs" />
     <Compile Include="RenderGroup\SmartTerrain.cs" />
   </ItemGroup>
   <ItemGroup>
