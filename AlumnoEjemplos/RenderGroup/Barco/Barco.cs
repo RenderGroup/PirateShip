@@ -47,22 +47,34 @@ namespace AlumnoEjemplos.RenderGroup
             if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
                 this.boundingSphere.render();
 
-            ////Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
-            Vector3 normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
+            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
+            {
+                //Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
+                Vector3 normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
 
-            collisionNormalArrow.PStart = this.Position;
-            collisionNormalArrow.PEnd = this.Position + Vector3.Multiply(normal, 200);
-            collisionNormalArrow.updateValues();
-            collisionNormalArrow.render();
+                collisionNormalArrow.PStart = this.Position;
+                collisionNormalArrow.PEnd = this.Position + Vector3.Multiply(normal, 200);
+                collisionNormalArrow.updateValues();
+            }
 
             this.flotar();
+        }
+
+        new public void render() 
+        {
+            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
+            {
+                collisionNormalArrow.render();                
+            }
+
+            base.render();
         }
 
         //cada barco por separada se encarga de actualizarse antes de su render
         public void UpdateRender()
         {
             this.update();
-            base.render();
+            this.render();
         }
 
         //metodo que maneja la aceleracion...de mala manera...por ahora...
