@@ -18,7 +18,12 @@ namespace AlumnoEjemplos.RenderGroup
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
-        public TgcArrow collisionNormalArrow;
+
+        //normal en la superficie donde esta flotando el barco
+        Vector3 normal;
+
+        //flecha que se dibujara para indicar la normal
+        TgcArrow normalDibujable;
 
         public float aceleracion = 0f;
 
@@ -33,38 +38,64 @@ namespace AlumnoEjemplos.RenderGroup
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
         virtual public void flotar()
         {
+            //normal del mar en el punto donde se encuentra el barco
+            normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
+
+            //altura del mar en el punto de se encuentra el barco
             float Y = Oceano.alturaMarEnPunto(this.Position.X, this.Position.Z);
 
-            this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);
+            //ponemos el bounding sphere a la altura donde esta el barco
+            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 40, 0));
 
-            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 50, 0));
+            //ubicamos al barco...
+            this.Position = new Vector3(this.Position.X, Y - 15, this.Position.Z);  // ...en alto...
+
+            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) >= 0)
+                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);                  // ...con rotacion en Z...
+            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) <= 0)
+                this.rotation.Z = FastMath.Atan2(normal.X, normal.Y);
+            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) <= 0)
+                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);
+            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) >= 0)
+                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);
+
+
+            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) >= 0)
+                this.rotation.X = FastMath.Atan2(normal.Z, normal.Y);                   // ...con rotacion en Y...
+            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) <= 0)
+                this.rotation.X = FastMath.Atan2(-normal.Z, normal.Y);
+            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) <= 0)
+                this.rotation.X = FastMath.Atan2(-normal.Z, normal.Y);
+            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) >= 0)
+                this.rotation.X = FastMath.Atan2(normal.Z, normal.Y);
+
+            
+
         }
-
+    
         //define un update overrideable para todos los barcos
         virtual public void update()
         {
+            this.flotar();
+
             //si el usuario quiere ver el bounding sphere...renderizarlo
             if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
                 this.boundingSphere.render();
 
             if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
             {
-                //Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
-                Vector3 normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
-
-                collisionNormalArrow.PStart = this.Position;
-                collisionNormalArrow.PEnd = this.Position + Vector3.Multiply(normal, 200);
-                collisionNormalArrow.updateValues();
+                //calculos para poder dibujar la flecha que indica la normal
+                normalDibujable.PStart = this.Position;
+                normalDibujable.PEnd = this.Position + Vector3.Multiply(normal, 200);
+                normalDibujable.updateValues();
             }
-
-            this.flotar();
         }
 
         new public void render() 
         {
             if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
             {
-                collisionNormalArrow.render();                
+                normalDibujable.render();                
             }
 
             base.render();
@@ -115,11 +146,11 @@ namespace AlumnoEjemplos.RenderGroup
 
         new public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
         {           
-            collisionNormalArrow = new TgcArrow();
-            collisionNormalArrow.BodyColor = Color.Red;
-            collisionNormalArrow.HeadColor = Color.Yellow;
-            collisionNormalArrow.Thickness = 1f;
-            collisionNormalArrow.HeadSize = new Vector2(2, 5);
+            normalDibujable = new TgcArrow();
+            normalDibujable.BodyColor = Color.Red;
+            normalDibujable.HeadColor = Color.Yellow;
+            normalDibujable.Thickness = 1f;
+            normalDibujable.HeadSize = new Vector2(2, 5);
 
             base.initData(d3dMesh, meshName, renderType);
         }
