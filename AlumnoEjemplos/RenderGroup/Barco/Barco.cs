@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace AlumnoEjemplos.RenderGroup
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
+        public TgcArrow collisionNormalArrow;
+
         public float aceleracion = 0f;
 
         #region CONSTANTES
@@ -43,6 +46,14 @@ namespace AlumnoEjemplos.RenderGroup
             //si el usuario quiere ver el bounding sphere...renderizarlo
             if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
                 this.boundingSphere.render();
+
+            ////Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
+            Vector3 normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
+
+            collisionNormalArrow.PStart = this.Position;
+            collisionNormalArrow.PEnd = this.Position + Vector3.Multiply(normal, 200);
+            collisionNormalArrow.updateValues();
+            collisionNormalArrow.render();
 
             this.flotar();
         }
@@ -91,7 +102,13 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         new public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
-        {
+        {           
+            collisionNormalArrow = new TgcArrow();
+            collisionNormalArrow.BodyColor = Color.Red;
+            collisionNormalArrow.HeadColor = Color.Yellow;
+            collisionNormalArrow.Thickness = 1f;
+            collisionNormalArrow.HeadSize = new Vector2(2, 5);
+
             base.initData(d3dMesh, meshName, renderType);
         }
     }
