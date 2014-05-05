@@ -59,7 +59,7 @@ namespace AlumnoEjemplos.RenderGroup
             return Y *= (FastMath.Cos(time) + 1.2f); //simulacion del shader
         }
 
-        public Vector3 normalEnPuntoXZ(float X, float Z)
+        public static Vector3 normalEnPuntoXZ(float X, float Z)
         {
             float delta = 0.5f;
 
