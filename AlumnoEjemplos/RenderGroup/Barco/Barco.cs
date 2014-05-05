@@ -26,27 +26,11 @@ namespace AlumnoEjemplos.RenderGroup
         public const float VELOCIDAD = 300f;
         public const float ACELERACION_MAX = 3f;
         #endregion
-
-        //metodo que se ayuda del SmartTerrain para calcular la altura en un punto
-        public float alturaEnPunto(float X, float Z)
-        {
-            float Y;
-
-            SmartTerrain terreno = (SmartTerrain)GuiController.Instance.UserVars.getValue("terreno");
-
-            terreno.interpoledHeight(this.Position.X, this.Position.Z, out Y);
-
-            return Y;
-        }
  
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
         virtual public void flotar()
         {
-            float time = (float)GuiController.Instance.UserVars.getValue("time");
-
-            float Y = alturaEnPunto(this.Position.X, this.Position.Z);
-
-            Y *= (FastMath.Cos(time) + 1.2f); //simulacion del shader
+            float Y = Oceano.alturaMarEnPunto(this.Position.X, this.Position.Z);
 
             this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);
 
