@@ -42,9 +42,6 @@ namespace AlumnoEjemplos.RenderGroup
         Oceano oceano;
         Isla isla;
         Vector3 lightPosition;
-        ///////////////////////
-        TgcArrow collisionNormalArrow;
-        TgcBox collisionPoint;
 
         #endregion
 
@@ -87,17 +84,6 @@ namespace AlumnoEjemplos.RenderGroup
             crearUserVars();
             crearSprites();
 
-            #region FLECHA NORMAL
-            collisionNormalArrow = new TgcArrow();
-            collisionNormalArrow.BodyColor = Color.Blue;
-            collisionNormalArrow.HeadColor = Color.Yellow;
-            collisionNormalArrow.Thickness = 1f;
-            collisionNormalArrow.HeadSize = new Vector2(2, 5);
-
-            //Caja para marcar punto de colision
-            collisionPoint = TgcBox.fromSize(new Vector3(4, 4, 4), Color.Red);
-            #endregion
-
             #region INICIALIZACIONES BARCO
 
             barcoProtagonista = ConstructorDeBarcos.ConstruirProtagonista(new Vector2(0, -930f));
@@ -119,17 +105,6 @@ namespace AlumnoEjemplos.RenderGroup
             setUsersVars();
             renderizar();
             coordenadasMouse();
-
-            ////Flecha Normal para ver. Solo se actualiza si el barco esta en movimiento
-            Vector3 normal = oceano.normalEnPuntoXZ(barcoProtagonista.Position.X, barcoProtagonista.Position.Z);
-            collisionNormalArrow.PStart = barcoProtagonista.Position;
-            collisionNormalArrow.PEnd = barcoProtagonista.Position + Vector3.Multiply(normal, 500);
-            collisionNormalArrow.updateValues();
-            collisionNormalArrow.render();
-
-            collisionPoint.Position = barcoProtagonista.Position;
-            collisionPoint.render();
-
         }
 
         public override void close()
