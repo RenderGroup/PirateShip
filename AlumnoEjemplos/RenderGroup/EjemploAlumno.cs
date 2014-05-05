@@ -151,10 +151,9 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void crearModifiers()
         {
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); //
-            //modifiers para la camara
-            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3� persona", true);//
-
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); 
+            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);
+            GuiController.Instance.Modifiers.addBoolean("normales", "Render Normales", false);
         }
 
         public void crearSkybox()
