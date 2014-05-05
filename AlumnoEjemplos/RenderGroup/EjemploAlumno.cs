@@ -198,9 +198,9 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
-            isla.render();
             oceano.setShadersValues(lightPosition);
             oceano.render();
+            isla.render();
             skyBox.Size = new Vector3((float)GuiController.Instance.Modifiers["WorldSize"] * 62, 5000, (float)GuiController.Instance.Modifiers["WorldSize"] * 62);
             skyBox.updateValues();
             skyBox.render();
