@@ -48,7 +48,7 @@ namespace AlumnoEjemplos.RenderGroup
             barco.Position = p;
             
             //inicializamos la esfera que hace de bounding box en el 
-            barco.boundingSphere = new TgcBoundingSphere(new Vector3(p.X, barco.alturaEnPunto(p.X, p.Z), p.Z), radioElipsoide);
+            barco.boundingSphere = new TgcBoundingSphere(new Vector3(p.X, Oceano.alturaMarEnPunto(p.X, p.Z), p.Z), radioElipsoide);
 
             return barco;
         }
