@@ -8,6 +8,7 @@ using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
+using System.Drawing;
 
 
 namespace AlumnoEjemplos.RenderGroup
@@ -72,7 +73,7 @@ namespace AlumnoEjemplos.RenderGroup
         #region DESARROLLO
         public void crearHeightmaps()
         {
-            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra1.jpg";
+            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\PerlinNoise.jpg";
             currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
             terrain = new SmartTerrain();
             terrain.loadHeightmap(currentHeightmap, (float)GuiController.Instance.Modifiers["WorldSize"], (float)GuiController.Instance.Modifiers["AlturaMarea"], new Vector3(0, 0, 0));
@@ -112,11 +113,14 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Modifiers.addFloat("Specular", 0, 1, 1f);
             GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 20);
             //modifiers para la transparencia del agua
-            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.8f);
+            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.6f);
+            //modifiers para el fog
+            GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
         }
 
-        public void setShadersValues(Vector3 lightPosition)
+        public void setShadersValues(Vector3 lightPosition, Boolean rayo)
         {
+            lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
             efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
@@ -125,8 +129,14 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
             efectoOlas.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
+            efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
+            efectoOlas.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
+            efectoOlas.SetValue("rayo", rayo);
         }
         #endregion
+
+           
+
     } //END CLASS Oceano
 
 }

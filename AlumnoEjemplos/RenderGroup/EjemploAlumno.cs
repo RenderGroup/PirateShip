@@ -31,11 +31,10 @@ namespace AlumnoEjemplos.RenderGroup
         #region DECLARACIONES DEL ESCENARIO
 
         TgcSkyBox skyBox;
-
         TgcBox piso;
-
-        float currentScaleXZ = 100f;
-        float currentScaleY = 1.3f;
+        Boolean rayo;
+        float currentScaleXZ = 165f;
+        float currentScaleY =0.8f;
         TgcBox lightMesh;
         TgcSprite boton1;
         TgcSprite boton2;
@@ -68,24 +67,31 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-
+            
             #region INICIALIZACIONES PISO
 
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\SkyBoxLostAtSeaDay\\Down.jpg");
             piso = TgcBox.fromSize(new Vector3(8500, 1, 8500), pisoTexture);
 
             #endregion
 
-            //Mesh para la luz
-            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
+            #region INICIALIZACIONES ESCENARIO
 
-            crearModifiers();
+            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
             oceano = new Oceano(currentScaleXZ, currentScaleY);
             isla = new Isla();
             crearSkybox();
+
+            #endregion
+
+            #region INICIALIZACIONES PANTALLA
+
+            crearModifiers();
             crearUserVars();
             crearSprites();
+
+            #endregion
 
             #region FLECHA NORMAL
             collisionNormalArrow = new TgcArrow();
@@ -108,7 +114,6 @@ namespace AlumnoEjemplos.RenderGroup
             InputManager.Add(barcoProtagonista);
 
             #endregion
-
 
         }
 
@@ -144,7 +149,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         #region NUEVO
 
-
         private void coordenadasMouse() //se fija si hace clic sobre un boton
         {
             TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
@@ -164,7 +168,8 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
                 {
-                    MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
+                    rayo = true;
+                    //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
                 {
@@ -173,24 +178,23 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-
         private void crearModifiers()
         {
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); //
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); 
             //modifiers para la camara
-            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3� persona", true);//
-
+            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3� persona", true);
         }
 
         public void crearSkybox()
         {
             skyBox = new TgcSkyBox();
-            skyBox.Center = new Vector3(0, 2000, 0);
-            skyBox.Size = new Vector3(currentScaleXZ * 62, 5000, currentScaleXZ * 62);
+            skyBox.Center = new Vector3(0, 1600, 0);
+            skyBox.Size = new Vector3(10000, 5000, 10000);
+           // skyBox.Size = new Vector3(currentScaleXZ * 62, 5000, currentScaleXZ * 62);
             string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\celeste\\";
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "algo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
@@ -199,7 +203,7 @@ namespace AlumnoEjemplos.RenderGroup
             //Configurar color  
             //skyBox.Color = Color.OrangeRed;
             skyBox.SkyEpsilon = 5f; //para que no se noten las aristas del box
-            //skyBox.updateValues();
+            skyBox.updateValues();
         }
         
         private void crearSprites()
@@ -225,10 +229,8 @@ namespace AlumnoEjemplos.RenderGroup
         public void renderizar()
         {
             isla.render();
-            oceano.setShadersValues(lightPosition);
-            oceano.render();
-            skyBox.Size = new Vector3((float)GuiController.Instance.Modifiers["WorldSize"] * 62, 5000, (float)GuiController.Instance.Modifiers["WorldSize"] * 62);
-            skyBox.updateValues();
+           // skyBox.Size = new Vector3((float)GuiController.Instance.Modifiers["WorldSize"] * 62, 5000, (float)GuiController.Instance.Modifiers["WorldSize"] * 62);
+           // skyBox.updateValues();
             skyBox.render();
             b1.UpdateRender();
             b2.UpdateRender();
@@ -239,12 +241,9 @@ namespace AlumnoEjemplos.RenderGroup
             boton1.render();
             boton2.render(); 
             GuiController.Instance.Drawer2D.endDrawSprite();
-        }
-
-        public void setShadersValues()
-        {
-            lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
-            lightMesh.Position = lightPosition;
+            oceano.setShadersValues(lightPosition, rayo);
+            oceano.render();
+            rayo = false;
         }
 
         public void setUsersVars()

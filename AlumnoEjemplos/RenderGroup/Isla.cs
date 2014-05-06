@@ -42,7 +42,7 @@ namespace AlumnoEjemplos.RenderGroup
             currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra2.jpg";
             currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.png";
             terrain2 = new TgcSimpleTerrain();
-            terrain2.loadHeightmap(currentHeightmap2, 30f,2.3f, new Vector3(50, 0, 30));
+            terrain2.loadHeightmap(currentHeightmap2, 165f, 5.3f, new Vector3(0, -30, 0));
             terrain2.loadTexture(currentTexture2);
         }
 

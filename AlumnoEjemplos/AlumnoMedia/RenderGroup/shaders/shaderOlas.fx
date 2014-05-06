@@ -1,6 +1,3 @@
-// ---------------------------------------------------------
-// Ejemplo shader Minimo:
-// ---------------------------------------------------------
 
 /**************************************************************************************/
 /* Variables comunes */
@@ -25,9 +22,46 @@ sampler2D diffuseMap = sampler_state
 };
 
 
-float time = 0;
+//Textura para perlin noise
+texture texPerlin;
+sampler2D perlin = sampler_state
+{
+	Texture = (texPerlin);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
 
-float blendAmount = 0.7;//nivel de translucides entre 0 y 1 , cero translucido, 1 opaco
+// Textura para heightmap
+texture aux_Tex;
+sampler2D heightMap =
+sampler_state
+{
+   Texture = (aux_Tex);
+   ADDRESSU = MIRROR;
+   ADDRESSV = MIRROR;
+   MINFILTER = LINEAR;
+   MAGFILTER = LINEAR;
+   MIPFILTER = LINEAR;
+};
+
+// enviroment map
+texture  g_txCubeMap;
+samplerCUBE g_samCubeMap = 
+sampler_state
+{
+    Texture = <g_txCubeMap>;
+
+   MINFILTER = LINEAR;
+   MAGFILTER = LINEAR;
+   MIPFILTER = LINEAR;
+};
+
+float time = 0;
+bool rayo = false;
+float blendAmount = 0.65;//nivel de translucides entre 0 y 1 , cero translucido, 1 opaco
 
 //variables para la iluminacion
 float3 fvLightPosition = float3( -100.00, 100.00, -100.00 );
@@ -36,6 +70,28 @@ float k_la = 0.3;							// luz ambiente global
 float k_ld = 0.9;							// luz difusa
 float k_ls = 0.4;							// luz specular
 float fSpecularPower = 16.84;				// exponente de la luz specular
+
+float4 fogColor = float4(0.2f, 0.9f, 1.0f, 1.0f);
+
+float blur_intensity; 
+bool camara3p = true;
+
+float4 blur(float3 Texcoord: TEXCOORD0)
+{
+	//Obtener color de textura
+	float4 color = tex2D( diffuseMap, Texcoord );
+	
+	//Tomar samples adicionales de texels vecinos y sumarlos (formamos una cruz)
+	color += tex2D( diffuseMap, float2(Texcoord.x + blur_intensity, Texcoord.y));
+	color += tex2D( diffuseMap, float2(Texcoord.x - blur_intensity, Texcoord.y));
+	color += tex2D( diffuseMap, float2(Texcoord.x, Texcoord.y + blur_intensity));
+	color += tex2D( diffuseMap, float2(Texcoord.x, Texcoord.y - blur_intensity));
+	
+	//Promediar todos
+	color = color / 5;
+
+      return color;
+}
 
 
 /**************************************************************************************/
@@ -57,7 +113,9 @@ struct VS_OUTPUT
    float4 Position : POSITION0;
    float2 Texcoord : TEXCOORD0;
    float3 Norm :     TEXCOORD1;			// Normales
-   float3 Pos :   	 TEXCOORD2;		// Posicion real 3d
+   float3 Pos :      TEXCOORD2;		// Posicion real 3d
+   float3 Pos2 :     TEXCOORD3;		// Posicion en 2d
+   float fogfactor:  FOG;
 };
 
 // ------------------------------------------------------------------
@@ -74,30 +132,32 @@ VS_OUTPUT vs_main( VS_INPUT Input )
    Output.Pos = float3(pos_real.x,pos_real.y,pos_real.z);
 
     // Se aplica una transformación variable y periódica
-
     Input.Position.y = Input.Position.y  * (cos(time) + 1.2) ;
-
+   
     // Se establece el vértice transformado como nueva posición
-
     Output.Position = mul( Input.Position, matWorldViewProj);
+    
 
-    Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/5)) + 1.2  ;
+    Output.Pos2 = Output.Position;
+    Output.fogfactor = saturate(Output.Position.z);
 
- //Propago las coordenadas de textura
 
+    Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/5)) + 1.2;
+
+    //Propago las coordenadas de textura
     Output.Texcoord = Input.Texcoord;
    
-   // Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
-   Output.Norm = normalize(mul(Input.Normal,matWorld));
-
-   return( Output );  
+    // Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
+    Output.Norm = normalize(mul(Input.Normal,matWorld));
+    
+    return( Output );  
    
 }
 
 // ------------------------------------------------------------------
 
 //Pixel Shader blend
-float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2) : COLOR0
+float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
 {      
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
@@ -114,17 +174,41 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
 	le += ks*k_ls;
 
 	//Obtener el texel de textura
-        float4 fvBaseColor= tex2D( diffuseMap, Texcoord );
+        float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
 
+        fogfactor = saturate(( 3000.0f - Pos2.z ) / (2000.0f));
 
-      	// suma luz diffusa, ambiente y especular
+      	//suma luz diffusa, ambiente y especular
 	float4 RGBColor = 0;
-	RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+        //RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
 
-        RGBColor.a = blendAmount; //aplica la transparencia
-      return RGBColor;
+        if (rayo)
+        {
+           RGBColor = fvBaseColor;
+           RGBColor.rgb = saturate(RGBColor*(saturate(k_la+ld)) + le);
+           RGBColor.rgb = RGBColor.rgb*5;
 
+        }
+        else
+        {
+           if(camara3p) {
+      
+                    RGBColor =  blur(Texcoord); 
+                    RGBColor = (RGBColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+                    fvBaseColor = (RGBColor * (1.0 - fogfactor)) + (fvBaseColor * fogfactor);
+                    RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+                    RGBColor.a = fogfactor;//aplica la transparencia dinamica
+
+           }
+           else     {
+                    RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+                    RGBColor.a = blendAmount; //aplica la transparencia estatica
+                    }
+          
+       }
+       return RGBColor;
 }
+
 
 
 // ------------------------------------------------------------------
