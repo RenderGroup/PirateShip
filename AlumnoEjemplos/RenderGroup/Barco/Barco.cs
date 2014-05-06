@@ -48,29 +48,9 @@ namespace AlumnoEjemplos.RenderGroup
             this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 40, 0));
 
             //ubicamos al barco...
-            this.Position = new Vector3(this.Position.X, Y - 15, this.Position.Z);  // ...en alto...
-
-            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) >= 0)
-                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);                  // ...con rotacion en Z...
-            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) <= 0)
-                this.rotation.Z = FastMath.Atan2(normal.X, normal.Y);
-            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) <= 0)
-                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);
-            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) >= 0)
-                this.rotation.Z = FastMath.Atan2(-normal.X, normal.Y);
-
-
-            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) >= 0)
-                this.rotation.X = FastMath.Atan2(normal.Z, normal.Y);                   // ...con rotacion en Y...
-            if (FastMath.Sin(this.rotation.Y) >= 0 && FastMath.Cos(this.rotation.Y) <= 0)
-                this.rotation.X = FastMath.Atan2(-normal.Z, normal.Y);
-            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) <= 0)
-                this.rotation.X = FastMath.Atan2(-normal.Z, normal.Y);
-            if (FastMath.Sin(this.rotation.Y) <= 0 && FastMath.Cos(this.rotation.Y) >= 0)
-                this.rotation.X = FastMath.Atan2(normal.Z, normal.Y);
-
-            
-
+            this.Position = new Vector3(this.Position.X, Y - 15, this.Position.Z);                  // ...en alto...
+            this.rotation.Z = FastMath.Atan2(-normal.X * FastMath.Cos(this.rotation.Y), normal.Y);  // ...con rotacion en Z...
+            this.rotation.X = FastMath.Atan2(normal.Z * FastMath.Cos(this.rotation.Y), normal.Y);   // ...con rotacion en Y...
         }
     
         //define un update overrideable para todos los barcos
