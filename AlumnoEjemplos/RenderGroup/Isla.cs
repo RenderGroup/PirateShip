@@ -8,6 +8,7 @@ using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX;
 using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
+using System.Drawing;
 
 
 namespace AlumnoEjemplos.RenderGroup
@@ -15,22 +16,24 @@ namespace AlumnoEjemplos.RenderGroup
     class Isla
     {
         TgcSimpleTerrain terrain2;
-
         string currentHeightmap2;
         string currentTexture2;
+        float currentScaleXZ;
+        float currentScaleY;
 
-        public Isla()
+        public Isla(float XZ, float Y)
         {
+            currentScaleXZ = XZ;
+            currentScaleY = Y;
+            //crearModifiers();
             crearHeightmaps();
-            //cargarShaders();
+           // cargarShaders();
         }
         
-
         public void render()
         {
             terrain2.render();
         }
-
 
         public void dispose()
         {
@@ -50,6 +53,13 @@ namespace AlumnoEjemplos.RenderGroup
         {
         }
 
+        private void crearModifiers()
+        {
+        }
+
+        public void setShadersValues(Vector3 lightPosition, Boolean rayo, CubeTexture cubeMap)
+        {
+        }
     }
 
 }

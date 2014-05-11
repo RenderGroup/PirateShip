@@ -21,7 +21,6 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
-
 //Textura para perlin noise
 texture texPerlin;
 sampler2D perlin = sampler_state
@@ -47,16 +46,16 @@ sampler_state
    MIPFILTER = LINEAR;
 };
 
-// enviroment map
-texture  g_txCubeMap;
-samplerCUBE g_samCubeMap = 
-sampler_state
+//Textura utilizada para EnvironmentMap
+texture texCubeMap;
+samplerCUBE cubeMap = sampler_state
 {
-    Texture = <g_txCubeMap>;
-
-   MINFILTER = LINEAR;
-   MAGFILTER = LINEAR;
-   MIPFILTER = LINEAR;
+	Texture = (texCubeMap);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
 };
 
 float time = 0;
@@ -67,14 +66,20 @@ float blendAmount = 0.65;//nivel de translucides entre 0 y 1 , cero translucido,
 float3 fvLightPosition = float3( -100.00, 100.00, -100.00 );
 float3 fvEyePosition = float3( 0.00, 0.00, -100.00 );
 float k_la = 0.3;							// luz ambiente global
-float k_ld = 0.9;							// luz difusa
-float k_ls = 0.4;							// luz specular
+float k_ld = 0.6;							// luz difusa
+float k_ls = 1.0;							// luz specular
 float fSpecularPower = 16.84;				// exponente de la luz specular
 
 float4 fogColor = float4(0.2f, 0.9f, 1.0f, 1.0f);
+float fogStart = 2000;
+float blurStart = 2000;
+float blendStart = 2000;
 
 float blur_intensity; 
 bool camara3p = true;
+
+//Factor de reflexion del cielo en el agua
+float reflection;
 
 float4 blur(float3 Texcoord: TEXCOORD0)
 {
@@ -116,6 +121,8 @@ struct VS_OUTPUT
    float3 Pos :      TEXCOORD2;		// Posicion real 3d
    float3 Pos2 :     TEXCOORD3;		// Posicion en 2d
    float fogfactor:  FOG;
+   float3 WorldPosition : TEXCOORD4;
+   float3 WorldNormal	: TEXCOORD5;
 };
 
 // ------------------------------------------------------------------
@@ -137,10 +144,13 @@ VS_OUTPUT vs_main( VS_INPUT Input )
     // Se establece el vértice transformado como nueva posición
     Output.Position = mul( Input.Position, matWorldViewProj);
     
+	//Posicion pasada a World-Space
+	Output.WorldPosition = mul(Input.Position, matWorld).xyz;
+	//Pasar normal a World-Space
+	Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
 
     Output.Pos2 = Output.Position;
     Output.fogfactor = saturate(Output.Position.z);
-
 
     Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/5)) + 1.2;
 
@@ -157,7 +167,7 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 // ------------------------------------------------------------------
 
 //Pixel Shader blend
-float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG) : COLOR0
+float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float3 WorldPosition : TEXCOORD4, float3 WorldNormal	: TEXCOORD5) : COLOR0
 {      
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
@@ -176,40 +186,44 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
 	//Obtener el texel de textura
         float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
 
-        fogfactor = saturate(( 3000.0f - Pos2.z ) / (2000.0f));
+   fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart));
+//	float	blurfactor = saturate(( 3000.0f - Pos2.z ) / (blurStart));
+	float	blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart));
 
-      	//suma luz diffusa, ambiente y especular
 	float4 RGBColor = 0;
-        //RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+
+	//Normalizar vectores
+	float3 Nn = normalize(WorldNormal);
+	//Obtener texel de CubeMap
+	float3 Vn = normalize(fvEyePosition - WorldPosition);
+	float3 R = reflect(Vn, Nn);
+    float3 reflectionColor = texCUBE(cubeMap, R).rgb;
 
         if (rayo)
         {
            RGBColor = fvBaseColor;
            RGBColor.rgb = saturate(RGBColor*(saturate(k_la+ld)) + le);
            RGBColor.rgb = RGBColor.rgb*5;
-
+		   RGBColor.a = blendAmount; //aplica la transparencia estatica
         }
         else
         {
            if(camara3p) {
       
                     RGBColor =  blur(Texcoord); 
-                    RGBColor = (RGBColor * fogfactor) + (fogColor * (1.0 - fogfactor));
+                    RGBColor = (RGBColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
                     fvBaseColor = (RGBColor * (1.0 - fogfactor)) + (fvBaseColor * fogfactor);
                     RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
-                    RGBColor.a = fogfactor;//aplica la transparencia dinamica
-
+                    RGBColor.a = blendfactor;//aplica la transparencia dinamica
            }
            else     {
-                    RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
-                    RGBColor.a = blendAmount; //aplica la transparencia estatica
+		            float4 MezclaTex = float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection), 1.0f);	
+                    RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
+				    RGBColor.a = blendAmount; //aplica la transparencia estatica
                     }
-          
        }
        return RGBColor;
 }
-
-
 
 // ------------------------------------------------------------------
 technique RenderScene
