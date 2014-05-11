@@ -29,20 +29,23 @@ namespace AlumnoEjemplos.RenderGroup
         Barco b1, b2, b3;
 
         #region DECLARACIONES DEL ESCENARIO
-
         TgcSkyBox skyBox;
-
-        TgcBox piso;
-
-        float currentScaleXZ = 100f;
-        float currentScaleY = 1.3f;
+        Boolean rayo;
+        Boolean llueve;
+        float currentScaleXZ = 165f;
+        float currentScaleY =0.8f;
         TgcBox lightMesh;
-        TgcSprite boton1;
-        TgcSprite boton2;
         Oceano oceano;
         Isla isla;
-        Vector3 lightPosition;
+        #endregion
 
+
+        #region DECLARACIONES DE LA PANTALLA
+        TgcSprite boton1;
+        TgcSprite boton2;
+        TgcSprite timon;
+        TgcSprite barra;
+        TgcAnimatedSprite animatedSprite;
         #endregion
 
         #region TEXTO PARA EL FRAMEWORK
@@ -65,24 +68,22 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            #region INICIALIZACIONES ESCENARIO
 
-            #region INICIALIZACIONES PISO
-
-            TgcTexture pisoTexture = TgcTexture.createTexture(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\SkyBoxLostAtSeaDay\\Down.jpg");
-            piso = TgcBox.fromSize(new Vector3(8500, 1, 8500), pisoTexture);
+            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
+            oceano = new Oceano(currentScaleXZ, currentScaleY);
+            isla = new Isla(currentScaleXZ, currentScaleY);
+            crearSkybox();
 
             #endregion
 
-            //Mesh para la luz
-            lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
+            #region INICIALIZACIONES PANTALLA
 
             crearModifiers();
-            oceano = new Oceano(currentScaleXZ, currentScaleY);
-            isla = new Isla();
-            crearSkybox();
             crearUserVars();
             crearSprites();
+
+            #endregion
 
             #region INICIALIZACIONES BARCO
 
@@ -94,8 +95,6 @@ namespace AlumnoEjemplos.RenderGroup
             InputManager.Add(barcoProtagonista);
 
             #endregion
-
-
         }
 
 
@@ -110,15 +109,15 @@ namespace AlumnoEjemplos.RenderGroup
         public override void close()
         {
             barcoProtagonista.dispose();
-            piso.dispose();
             oceano.dispose();
             isla.dispose();
             boton1.dispose();
             boton2.dispose();
+            timon.dispose();
+            barra.dispose();  
         }
 
         #region NUEVO
-
 
         private void coordenadasMouse() //se fija si hace clic sobre un boton
         {
@@ -139,7 +138,8 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
                 {
-                    MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
+                    rayo = true;
+                    //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
                 {
@@ -148,9 +148,9 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-
         private void crearModifiers()
         {
+            GuiController.Instance.Modifiers.addBoolean("lluvia", "lluvia", false);
             GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); 
             GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);
             GuiController.Instance.Modifiers.addBoolean("normales", "Render Normales", false);
@@ -160,11 +160,11 @@ namespace AlumnoEjemplos.RenderGroup
         {
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 2000, 0);
-            skyBox.Size = new Vector3(currentScaleXZ * 62, 5000, currentScaleXZ * 62);
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Texturas\\celeste\\";
+            skyBox.Size = new Vector3(10000, 5000, 10000);
+            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "algo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
@@ -172,8 +172,8 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
             //Configurar color  
             //skyBox.Color = Color.OrangeRed;
-            skyBox.SkyEpsilon = 5f; //para que no se noten las aristas del box
-            //skyBox.updateValues();
+            skyBox.SkyEpsilon = 9f; //para que no se noten las aristas del box
+            skyBox.updateValues();
         }
         
         private void crearSprites()
@@ -189,6 +189,27 @@ namespace AlumnoEjemplos.RenderGroup
             boton2.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
             textureSize = boton2.Texture.Size;
             boton2.Position = new Vector2((screenSize.Width - boton1.Texture.Size.Width) - textureSize.Width, screenSize.Height - textureSize.Height);
+
+            timon = new TgcSprite();
+            timon.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\timon.png");
+            textureSize = timon.Texture.Size;
+            timon.Position = new Vector2(0, screenSize.Height - textureSize.Height);
+          
+            barra = new TgcSprite();
+            barra.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\barra.png");
+            textureSize = barra.Texture.Size;
+            barra.Position = new Vector2(0, screenSize.Height - textureSize.Height);
+        
+            //Crear Sprite animado para la lluvia
+            animatedSprite = new TgcAnimatedSprite(
+                GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\LLUVIA2.png", //Textura de 512 X 512
+                new Size(128, 128), //Tamaño de un frame (128x128px en este caso)
+                16, //Cantidad de frames, (son 16 de 128x128px)
+                20 //Velocidad de animacion, en cuadros x segundo
+                );
+
+            animatedSprite.Position = new Vector2(-10, 0);
+            animatedSprite.Scaling = new Vector2(8,4);
         }
 
         private void crearUserVars()
@@ -198,28 +219,38 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
-            oceano.setShadersValues(lightPosition);
-            oceano.render();
             isla.render();
-            skyBox.Size = new Vector3((float)GuiController.Instance.Modifiers["WorldSize"] * 62, 5000, (float)GuiController.Instance.Modifiers["WorldSize"] * 62);
-            skyBox.updateValues();
-            skyBox.render();
             b1.UpdateRender();
             b2.UpdateRender();
             b3.UpdateRender();
             barcoProtagonista.UpdateRender();
+
+            #region RENDERIZAR ESCENARIO
+            skyBox.render();
             lightMesh.render();
+            isla.render();
+            oceano.setShadersValues(rayo);
+            oceano.render();
+            rayo = false;
+            #endregion
+
+            #region RENDERIZAR PANTALLA
             GuiController.Instance.Drawer2D.beginDrawSprite();
+           
+            llueve = (Boolean)GuiController.Instance.Modifiers["lluvia"];   
+            if (llueve)
+            {
+                animatedSprite.updateAndRender();
+            }
             boton1.render();
-            boton2.render(); 
+            boton2.render();
+            barra.render();
+            timon.render();  
+
             GuiController.Instance.Drawer2D.endDrawSprite();
+            #endregion
         }
 
-        public void setShadersValues()
-        {
-            lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
-            lightMesh.Position = lightPosition;
-        }
 
         public void setUsersVars()
         {
