@@ -12,6 +12,13 @@ namespace AlumnoEjemplos.RenderGroup
     //Mientas ve si hay algun barco en su camino para dañarlo...
     class BolaDeCanion : Elemento
     {
+        public new BolaDeCanion rotateY(float angulo) 
+        {
+            base.rotateY(angulo);
+
+            return this;
+        }
+
         public override void update()
         {
             float elapsedTime = GuiController.Instance.ElapsedTime;
