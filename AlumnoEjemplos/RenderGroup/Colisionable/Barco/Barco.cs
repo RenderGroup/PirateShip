@@ -28,13 +28,10 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void disparar() 
         {
+            //se agregan dos disparos en diagonal 
             InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position));
-
-            BolaDeCanion b = ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position);
-
-            b.rotateY(FastMath.PI);
                 
-            InteractionManager.Disparos.Add(b);
+            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position).rotateY(-FastMath.PI/2));
         }
 
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
