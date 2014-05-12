@@ -33,51 +33,57 @@ namespace AlumnoEjemplos.RenderGroup
         static public string defaultBarcoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirata-TgcScene.xml";
         static public string defaultBolaCanion = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Sphere-TgcScene.xml";
 
+        static public Elemento ConstruirElemento(string path, Vector3 position, float radioElipsoide, TipoElemento tipoElemento)
+        {
+            //creo el loader y le agrego el factory para el elemento
+            TgcSceneLoader loader = new TgcSceneLoader();
+            loader.MeshFactory = new ElementoMeshFactory(tipoElemento);
+
+            //cargamos el elemento...
+            TgcScene scene = loader.loadSceneFromFile(path);
+            Elemento elemento = (Elemento)scene.Meshes[0];
+
+            elemento.Position = position;
+
+            //inicializamos la esfera que hace de bounding box en el 
+            elemento.boundingSphere = new TgcBoundingSphere(position, radioElipsoide);
+
+            return elemento;
+        }
 
         //metodo de clase que construye un barco - necesario para poder instanciar barcos y que sean TgcMesh
-        static public Elemento Construir(string path, Vector2 position, float radioElipsoide, TipoElemento tipoBarco)
+        static public Barco ConstruirBarco(string path, Vector2 pos, float radioElipsoide, TipoElemento tipoBarco)
         {
-            Vector3 p = new Vector3(position.X, 0, position.Y); //posicion X Z
+            //cuando mergee tengo que sacar la altura del Oceano
+            Vector3 posAlturaDelOceano = new Vector3(pos.X, new Barco().alturaEnPunto(pos.X, pos.Y), pos.Y); 
 
-            //creo el loader y le agrego el factory para el barco
-            TgcSceneLoader loader = new TgcSceneLoader();
-            loader.MeshFactory = new ElementoMeshFactory(tipoBarco);
-
-            //cargamos el barco...
-            TgcScene scene = loader.loadSceneFromFile(path);         
-            Elemento barco = (Elemento)scene.Meshes[0];
-
-            barco.Position = p;
-            
-            //inicializamos la esfera que hace de bounding box en el 
-            barco.boundingSphere = new TgcBoundingSphere(new Vector3(p.X, barco.alturaEnPunto(p.X, p.Z), p.Z), radioElipsoide);
-
-            return barco;
+            return (Barco)ConstruirElemento(path, posAlturaDelOceano, radioElipsoide, tipoBarco);
         }
 
         //overload del builder de un barco que carga el mesh del barco pirata default
-        static public Elemento Construir(Vector2 position, TipoElemento tipo) 
+        static public Barco ConstruirBarcoDefault(Vector2 position, TipoElemento tipo) 
         {
-            return ConstructorDeElementos.Construir(defaultBarcoPath, position, 80f, tipo);
+            return ConstructorDeElementos.ConstruirBarco(defaultBarcoPath, position, 80f, tipo);
         }
 
         static public BarcoEnemigo ConstruirEnemigo(Vector2 position)
         {
-            return (BarcoEnemigo)Construir(position, TipoElemento.BarcoEnemigo);
+            return (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
         }
 
         static public BarcoProtagonista ConstruirProtagonista(Vector2 position) 
         {
-            return (BarcoProtagonista) Construir(position, TipoElemento.BarcoProtagonista);
+            return (BarcoProtagonista) ConstruirBarcoDefault(position, TipoElemento.BarcoProtagonista);
         }
 
         static public BolaDeCanion ConstruirCanionazo(Vector3 rotacion, Vector3 posicion) 
         {
-            BolaDeCanion disparo = (BolaDeCanion)Construir(defaultBolaCanion, new Vector2(0,0), 100f, TipoElemento.BolaCanion);
+            posicion.Y += 70;
 
-            disparo.Position = new Vector3(posicion.X, posicion.Y +50, posicion.Z);
+            BolaDeCanion disparo = (BolaDeCanion)ConstruirElemento(defaultBolaCanion, posicion, 30f, TipoElemento.BolaCanion);
+
             disparo.Rotation = rotacion;
-            disparo.rotateY(FastMath.PI_HALF);
+            disparo.rotateY(FastMath.PI_HALF/2);
 
             return disparo;
         }
