@@ -219,7 +219,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
-            isla.render();
             b1.UpdateRender();
             b2.UpdateRender();
             b3.UpdateRender();
