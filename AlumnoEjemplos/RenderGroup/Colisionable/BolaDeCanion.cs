@@ -15,7 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
         public float VELOCIDAD = 1000f;
         public float velocidadX;
         public float velocidadY;
-        public float gravedad;
+        public float gravedad = 0.01f;
 
         //redefine el rotate para devolverse a si mismo
         public new BolaDeCanion rotateY(float angulo)
