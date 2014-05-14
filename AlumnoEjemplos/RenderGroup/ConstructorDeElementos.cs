@@ -78,12 +78,20 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public BolaDeCanion ConstruirCanionazo(Vector3 rotacion, Vector3 posicion) 
         {
+            //lo pongo un poco mas arriba para que no empiece en la altura del mar
             posicion.Y += 70;
-
+            
+            //creamos un disparo
             BolaDeCanion disparo = (BolaDeCanion)ConstruirElemento(defaultBolaCanion, posicion, 30f, TipoElemento.BolaCanion);
 
+            //asignamos la rotacion y giramos en diagonal
             disparo.Rotation = rotacion;
             disparo.rotateY(FastMath.PI_HALF/2);
+
+            //calculamos las velocidades en X e Y y lo inclinamos en un angulo para que sea parabolico
+            rotacion.X += FastMath.PI/10;
+            disparo.velocidadY = FastMath.Sin(rotacion.X);
+            disparo.velocidadX = FastMath.Cos(rotacion.X);
 
             return disparo;
         }
