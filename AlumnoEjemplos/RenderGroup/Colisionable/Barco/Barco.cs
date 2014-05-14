@@ -16,13 +16,13 @@ namespace AlumnoEjemplos.RenderGroup
     //Los barcos saben acelerar y desacelerar (punto del enunciado), flotar a la altura del agua y pegar cañonazos
     class Barco : Elemento
     {
-
         public float aceleracion = 0f;
 
         #region CONSTANTES
+        public const float VELOCIDAD = 300f;
+        public const float VELOCIDAD_ROTACION = .7f;
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
-        public const float VELOCIDAD_ROTACION = .7f;
         public const float ACELERACION_MAX = 3f;
         #endregion
 
@@ -30,8 +30,15 @@ namespace AlumnoEjemplos.RenderGroup
         {
             //se agregan dos disparos en diagonal 
             InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position));
-                
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position).rotateY(-FastMath.PI/2));
+
+            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position).rotateY(-FastMath.PI_HALF));
+        }
+
+        public void mover(float cantidad) 
+        {
+            Vector3 movimiento = DireccionXZ * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
+
+            this.move(movimiento);
         }
 
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
