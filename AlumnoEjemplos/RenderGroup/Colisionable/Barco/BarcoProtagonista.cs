@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace AlumnoEjemplos.RenderGroup
     class BarcoProtagonista : Barco, IReceptorInput
     {
         public const float ACELERACION_PROTA = 0.02f;
+        
+        public DateTime cooldown = DateTime.Now;
 
         bool camaraEnBarco;
 
@@ -45,7 +48,11 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void P_apretado() 
         {
-            this.disparar();
+            if ((DateTime.Now - cooldown).TotalSeconds > .5)
+            {
+                this.disparar();
+                cooldown = DateTime.Now;
+            }
         }
         #endregion
 
