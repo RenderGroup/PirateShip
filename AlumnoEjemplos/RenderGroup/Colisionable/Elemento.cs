@@ -16,8 +16,12 @@ namespace AlumnoEjemplos.RenderGroup
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
-
-        public const float VELOCIDAD = 300f;
+        
+        //devuelve la direccion en el plano XZ
+        public Vector3 DireccionXZ
+        {            
+            get { return new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y)); }
+        }
 
         //redefine dispose para incluir al boundingsphere
         new public void dispose()
@@ -45,13 +49,9 @@ namespace AlumnoEjemplos.RenderGroup
             base.initData(d3dMesh, meshName, renderType);
         }
 
-        //movimiento lineal en la direccion que apunte el barco con una aceleracion
-        public void mover(float cantidad)
+        //mueve al mesh y a su bounding box
+        new public void move(Vector3 movimiento)
         {
-            Vector3 direccion = new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y));
-
-            Vector3 movimiento = direccion * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
-
             base.move(movimiento);
             boundingSphere.moveCenter(movimiento);
         }
