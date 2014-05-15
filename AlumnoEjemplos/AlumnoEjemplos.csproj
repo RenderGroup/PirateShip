@@ -93,7 +93,7 @@
     <Compile Include="RenderGroup\Colisionable\Barco\BarcoProtagonista.cs" />
     <Compile Include="RenderGroup\Colisionable\BolaDeCanion.cs" />
     <Compile Include="RenderGroup\Managers\ColisionManager.cs" />
-    <Compile Include="RenderGroup\ConstructorDeElementos.cs" />
+    <Compile Include="RenderGroup\Factories\ConstructorDeElementos.cs" />
     <Compile Include="RenderGroup\Colisionable\Colisionable.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />
     <Compile Include="RenderGroup\Managers\InputManager.cs" />
