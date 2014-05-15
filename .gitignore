@@ -20,6 +20,12 @@
 !AlumnoEjemplos/AlumnoMedia/RenderGroup/*
 !AlumnoEjemplos/AlumnoMedia/RenderGroup/*/ 
 !AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*/
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*/*
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*/*/
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*/*/*
+!AlumnoEjemplos/AlumnoMedia/RenderGroup/*/*/*/*/*
+
 
 # una carpeta estrategia para ir armando el PDF que piden en la entrega
 !AlumnoEjemplos/Estrategia

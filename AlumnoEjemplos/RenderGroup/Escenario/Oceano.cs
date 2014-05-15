@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         //refactorear esto...
         //dice la altura de un punto sobre el mar tomando en cuenta al shader
-        public static float alturaMarEnPunto(float X, float Z)
+        public static float alturaEnPunto(float X, float Z)
         {
             float time = (float)GuiController.Instance.UserVars.getValue("time");
             SmartTerrain terrain = (SmartTerrain) GuiController.Instance.UserVars.getValue("terreno");
@@ -67,11 +67,11 @@ namespace AlumnoEjemplos.RenderGroup
         {
             float delta = 0.5f;
 
-            float alturaIncial = Oceano.alturaMarEnPunto(X, Z); 
-            float alturaFinal1A = Oceano.alturaMarEnPunto(X, Z + delta); 
-            float alturaFinal1B = Oceano.alturaMarEnPunto(X, Z - delta); 
-            float alturaFinal2A = Oceano.alturaMarEnPunto(X + delta, Z); 
-            float alturaFinal2B = Oceano.alturaMarEnPunto(X - delta, Z); 
+            float alturaIncial = Oceano.alturaEnPunto(X, Z); 
+            float alturaFinal1A = Oceano.alturaEnPunto(X, Z + delta); 
+            float alturaFinal1B = Oceano.alturaEnPunto(X, Z - delta); 
+            float alturaFinal2A = Oceano.alturaEnPunto(X + delta, Z); 
+            float alturaFinal2B = Oceano.alturaEnPunto(X - delta, Z); 
 
             Vector3 vector1 = new Vector3(delta * 2, alturaFinal2A - alturaFinal2B, 0);
 

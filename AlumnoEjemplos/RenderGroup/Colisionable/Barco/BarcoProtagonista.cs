@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace AlumnoEjemplos.RenderGroup
     class BarcoProtagonista : Barco, IReceptorInput
     {
         public const float ACELERACION_PROTA = 0.02f;
+        
+        public DateTime cooldown = DateTime.Now;
 
         bool camaraEnBarco;
 
@@ -41,6 +44,15 @@ namespace AlumnoEjemplos.RenderGroup
         public void D_apretado() 
         {
             this.rotateY(VELOCIDAD_ROTACION);
+        }
+
+        public void P_apretado() 
+        {
+            if ((DateTime.Now - cooldown).TotalSeconds > .5)
+            {
+                this.disparar();
+                cooldown = DateTime.Now;
+            }
         }
         #endregion
 
@@ -88,8 +100,8 @@ namespace AlumnoEjemplos.RenderGroup
                 }
             }
 
-            //si el barco no esta llendo ni para adelante ni atras (segun botones apretados), desaceelerar...
-            if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyDown(Key.W))
+            //si el barco no esta llendo ni para adelante ni atras (segun botones apretados), desacelerar...
+            if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyDown(Key.S))
             {
                 this.mover(desacelerar());
             }

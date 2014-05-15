@@ -88,15 +88,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderGroup\Barco\Barco.cs" />
-    <Compile Include="RenderGroup\Barco\BarcoEnemigo.cs" />
-    <Compile Include="RenderGroup\Barco\BarcoProtagonista.cs" />
-    <Compile Include="RenderGroup\Barco\ConstructorDeBarcos.cs" />
+    <Compile Include="RenderGroup\Colisionable\Barco\Barco.cs" />
+    <Compile Include="RenderGroup\Colisionable\Barco\BarcoEnemigo.cs" />
+    <Compile Include="RenderGroup\Colisionable\Barco\BarcoProtagonista.cs" />
+    <Compile Include="RenderGroup\Colisionable\BolaDeCanion.cs" />
+    <Compile Include="RenderGroup\Managers\ColisionManager.cs" />
+    <Compile Include="RenderGroup\ConstructorDeElementos.cs" />
+    <Compile Include="RenderGroup\Colisionable\Colisionable.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />
-    <Compile Include="RenderGroup\InputManager.cs" />
-    <Compile Include="RenderGroup\Isla.cs" />
-    <Compile Include="RenderGroup\Oceano.cs" />
-    <Compile Include="RenderGroup\SmartTerrain.cs" />
+    <Compile Include="RenderGroup\Managers\InputManager.cs" />
+    <Compile Include="RenderGroup\Escenario\Isla.cs" />
+    <Compile Include="RenderGroup\Managers\InteractionManager.cs" />
+    <Compile Include="RenderGroup\Escenario\Oceano.cs" />
+    <Compile Include="RenderGroup\Escenario\SmartTerrain.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgcViewer\TgcViewer.csproj">

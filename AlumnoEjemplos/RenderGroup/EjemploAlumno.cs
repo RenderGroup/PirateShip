@@ -39,7 +39,6 @@ namespace AlumnoEjemplos.RenderGroup
         Isla isla;
         #endregion
 
-
         #region DECLARACIONES DE LA PANTALLA
         TgcSprite boton1;
         TgcSprite boton2;
@@ -80,6 +79,7 @@ namespace AlumnoEjemplos.RenderGroup
             #region INICIALIZACIONES PANTALLA
 
             crearModifiers();
+            
             crearUserVars();
             crearSprites();
 
@@ -87,20 +87,27 @@ namespace AlumnoEjemplos.RenderGroup
 
             #region INICIALIZACIONES BARCO
 
-            barcoProtagonista = ConstructorDeBarcos.ConstruirProtagonista(new Vector2(0, -930f));
-            b1 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(500, 500));
-            b2 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(-700, 960));
-            b3 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(100, 880));
+            barcoProtagonista = ConstructorDeElementos.ConstruirProtagonista(new Vector2(0, -930f));
+            b1 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(500, 500));
+            b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960));
+            b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880));
+
+            InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,b3,barcoProtagonista});
+            ColisionManager.Barcos.AddRange(new List<Barco> { b1, b2, b3 });
 
             InputManager.Add(barcoProtagonista);
 
             #endregion
         }
 
-
         public override void render(float elapsedTime)
         {
             InputManager.ManejarInput();
+
+            InteractionManager.UpdateElementos();
+            ColisionManager.CheckColisions();
+            InteractionManager.RenderElementos();
+
             setUsersVars();
             renderizar();
             coordenadasMouse();
@@ -108,7 +115,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void close()
         {
-            barcoProtagonista.dispose();
+            InteractionManager.DisposeElementos();
             oceano.dispose();
             isla.dispose();
             boton1.dispose();
@@ -219,10 +226,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
-            b1.UpdateRender();
-            b2.UpdateRender();
-            b3.UpdateRender();
-            barcoProtagonista.UpdateRender();
 
             #region RENDERIZAR ESCENARIO
             skyBox.render();
