@@ -91,8 +91,9 @@
     <Compile Include="RenderGroup\Colisionable\Barco\Barco.cs" />
     <Compile Include="RenderGroup\Colisionable\Barco\BarcoEnemigo.cs" />
     <Compile Include="RenderGroup\Colisionable\Barco\BarcoProtagonista.cs" />
-    <Compile Include="RenderGroup\Colisionable\BolaDeCanion.cs" />
-    <Compile Include="RenderGroup\Managers\ColisionManager.cs" />
+    <Compile Include="RenderGroup\Colisionable\BolaDeCanion\BolaDeCanion.cs" />
+    <Compile Include="RenderGroup\Interfaces\IUpdateRender.cs" />
+    <Compile Include="RenderGroup\Interfaces\IReceptorInput.cs" />
     <Compile Include="RenderGroup\Factories\ConstructorDeElementos.cs" />
     <Compile Include="RenderGroup\Colisionable\Colisionable.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />

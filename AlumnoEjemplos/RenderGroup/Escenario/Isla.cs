@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Isla
+    class Isla : IUpdateRender
     {
         TgcSimpleTerrain terrain2;
         string currentHeightmap2;
@@ -34,6 +34,8 @@ namespace AlumnoEjemplos.RenderGroup
         {
             terrain2.render();
         }
+
+        public void update() { }
 
         public void dispose()
         {

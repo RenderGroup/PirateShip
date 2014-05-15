@@ -16,6 +16,7 @@ namespace AlumnoEjemplos.RenderGroup
         public float velocidadX;
         public float velocidadY;
         public float gravedad = 0.02f;
+        public Barco barco;
 
         //redefine el rotate para devolverse a si mismo
         public new BolaDeCanion rotateY(float angulo)
@@ -35,7 +36,6 @@ namespace AlumnoEjemplos.RenderGroup
             if (Oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
             {
                 InteractionManager.Disparos.Remove(this);
-                ColisionManager.Disparos.Remove(this);
 
                 this.dispose();
             }
@@ -49,6 +49,11 @@ namespace AlumnoEjemplos.RenderGroup
             Vector3 movimiento = DireccionXZ * velocidadX + movimientoY;
 
             this.move(movimiento * VELOCIDAD * GuiController.Instance.ElapsedTime);
+        }
+
+        public bool noEsDel(Barco barco) 
+        {
+            return barco != this.barco;
         }
 
     }

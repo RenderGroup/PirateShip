@@ -76,22 +76,24 @@ namespace AlumnoEjemplos.RenderGroup
             return (BarcoProtagonista) ConstruirBarcoDefault(position, TipoElemento.BarcoProtagonista);
         }
 
-        static public BolaDeCanion ConstruirCanionazo(Vector3 rotacion, Vector3 posicion) 
+        static public BolaDeCanion ConstruirCanionazo(Barco barco)
         {
             //lo pongo un poco mas arriba para que no empiece en la altura del mar
+            Vector3 posicion = barco.Position;
             posicion.Y += 70;
-            
+     
             //creamos un disparo
             BolaDeCanion disparo = (BolaDeCanion)ConstruirElemento(defaultBolaCanion, posicion, 30f, TipoElemento.BolaCanion);
 
             //asignamos la rotacion
-            disparo.Rotation = rotacion;
+            disparo.Rotation = barco.Rotation;
+            disparo.barco = barco;
 
             //throw new Exception("esta mierda ejecuta " + rotacion.X.ToString());
             //calculamos las velocidades en X e Y y lo inclinamos en un angulo para que sea parabolico
-            rotacion.X -= FastMath.PI/10;
-            disparo.velocidadY = FastMath.Sin(-rotacion.X);
-            disparo.velocidadX = FastMath.Cos(-rotacion.X);
+            float rotacion = disparo.Rotation.X - FastMath.PI/10;
+            disparo.velocidadY = FastMath.Sin(-rotacion);
+            disparo.velocidadX = FastMath.Cos(-rotacion);
 
             return disparo;
         }

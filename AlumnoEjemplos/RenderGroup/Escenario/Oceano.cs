@@ -14,9 +14,9 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano
+    class Oceano : IUpdateRender
     {
-
+        public bool rayo = true;
         SmartTerrain terrain;
         CubeTexture cubeMap;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
@@ -47,6 +47,12 @@ namespace AlumnoEjemplos.RenderGroup
         {
             terrain.dispose();
             efectoOlas.Dispose();
+        }
+
+        public void update() 
+        {
+            this.rayo = false;
+            this.setShadersValues(rayo);
         }
 
         //refactorear esto...

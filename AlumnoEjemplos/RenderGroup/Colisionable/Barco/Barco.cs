@@ -37,11 +37,9 @@ namespace AlumnoEjemplos.RenderGroup
         public void disparar() 
         {
             //se agregan dos disparos en diagonal 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position).rotateY(FastMath.PI_HALF/3));
+            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF/3));
 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this.Rotation, this.Position).rotateY(-FastMath.PI_HALF/3));
-
-            ColisionManager.Disparos.AddRange(InteractionManager.Disparos);
+            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF/3));
         }
 
         public void mover(float cantidad) 
