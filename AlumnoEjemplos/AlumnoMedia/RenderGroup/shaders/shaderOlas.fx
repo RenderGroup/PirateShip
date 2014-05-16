@@ -61,6 +61,7 @@ samplerCUBE cubeMap = sampler_state
 float time = 0;
 bool rayo = false;
 float blendAmount = 0.65;//nivel de translucides entre 0 y 1 , cero translucido, 1 opaco
+bool llueve = false;
 
 //variables para la iluminacion
 float3 fvLightPosition = float3( -100.00, 100.00, -100.00 );
@@ -127,32 +128,89 @@ struct VS_OUTPUT
 
 // ------------------------------------------------------------------
 
+float3 superficie(float x, float z)
+{
+  float y;
+  float frecuencia = 10;
+  float ola   = frecuencia   * sin(x/5 - time  ) *  frecuencia   * cos(z/5 - time  );
+  float olita;
+
+      if (llueve)
+        olita = (frecuencia/2.5) * cos(x - time*8) * (frecuencia/2  )* sin(z - time*8);
+      else
+        olita = (frecuencia/3  ) * cos(x - time*3) * (frecuencia/2.5)* sin(z - time*3);  //mar agitado
+
+
+  y = ola + olita + 90;
+  return float3(x,y,z);
+}
+
+float3 getNormal(float3 posicionActual)
+{
+
+  float delta = 1;
+  float3 posicionN = superficie(posicionActual.x, posicionActual.z + delta);
+  float3 posicionE = superficie(posicionActual.x + delta, posicionActual.z);
+
+  float3 vector1 = posicionN - posicionActual;
+
+  float3 vector2 = posicionE - posicionActual;
+
+  return cross(posicionN, posicionE);
+
+}
+
+/*struct VS_INPUT 
+{
+   float4 Position : POSITION0;
+   float3 Normal : NORMAL0;
+   float4 Color :  COLOR0;
+   float2 Texcoord : TEXCOORD0;
+};
+
+//Output del Vertex Shader
+struct VS_OUTPUT 
+{
+   float4 Position : POSITION0;
+   float2 Texcoord : TEXCOORD0;
+   float3 Norm :     TEXCOORD1;     // Normales
+   float3 Pos :      TEXCOORD2;   // Posicion real 3d
+   float3 Pos2 :     TEXCOORD3;   // Posicion en 2d
+   float fogfactor:  FOG;
+   float3 WorldPosition : TEXCOORD4;
+   float3 WorldNormal : TEXCOORD5;
+};
+*/
+
 // vertex shader que anima la posicion de los vertices 
 VS_OUTPUT vs_main( VS_INPUT Input )
 {
-   VS_OUTPUT Output;
+  VS_OUTPUT Output;
 
-   // Calculo la posicion real (en world space)
-   float4 pos_real = mul(Input.Position,matWorld);
+  // Calculo la posicion real (en world space)
+  float4 pos_real = mul(Input.Position,matWorld);
 
-   // Y la propago usando las coordenadas de texturas 2 (*)
-   Output.Pos = float3(pos_real.x,pos_real.y,pos_real.z);
+  // Y la propago usando las coordenadas de texturas 2 (*)
+  Output.Pos = float3(pos_real.x,pos_real.y,pos_real.z);
 
-    // Se aplica una transformación variable y periódica
-    Input.Position.y = Input.Position.y  * (cos(time) + 1.2) ;
-   
-    // Se establece el vértice transformado como nueva posición
-    Output.Position = mul( Input.Position, matWorldViewProj);
-    
+  float3 pos = superficie(Input.Position.x, Input.Position.z);
+  //Input.Position.y = Input.Position.x  * (cos(time) + 1.2) ;
+  Input.Position.y = pos.y;
+
+  Input.Normal = getNormal(Input.Position.xyz);
+
+   // Se establece el vértice transformado como nueva posición
+   Output.Position = mul(Input.Position, matWorldViewProj);
 	//Posicion pasada a World-Space
 	Output.WorldPosition = mul(Input.Position, matWorld).xyz;
+
 	//Pasar normal a World-Space
 	Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
 
     Output.Pos2 = Output.Position;
     Output.fogfactor = saturate(Output.Position.z);
 
-    Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/5)) + 1.2;
+  Input.Texcoord.y  +=  Input.Texcoord.y  * abs(cos(time/6)) + 1.2;
 
     //Propago las coordenadas de textura
     Output.Texcoord = Input.Texcoord;

@@ -14,9 +14,9 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano : IUpdateRender
+    class Oceano
     {
-        public bool rayo = true;
+
         SmartTerrain terrain;
         CubeTexture cubeMap;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
@@ -49,39 +49,35 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.Dispose();
         }
 
-        public void update() 
-        {
-            this.rayo = false;
-            this.setShadersValues(rayo);
-        }
-
         //refactorear esto...
         //dice la altura de un punto sobre el mar tomando en cuenta al shader
-        public static float alturaEnPunto(float X, float Z)
+        public static float alturaMarEnPunto(float X, float Z)
         {
+            SmartTerrain terrain = (SmartTerrain)GuiController.Instance.UserVars.getValue("terreno");
             float time = (float)GuiController.Instance.UserVars.getValue("time");
-            SmartTerrain terrain = (SmartTerrain) GuiController.Instance.UserVars.getValue("terreno");
-
-            float Y;
-
-            terrain.interpoledHeight(X, Z, out Y);
-
-            return Y *= (FastMath.Cos(time) + 1.2f); //simulacion del shader
+            float heighM;
+            terrain.interpoledHeight(X, Z, out heighM);
+            float scaleY = (float)GuiController.Instance.Modifiers.getValue("AlturaMarea");
+            Vector2 texCoords;
+            terrain.xzToHeightmapCoords(X, Z, out texCoords);
+            float frecuencia = 10;
+            float ola   =    frecuencia    * FastMath.Sin(texCoords.X / 5 -   time  ) *    frecuencia    * FastMath.Cos(texCoords.Y / 5 -   time  );
+            //float olita = (frecuencia / 3) * FastMath.Cos(texCoords.X     - time * 3) * (frecuencia / 2.5f) * FastMath.Sin(texCoords.Y     - time * 3);
+            return (ola + heighM + 60) * scaleY;
         }
 
-        public static Vector3 normalEnPuntoXZ(float X, float Z)
+
+        public static Vector3 normalEnPuntoXZ(float X, float Z/*, float momento*/)
         {
-            float delta = 0.5f;
+            float delta = 2f;
+            float alturaN = Oceano.alturaMarEnPunto(X, Z + delta);
+            float alturaS = Oceano.alturaMarEnPunto(X, Z - delta);
+            float alturaE = Oceano.alturaMarEnPunto(X + delta, Z);
+            float alturaO = Oceano.alturaMarEnPunto(X - delta, Z); 
 
-            float alturaIncial = Oceano.alturaEnPunto(X, Z); 
-            float alturaFinal1A = Oceano.alturaEnPunto(X, Z + delta); 
-            float alturaFinal1B = Oceano.alturaEnPunto(X, Z - delta); 
-            float alturaFinal2A = Oceano.alturaEnPunto(X + delta, Z); 
-            float alturaFinal2B = Oceano.alturaEnPunto(X - delta, Z); 
+            Vector3 vector1 = new Vector3(delta * 2, alturaE - alturaO, 0);
 
-            Vector3 vector1 = new Vector3(delta * 2, alturaFinal2A - alturaFinal2B, 0);
-
-            Vector3 vector2 = new Vector3(0, alturaFinal1A - alturaFinal1B, delta * 2);
+            Vector3 vector2 = new Vector3(0, alturaN - alturaS, delta * 2);
 
             return Vector3.Cross(vector2, vector1);
         }
@@ -93,7 +89,7 @@ namespace AlumnoEjemplos.RenderGroup
             currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\PerlinNoise.jpg";
             currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
             terrain = new SmartTerrain();
-            terrain.loadHeightmap(currentHeightmap, (float)GuiController.Instance.Modifiers["WorldSize"], (float)GuiController.Instance.Modifiers["AlturaMarea"], new Vector3(0, 0, 0));
+            terrain.loadHeightmap(currentHeightmap, (float)GuiController.Instance.Modifiers["WorldSize"], /*(float)GuiController.Instance.Modifiers["AlturaMarea"]*/0, new Vector3(0, 0, 0));
             terrain.loadTexture(currentTexture);
 
             GuiController.Instance.UserVars.addVar("terreno", terrain); //NO TOCAR LINEA - HERE BE DRAGONS - EL TP EXPLOTA
@@ -110,7 +106,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             //modifiers para el mar
             GuiController.Instance.Modifiers.addFloat("WorldSize", 0.1f, 1000f, currentScaleXZ); //modifica el tamano del terreno (mar)
-            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 10f, currentScaleY); //modifica la altura de las olas
+            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, currentScaleY*2); //modifica la altura de las olas
            //para la luz dinamica
             GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0, 1, 0.5f);
@@ -128,6 +124,9 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.35f);
             //modifiers para la transparencia del agua
             GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.6f);
+
+            GuiController.Instance.UserVars.addVar("ola");
+
         }
         public void recargarHeightMap()
         {
@@ -142,9 +141,11 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
+
         public void setShadersValues( Boolean rayo)
         {
             Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
+            efectoOlas.SetValue("llueve", (Boolean)GuiController.Instance.Modifiers["lluvia"]);
             efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
