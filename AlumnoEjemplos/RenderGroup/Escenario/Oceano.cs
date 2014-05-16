@@ -14,9 +14,9 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano
+    class Oceano : IUpdateRender
     {
-
+        public bool rayo = true;
         SmartTerrain terrain;
         CubeTexture cubeMap;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
@@ -47,6 +47,12 @@ namespace AlumnoEjemplos.RenderGroup
         {
             terrain.dispose();
             efectoOlas.Dispose();
+        }
+
+        public void update() 
+        {
+            this.rayo = false;
+            this.setShadersValues(rayo);
         }
 
         //refactorear esto...
@@ -121,9 +127,9 @@ namespace AlumnoEjemplos.RenderGroup
           
      //modifiers que actuan solo cuando la camara NO esta en 3ª persona
             // para ver el reflejo del enviroment map sobre el agua
-            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.35f);
+            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.5f);
             //modifiers para la transparencia del agua
-            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.6f);
+            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.9f);
 
             GuiController.Instance.UserVars.addVar("ola");
 
@@ -145,6 +151,10 @@ namespace AlumnoEjemplos.RenderGroup
         public void setShadersValues( Boolean rayo)
         {
             Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
+
+            Vector3 posCamara = GuiController.Instance.RotCamera.CameraCenter;
+            efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(posCamara));
+
             efectoOlas.SetValue("llueve", (Boolean)GuiController.Instance.Modifiers["lluvia"]);
             efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));

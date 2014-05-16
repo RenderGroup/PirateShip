@@ -64,8 +64,8 @@ float blendAmount = 0.65;//nivel de translucides entre 0 y 1 , cero translucido,
 bool llueve = false;
 
 //variables para la iluminacion
-float3 fvLightPosition = float3( -100.00, 100.00, -100.00 );
-float3 fvEyePosition = float3( 0.00, 0.00, -100.00 );
+float3 fvLightPosition = float3( 0.00, 400.00, 0.00 );
+float3 fvEyePosition;
 float k_la = 0.3;							// luz ambiente global
 float k_ld = 0.6;							// luz difusa
 float k_ls = 1.0;							// luz specular
@@ -82,7 +82,7 @@ bool camara3p = true;
 //Factor de reflexion del cielo en el agua
 float reflection;
 
-float4 blur(float3 Texcoord: TEXCOORD0)
+float4 blur(float2 Texcoord: TEXCOORD0)
 {
 	//Obtener color de textura
 	float4 color = tex2D( diffuseMap, Texcoord );
@@ -124,6 +124,7 @@ struct VS_OUTPUT
    float fogfactor:  FOG;
    float3 WorldPosition : TEXCOORD4;
    float3 WorldNormal	: TEXCOORD5;
+   float3 Reflexion: TEXCOORD6;
 };
 
 // ------------------------------------------------------------------
@@ -160,27 +161,6 @@ float3 getNormal(float3 posicionActual)
 
 }
 
-/*struct VS_INPUT 
-{
-   float4 Position : POSITION0;
-   float3 Normal : NORMAL0;
-   float4 Color :  COLOR0;
-   float2 Texcoord : TEXCOORD0;
-};
-
-//Output del Vertex Shader
-struct VS_OUTPUT 
-{
-   float4 Position : POSITION0;
-   float2 Texcoord : TEXCOORD0;
-   float3 Norm :     TEXCOORD1;     // Normales
-   float3 Pos :      TEXCOORD2;   // Posicion real 3d
-   float3 Pos2 :     TEXCOORD3;   // Posicion en 2d
-   float fogfactor:  FOG;
-   float3 WorldPosition : TEXCOORD4;
-   float3 WorldNormal : TEXCOORD5;
-};
-*/
 
 // vertex shader que anima la posicion de los vertices 
 VS_OUTPUT vs_main( VS_INPUT Input )
@@ -198,11 +178,20 @@ VS_OUTPUT vs_main( VS_INPUT Input )
   Input.Position.y = pos.y;
 
   Input.Normal = getNormal(Input.Position.xyz);
+  float3 normal = normalize(Input.Normal);
 
-   // Se establece el vértice transformado como nueva posición
-   Output.Position = mul(Input.Position, matWorldViewProj);
+  // Se establece el vértice transformado como nueva posición
+  Output.Position = mul(Input.Position, matWorldViewProj);
 	//Posicion pasada a World-Space
 	Output.WorldPosition = mul(Input.Position, matWorld).xyz;
+
+//#########################################################################################
+
+  float3 v = normalize(Input.Position.xyz - fvEyePosition.xyz);
+  // vector reflejado
+  Output.Reflexion = reflect(v,normal);
+
+//#########################################################################################
 
 	//Pasar normal a World-Space
 	Output.WorldNormal = mul(Input.Normal, matInverseTransposeWorld).xyz;
@@ -222,55 +211,73 @@ VS_OUTPUT vs_main( VS_INPUT Input )
    
 }
 
+/*//Input del Vertex Shader
+struct VS_INPUT 
+{
+   float4 Position : POSITION0;
+   float3 Normal : NORMAL0;
+   float4 Color :  COLOR0;
+   float2 Texcoord : TEXCOORD0;
+};
+
+//Output del Vertex Shader
+struct VS_OUTPUT 
+{
+   float4 Position : POSITION0;
+   float2 Texcoord : TEXCOORD0;
+   float3 Norm :     TEXCOORD1;     // Normales
+   float3 Pos :      TEXCOORD2;   // Posicion real 3d
+   float3 Pos2 :     TEXCOORD3;   // Posicion en 2d
+   float fogfactor:  FOG;
+   float3 WorldPosition : TEXCOORD4;
+   float3 WorldNormal : TEXCOORD5;
+   float3 Reflexion
+};*/
+
 // ------------------------------------------------------------------
 
 //Pixel Shader blend
-float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float3 WorldPosition : TEXCOORD4, float3 WorldNormal	: TEXCOORD5) : COLOR0
+float4 ps_main(	VS_OUTPUT In) : COLOR0
 {      
 	float ld = 0;		// luz difusa
 	float le = 0;		// luz specular
-	N = normalize(N);
+	float3 N = normalize(In.WorldNormal);
 
-	// 1- calcula la luz diffusa
-	float3 LD = normalize(fvLightPosition-float3(Pos.x,Pos.y,Pos.z));
-	ld += saturate(dot(N, LD))*k_ld;
+	// 1- calcula la luz diffusa           K_ld*diffuseColor*(N dot L)
+	float3 L = normalize(fvLightPosition - In.WorldPosition);
+	ld += k_ld * saturate(dot(N, L));
 	
-	// 2- calcula la reflexion specular
-	float3 D = normalize(float3(Pos.x,Pos.y,Pos.z)-fvEyePosition);
-	float ks = saturate(dot(reflect(LD,N), D));
-	ks = pow(ks,fSpecularPower);
-	le += ks*k_ls;
+	// 2- calcula la reflexion specular    K_ls*specularColor*(R dot V)´´shininess
+	float3 V = normalize(In.Pos - fvEyePosition);
+	float RxV = saturate(dot(In.Reflexion, V));
+	le += k_ls * pow(RxV,fSpecularPower);
 
 	//Obtener el texel de textura
-        float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
+      float4 fvBaseColor= tex2D( diffuseMap, In.Texcoord);
 
-   fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart));
-//	float	blurfactor = saturate(( 3000.0f - Pos2.z ) / (blurStart));
-	float	blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart));
+  In.fogfactor = saturate(( 3000.0f - In.Pos2.z ) / (fogStart));
+  //	float	blurfactor = saturate(( 3000.0f - Pos2.z ) / (blurStart));
+	float	blendfactor = saturate(( 3000.0f - In.Pos2.z ) / (blendStart));
 
 	float4 RGBColor = 0;
 
-	//Normalizar vectores
-	float3 Nn = normalize(WorldNormal);
 	//Obtener texel de CubeMap
-	float3 Vn = normalize(fvEyePosition - WorldPosition);
-	float3 R = reflect(Vn, Nn);
-    float3 reflectionColor = texCUBE(cubeMap, R).rgb;
+  float3 reflectionColor = texCUBE(cubeMap, In.Reflexion).rgb;
 
         if (rayo)
         {
            RGBColor = fvBaseColor;
            RGBColor.rgb = saturate(RGBColor*(saturate(k_la+ld)) + le);
            RGBColor.rgb = RGBColor.rgb*5;
-		   RGBColor.a = blendAmount; //aplica la transparencia estatica
+		    RGBColor.a = blendAmount; //aplica la transparencia estatica
         }
         else
         {
            if(camara3p) {
       
-                    RGBColor =  blur(Texcoord); 
-                    RGBColor = (RGBColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
-                    fvBaseColor = (RGBColor * (1.0 - fogfactor)) + (fvBaseColor * fogfactor);
+                    RGBColor =  fvBaseColor;//blur(In.Texcoord); 
+                    RGBColor = (RGBColor *  In.fogfactor) + (fogColor * (1.0 -  In.fogfactor));
+                    fvBaseColor = (RGBColor * (1.0 - In.fogfactor)) + (fvBaseColor * In.fogfactor);
                     RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
                     RGBColor.a = blendfactor;//aplica la transparencia dinamica
            }
@@ -279,8 +286,8 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
                     RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
 				    RGBColor.a = blendAmount; //aplica la transparencia estatica
                     }
-       }
-       return RGBColor;
+        }
+  return RGBColor;
 }
 
 // ------------------------------------------------------------------

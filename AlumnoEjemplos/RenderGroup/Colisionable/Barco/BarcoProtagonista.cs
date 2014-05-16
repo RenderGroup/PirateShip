@@ -96,7 +96,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if (!camaraEnBarco)
                 {
-                    GuiController.Instance.RotCamera.CameraCenter = new Vector3(0, 1200, 0);
+                    GuiController.Instance.RotCamera.CameraCenter = new Vector3(0, 900, 1000);
                 }
             }
 

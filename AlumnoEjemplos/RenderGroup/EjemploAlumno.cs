@@ -30,7 +30,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         #region DECLARACIONES DEL ESCENARIO
         TgcSkyBox skyBox;
-        Boolean rayo;
         Boolean llueve;
         float currentScaleXZ = 165f;
         float currentScaleY =0.8f;
@@ -38,7 +37,6 @@ namespace AlumnoEjemplos.RenderGroup
         Oceano oceano;
         Isla isla;
         #endregion
-
 
         #region DECLARACIONES DE LA PANTALLA
         TgcSprite boton1;
@@ -80,6 +78,7 @@ namespace AlumnoEjemplos.RenderGroup
             #region INICIALIZACIONES PANTALLA
 
             crearModifiers();
+            
             crearUserVars();
             crearSprites();
 
@@ -87,20 +86,27 @@ namespace AlumnoEjemplos.RenderGroup
 
             #region INICIALIZACIONES BARCO
 
-            barcoProtagonista = ConstructorDeBarcos.ConstruirProtagonista(new Vector2(0, -930f));
-            b1 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(500, 500));
-            b2 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(-700, 960));
-            b3 = ConstructorDeBarcos.ConstruirEnemigo(new Vector2(100, 880));
+            barcoProtagonista = ConstructorDeElementos.ConstruirProtagonista(new Vector2(0, -930f));
+            b1 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(500, 500));
+            b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960));
+            b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880));
+
+            InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,b3,barcoProtagonista});
+            InteractionManager.Resto.AddRange(new List<IUpdateRender> {isla, oceano });
 
             InputManager.Add(barcoProtagonista);
 
             #endregion
         }
 
-
         public override void render(float elapsedTime)
         {
             InputManager.ManejarInput();
+
+            InteractionManager.UpdateElementos();
+
+            InteractionManager.RenderElementos();
+
             setUsersVars();
             renderizar();
             coordenadasMouse();
@@ -108,9 +114,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void close()
         {
-            barcoProtagonista.dispose();
-            oceano.dispose();
-            isla.dispose();
+            InteractionManager.DisposeElementos();
             boton1.dispose();
             boton2.dispose();
             timon.dispose();
@@ -138,7 +142,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
                 {
-                    rayo = true;
+                    oceano.rayo = true;
                     //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
@@ -219,18 +223,10 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void renderizar()
         {
-            b1.UpdateRender();
-            b2.UpdateRender();
-            b3.UpdateRender();
-            barcoProtagonista.UpdateRender();
 
             #region RENDERIZAR ESCENARIO
             skyBox.render();
             lightMesh.render();
-            isla.render();
-            oceano.setShadersValues(rayo);
-            oceano.render();
-            rayo = false;
             #endregion
 
             #region RENDERIZAR PANTALLA
