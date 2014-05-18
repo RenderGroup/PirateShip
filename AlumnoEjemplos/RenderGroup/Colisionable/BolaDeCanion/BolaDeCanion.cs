@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.RenderGroup
             base.update();
 
             //esto tambien
-            if (Oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
+            if (Oceano.alturaMarEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
             {
                 InteractionManager.Disparos.Remove(this);
 

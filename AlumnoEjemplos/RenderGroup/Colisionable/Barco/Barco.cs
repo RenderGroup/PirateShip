@@ -57,7 +57,7 @@ namespace AlumnoEjemplos.RenderGroup
             normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
 
             //altura del mar en el punto de se encuentra el barco
-            float Y = Oceano.alturaEnPunto(this.Position.X, this.Position.Z);
+            float Y = Oceano.alturaMarEnPunto(this.Position.X, this.Position.Z);
 
             //ponemos el bounding sphere a la altura donde esta el barco
             this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 40, 0));
