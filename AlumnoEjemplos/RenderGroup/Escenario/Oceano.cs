@@ -20,7 +20,6 @@ namespace AlumnoEjemplos.RenderGroup
         SmartTerrain terrain;
         SmartTerrain terrain2;
         CubeTexture cubeMap;
-        Texture brillos;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
         Microsoft.DirectX.Direct3D.Effect efectoCascada;
         string currentHeightmap;
@@ -37,7 +36,7 @@ namespace AlumnoEjemplos.RenderGroup
             //Cargar textura de CubeMap para Environment Map
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-            brillos = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\5DF.jpg");
+       
             crearModifiers(); 
             crearHeightmaps();
             cargarShaders();
