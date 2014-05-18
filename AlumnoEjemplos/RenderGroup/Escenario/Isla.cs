@@ -45,7 +45,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void crearHeightmaps()
         {
             currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra2.jpg";
-            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.png";
+            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.JPG";
             terrain2 = new TgcSimpleTerrain();
             terrain2.loadHeightmap(currentHeightmap2, 165f, 5.3f, new Vector3(0, -30, 0));
             terrain2.loadTexture(currentTexture2);

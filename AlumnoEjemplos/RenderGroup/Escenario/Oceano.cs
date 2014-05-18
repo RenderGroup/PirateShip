@@ -18,10 +18,15 @@ namespace AlumnoEjemplos.RenderGroup
     {
         public bool rayo = true;
         SmartTerrain terrain;
+        SmartTerrain terrain2;
         CubeTexture cubeMap;
+        Texture brillos;
         Microsoft.DirectX.Direct3D.Effect efectoOlas;
+        Microsoft.DirectX.Direct3D.Effect efectoCascada;
         string currentHeightmap;
         string currentTexture;
+        string currentHeightmap2;
+        string currentTexture2;
         float currentScaleXZ;
         float currentScaleY;
 
@@ -32,7 +37,8 @@ namespace AlumnoEjemplos.RenderGroup
             //Cargar textura de CubeMap para Environment Map
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-            crearModifiers();
+            brillos = TextureLoader.FromFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\5DF.jpg");
+            crearModifiers(); 
             crearHeightmaps();
             cargarShaders();
         }
@@ -40,13 +46,16 @@ namespace AlumnoEjemplos.RenderGroup
         public void render()
         {
             recargarHeightMap();
+            terrain2.render();
             terrain.render();
         }
 
         public void dispose()
         {
             terrain.dispose();
+            terrain2.dispose();
             efectoOlas.Dispose();
+            efectoCascada.Dispose();
         }
 
         public void update() 
@@ -99,6 +108,12 @@ namespace AlumnoEjemplos.RenderGroup
             terrain.loadTexture(currentTexture);
 
             GuiController.Instance.UserVars.addVar("terreno", terrain); //NO TOCAR LINEA - HERE BE DRAGONS - EL TP EXPLOTA
+
+            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\cascada altura.jpg";
+            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\cascada.png";
+            terrain2 = new SmartTerrain();
+            terrain2.loadHeightmap(currentHeightmap2, (float)GuiController.Instance.Modifiers["WorldSize"],5.7f, new Vector3(0, -30, 0));
+            terrain2.loadTexture(currentTexture2);
         }
 
         private void cargarShaders()
@@ -106,6 +121,9 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderOlas.fx");
             terrain.Effect = efectoOlas;
             terrain.Technique = "RenderScene";
+            efectoCascada = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderCascada.fx");
+            terrain2.Effect = efectoCascada;
+            terrain2.Technique = "RenderScene";
         }
 
         private void crearModifiers()
@@ -121,18 +139,18 @@ namespace AlumnoEjemplos.RenderGroup
      //modifiers que actuan solo cuando la camara esta en 3ª persona      
             //modifiers para el fog
             GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
-            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 2000.0f);
-            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 2000.0f);
+            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 3000.0f);
+            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 3000.0f);
             // GuiController.Instance.Modifiers.addFloat("blur intensity", 0.0f, 100.0f, 5f);
           
      //modifiers que actuan solo cuando la camara NO esta en 3ª persona
             // para ver el reflejo del enviroment map sobre el agua
-            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.5f);
+            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.4f);
             //modifiers para la transparencia del agua
-            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.9f);
+            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.7f);
 
             GuiController.Instance.UserVars.addVar("ola");
-
+            GuiController.Instance.Modifiers.addFloat("delta", 0.0f, 500.0f, 150f);
         }
         public void recargarHeightMap()
         {
@@ -152,9 +170,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
 
-            Vector3 posCamara = GuiController.Instance.RotCamera.CameraCenter;
-            efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(posCamara));
-
             efectoOlas.SetValue("llueve", (Boolean)GuiController.Instance.Modifiers["lluvia"]);
             efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
@@ -165,13 +180,22 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
             efectoOlas.SetValue("fogStart", (float)GuiController.Instance.Modifiers["fog start"]);
             efectoOlas.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
-         //   efectoOlas.SetValue("blur_intensity", (float)GuiController.Instance.Modifiers["blur intensity"]);
+ 
             efectoOlas.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
             efectoOlas.SetValue("rayo", rayo);
+            efectoOlas.SetValue("delta", (float)GuiController.Instance.Modifiers["delta"]);
             efectoOlas.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
             //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
 
+            efectoCascada.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
+            efectoCascada.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
+            efectoCascada.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
+            efectoCascada.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
+            efectoCascada.SetValue("texCubeMap", cubeMap);
+            efectoCascada.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
+            efectoCascada.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
+            efectoCascada.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
         }
         #endregion
 
