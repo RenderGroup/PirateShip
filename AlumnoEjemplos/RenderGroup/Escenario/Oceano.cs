@@ -109,7 +109,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             GuiController.Instance.UserVars.addVar("terreno", terrain); //NO TOCAR LINEA - HERE BE DRAGONS - EL TP EXPLOTA
 
-            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\cascada altura.jpg";
+            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\cascadaAltura.jpg";
             currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\cascada.png";
             terrain2 = new SmartTerrain();
             terrain2.loadHeightmap(currentHeightmap2, (float)GuiController.Instance.Modifiers["WorldSize"],5.7f, new Vector3(0, -30, 0));
