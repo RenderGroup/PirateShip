@@ -44,6 +44,10 @@ namespace AlumnoEjemplos.RenderGroup
         TgcSprite timon;
         TgcSprite barra;
         TgcAnimatedSprite animatedSprite;
+        TgcAnimatedSprite animatedSprite2;
+        int traslacion = -150;
+        Size screenSize = GuiController.Instance.Panel3d.Size;
+        Boolean camara;
         #endregion
 
         #region TEXTO PARA EL FRAMEWORK
@@ -118,7 +122,9 @@ namespace AlumnoEjemplos.RenderGroup
             boton1.dispose();
             boton2.dispose();
             timon.dispose();
-            barra.dispose();  
+            barra.dispose();
+            animatedSprite.dispose();
+            animatedSprite2.dispose(); 
         }
 
         #region NUEVO
@@ -147,7 +153,15 @@ namespace AlumnoEjemplos.RenderGroup
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
                 {
-                    MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
+                    traslacion = -150;
+                    //Crear Sprite animado para la gaviota
+                    animatedSprite2 = new TgcAnimatedSprite(
+                        GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\gaviotas2.png", //Textura de 1024 X 1024
+                        new Size(256, 256), //Tamaño de un frame (128x128px en este caso)
+                        16, //Cantidad de frames, (son 16 de 128x128px)
+                        1 //Velocidad de animacion, en cuadros x segundo
+                        );
+                    //MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
                 }
             }
         }
@@ -182,7 +196,7 @@ namespace AlumnoEjemplos.RenderGroup
         
         private void crearSprites()
         {
-            Size screenSize = GuiController.Instance.Panel3d.Size;
+          
 
             boton1 = new TgcSprite();
             boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
@@ -190,7 +204,7 @@ namespace AlumnoEjemplos.RenderGroup
             boton1.Position = new Vector2(screenSize.Width - textureSize.Width  , screenSize.Height - textureSize.Height);
 
             boton2 = new TgcSprite();
-            boton2.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
+            boton2.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton2.png");
             textureSize = boton2.Texture.Size;
             boton2.Position = new Vector2((screenSize.Width - boton1.Texture.Size.Width) - textureSize.Width, screenSize.Height - textureSize.Height);
 
@@ -214,6 +228,14 @@ namespace AlumnoEjemplos.RenderGroup
 
             animatedSprite.Position = new Vector2(-10, 0);
             animatedSprite.Scaling = new Vector2(8,4);
+
+            //Crear Sprite animado para la gaviota
+            animatedSprite2 = new TgcAnimatedSprite(
+                GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\gaviotas2.png", //Textura de 1024 X 1024
+                new Size(256, 256), //Tamaño de un frame (128x128px en este caso)
+                16, //Cantidad de frames, (son 16 de 128x128px)
+               1 //Velocidad de animacion, en cuadros x segundo
+                );
         }
 
         private void crearUserVars()
@@ -231,7 +253,30 @@ namespace AlumnoEjemplos.RenderGroup
 
             #region RENDERIZAR PANTALLA
             GuiController.Instance.Drawer2D.beginDrawSprite();
-           
+            camara = (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"];
+
+            if (camara)
+            {
+                animatedSprite2.Scaling = new Vector2(1.4f, 1.4f);
+                animatedSprite2.Position = new Vector2(traslacion, 0);
+                animatedSprite2.setFrameRate(3);
+                traslacion = traslacion + 12;
+            }
+            else
+            {
+                animatedSprite2.Scaling = new Vector2(0.4f, 0.4f);
+                animatedSprite2.Position = new Vector2(traslacion, screenSize.Height / 3);
+                animatedSprite2.setFrameRate(1);
+                traslacion = traslacion + 4;
+            }
+            if (traslacion > screenSize.Width)
+            {
+                animatedSprite2.dispose();
+            }
+            else
+            {
+                animatedSprite2.updateAndRender();
+            }
             llueve = (Boolean)GuiController.Instance.Modifiers["lluvia"];   
             if (llueve)
             {
