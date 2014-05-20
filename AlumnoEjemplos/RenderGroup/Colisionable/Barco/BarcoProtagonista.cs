@@ -62,7 +62,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void camaraDefaultConfig()
         {
             GuiController.Instance.ThirdPersonCamera.Enable = this.camaraEnBarco = true;
-            this.setearCamara(200, -580, new Vector3(0, 0, 0));
+            this.setearCamara(400, -1000, new Vector3(0, 300, 0));
         }
 
         public void setearCamara(float offsetHeight, float offsetForward, Vector3 displacement)

@@ -130,13 +130,13 @@ float3 superficie(float x, float z)
 {
   float y;
   float frecuencia = 10;
-  float ola   = frecuencia   * sin(x/5 - time  ) *  frecuencia   * cos(z/5 - time  );
+  float ola   = frecuencia   * sin(x/5 - time  ) *  frecuencia   * cos(z/2 - time  );
   float olita;
 
       if (llueve)
-        olita = (frecuencia/2.5) * cos(x - time*8) * (frecuencia/2  )* sin(z - time*8);
+        olita = (frecuencia/2) * cos(x - time*8) * (frecuencia/2  )* sin(z - time*8);
       else
-        olita = (frecuencia/3  ) * cos(x - time*3) * (frecuencia/2.5)* sin(z - time*3);  //mar agitado
+        olita = (frecuencia/2.5  ) * cos(x - time*3) * (frecuencia/2.5)* sin(z - time*3);  //mar agitado
 
 
   y = ola + olita + 90;
@@ -222,8 +222,8 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
 	//Obtener el texel de textura
     float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
 
-   fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
-   float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart));
+   fogfactor = saturate(( 10000.0f - Pos2.z ) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+   float blendfactor = saturate(( 10000.0f - Pos2.z ) / (blendStart));
 
 	float4 RGBColor = 0;
 
@@ -256,7 +256,8 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
                     RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
 				    RGBColor.a = blendAmount; //aplica la transparencia estatica
                     }
-       }
+        }
+       
        return RGBColor;
 }
 
