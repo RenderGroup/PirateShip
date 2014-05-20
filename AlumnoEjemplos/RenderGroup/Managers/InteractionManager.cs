@@ -37,7 +37,7 @@ namespace AlumnoEjemplos.RenderGroup
         static private List<IUpdateRender> Elementos()
         {
             //juntamos las listas de Barcos y de Disparos para updatear todo
-            return Barcos.Cast<IUpdateRender>().Concat(Disparos.Cast<IUpdateRender>()).Concat(Resto).ToList();
+            return Resto.Concat(Barcos.Cast<IUpdateRender>()).Concat(Disparos.Cast<IUpdateRender>()).ToList();
         }
 
         //refactorizar este metodo
