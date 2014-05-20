@@ -14,6 +14,11 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class BarcoEnemigo : Barco
     {
-        //por ahora no hace nada...
+        public override void update()
+        {
+            this.Effect.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
+
+            base.update();
+        }
     }
 }

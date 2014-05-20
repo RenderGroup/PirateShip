@@ -7,6 +7,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
+using TgcViewer.Utils.Shaders;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.Terrain;
 
@@ -68,7 +69,14 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public BarcoEnemigo ConstruirEnemigo(Vector2 position)
         {
-            return (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
+            BarcoEnemigo enemigo = (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
+
+            enemigo.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
+            enemigo.Technique = "RenderScene";
+            enemigo.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
+            enemigo.Effect.SetValue("calado", 0f);
+
+            return enemigo;
         }
 
         static public BarcoProtagonista ConstruirProtagonista(Vector2 position) 

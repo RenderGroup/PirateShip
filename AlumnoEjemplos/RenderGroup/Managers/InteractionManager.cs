@@ -52,11 +52,14 @@ namespace AlumnoEjemplos.RenderGroup
                 {
                     if (TgcCollisionUtils.testSphereSphere(disparo.boundingSphere, barco.boundingSphere) && disparo.noEsDel(barco))
                     {
-                        disparosDisposables.Add(disparo);
+                        disparosDisposables.Add(disparo);                        
 
                         barco.vida--;
 
-                        if (barco.vida == 0)
+                        //el if es por que todavia el protagonista no tiene el shader
+                        if(barco is BarcoEnemigo) barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
+
+                        if (barco.vida == 0 && barco is BarcoEnemigo)
                         {
                             barcosDisposables.Add(barco);
                         }

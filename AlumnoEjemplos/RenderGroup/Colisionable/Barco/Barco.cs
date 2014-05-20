@@ -23,7 +23,7 @@ namespace AlumnoEjemplos.RenderGroup
         //flecha que se dibujara para indicar la normal
         TgcArrow normalDibujable;
 
-        public float vida = 3;
+        public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
 
         #region CONSTANTES
@@ -32,6 +32,7 @@ namespace AlumnoEjemplos.RenderGroup
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
         public const float ACELERACION_MAX = 3f;
+        public const float MAX_VIDAS = 4;
         #endregion
 
         public void disparar() 
