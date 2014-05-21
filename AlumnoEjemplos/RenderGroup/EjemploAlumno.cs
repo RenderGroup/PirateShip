@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override string getDescription()
         {
-            return "Movimiento con W, A, S, D; Disparar con 4 y 6";
+            return "Movimiento con W, A, S, D; Disparar con P";
         }
 
         #endregion
@@ -95,7 +95,7 @@ namespace AlumnoEjemplos.RenderGroup
             b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960), barcoProtagonista);
             b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880), barcoProtagonista);
 
-            InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,b3,barcoProtagonista});
+            InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,/*b3,*/barcoProtagonista});
             InteractionManager.Resto.AddRange(new List<IUpdateRender> {isla, oceano });
 
             InputManager.Add(barcoProtagonista);

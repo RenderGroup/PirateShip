@@ -36,12 +36,23 @@ namespace AlumnoEjemplos.RenderGroup
         public const float MAX_VIDAS = 4;
         #endregion
 
-        public void disparar() 
+        public void disparar()
         {
-            //se agregan dos disparos en diagonal 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF/3));
+            BolaDeCanion disparo1 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF / 3);
+            BolaDeCanion disparo2 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF / 3);
 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF/3));
+            //arreglar esto despues
+            if (this is BarcoEnemigo)
+            {
+                disparo1.rotateX(FastMath.PI);
+                disparo2.rotateX(FastMath.PI);
+                disparo1.rotateZ(FastMath.PI);
+                disparo2.rotateZ(FastMath.PI);
+            }
+
+            //se agregan dos disparos en diagonal 
+            InteractionManager.Disparos.Add(disparo1);
+            InteractionManager.Disparos.Add(disparo2);
         }
 
         public void mover(float cantidad) 
