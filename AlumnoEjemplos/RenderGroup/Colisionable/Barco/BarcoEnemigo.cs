@@ -29,8 +29,6 @@ namespace AlumnoEjemplos.RenderGroup
         public override void update()
         {
             float distancia = new Vector2( protagonista.Position.X - this.Position.X, protagonista.Position.Z - this.Position.Z).Length();
-            
-            this.rotation.Y = FastMath.Atan2(this.DireccionXZ().X, this.DireccionXZ().Z);
 
             if (this.vida <= 0)
             {
@@ -50,6 +48,8 @@ namespace AlumnoEjemplos.RenderGroup
             }
             else
             {
+                this.rotation.Y = FastMath.Atan2(this.DireccionXZ().X, this.DireccionXZ().Z);
+
                 if (distancia > 1000f)
                     mover(acelerar(ACELERACION / 2));
                 else
