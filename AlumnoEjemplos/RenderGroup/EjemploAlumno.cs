@@ -120,7 +120,7 @@ namespace AlumnoEjemplos.RenderGroup
             d3dDevice.RenderState.ZBufferEnable = true;
             d3dDevice.RenderState.ZBufferWriteEnable = true;
             d3dDevice.RenderState.ZBufferFunction = Compare.LessEqual;
-            //d3dDevice.RenderState.AlphaBlendEnable = false;
+            d3dDevice.RenderState.AlphaBlendEnable = true;
             #endregion
 
             InputManager.ManejarInput();
@@ -188,7 +188,7 @@ namespace AlumnoEjemplos.RenderGroup
                          16, //Cantidad de frames, (son 16 de 128x128px)
                          1 //Velocidad de animacion, en cuadros x segundo
                          );
-                    MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
+                    //MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
                 }
             }
         }
@@ -235,6 +235,14 @@ namespace AlumnoEjemplos.RenderGroup
 
             animatedSprite.Position = new Vector2(-10, 0);
             animatedSprite.Scaling = new Vector2(8, 4);
+
+            //Crear Sprite animado para la gaviota
+            animatedSprite2 = new TgcAnimatedSprite(
+                GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\gaviotas2.png", //Textura de 1024 X 1024
+                new Size(256, 256), //Tamaño de un frame (128x128px en este caso)
+                16, //Cantidad de frames, (son 16 de 128x128px)
+               1 //Velocidad de animacion, en cuadros x segundo
+                );
         }
 
         private void crearUserVars()
@@ -276,7 +284,6 @@ namespace AlumnoEjemplos.RenderGroup
              {
                  animatedSprite2.updateAndRender();
              }
-
 
             llueve = (Boolean)GuiController.Instance.Modifiers["lluvia"];
             if (llueve)

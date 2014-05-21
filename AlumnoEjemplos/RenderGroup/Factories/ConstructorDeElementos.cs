@@ -55,7 +55,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public Barco ConstruirBarco(string path, Vector2 pos, float radioElipsoide, TipoElemento tipoBarco)
         {
             //cuando mergee tengo que sacar la altura del Oceano
-            Vector3 posAlturaDelOceano = new Vector3(pos.X, Oceano.alturaMarEnPunto(pos.X, pos.Y), pos.Y); 
+            Vector3 posAlturaDelOceano = new Vector3(pos.X, Oceano.alturaEnPunto(pos.X, pos.Y), pos.Y); 
 
             return (Barco)ConstruirElemento(path, posAlturaDelOceano, radioElipsoide, tipoBarco);
         }

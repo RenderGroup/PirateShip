@@ -153,12 +153,10 @@ namespace AlumnoEjemplos.RenderGroup
         }
         public void recargarHeightMap()
         {
-            float selectedScaleXZ = (float)GuiController.Instance.Modifiers["WorldSize"];
             float selectedScaleY = (float)GuiController.Instance.Modifiers["AlturaMarea"];
-            if (currentScaleXZ != selectedScaleXZ || currentScaleY != selectedScaleY)
+            if (currentScaleY != selectedScaleY)
             {
                 //Volver a cargar el Heightmap si cambiaron los modifiers
-                currentScaleXZ = selectedScaleXZ;
                 currentScaleY = selectedScaleY;
                 terrain.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 5, 0));
             }

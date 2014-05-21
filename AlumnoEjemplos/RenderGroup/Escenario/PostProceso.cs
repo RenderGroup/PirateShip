@@ -80,7 +80,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             // Cargo los parametros al shader
             bool activar_efecto = (bool)GuiController.Instance.Modifiers["lluvia"];
-            if (!activar_efecto)
+            if (activar_efecto)
             {
                 float time = (float)GuiController.Instance.UserVars.getValue("time");
                 Random random = new Random();
