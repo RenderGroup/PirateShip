@@ -15,9 +15,7 @@ using TgcViewer.Utils.Terrain;
 namespace AlumnoEjemplos.RenderGroup
 {
     class BarcoProtagonista : Barco, IReceptorInput
-    {
-        public const float ACELERACION_PROTA = 0.02f;
-        
+    {        
         public DateTime cooldown = DateTime.Now;
 
         bool camaraEnBarco;
@@ -28,7 +26,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void W_apretado() 
         {
-            this.mover(acelerar(ACELERACION_PROTA));
+            this.mover(acelerar(ACELERACION));
         }
 
         public void A_apretado()
@@ -38,7 +36,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void S_apretado()
         {
-            this.mover(acelerar(-ACELERACION_PROTA));
+            this.mover(acelerar(-ACELERACION));
         }
 
         public void D_apretado() 
@@ -103,7 +101,7 @@ namespace AlumnoEjemplos.RenderGroup
             //si el barco no esta llendo ni para adelante ni atras (segun botones apretados), desacelerar...
             if (this.aceleracion != 0 && !InputManager.d3dInput.keyDown(Key.W) && !InputManager.d3dInput.keyDown(Key.S))
             {
-                this.mover(desacelerar());
+                this.mover(desacelerar(FACTOR_DESACELERATIVO));
             }
 
             if (this.camaraEnBarco)

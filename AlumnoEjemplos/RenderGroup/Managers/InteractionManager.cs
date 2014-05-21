@@ -56,13 +56,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                         barco.vida--;
 
-                        //el if es por que todavia el protagonista no tiene el shader
-                        if(barco is BarcoEnemigo) barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
-
-                        if (barco.vida == 0 && barco is BarcoEnemigo)
-                        {
-                            barcosDisposables.Add(barco);
-                        }
+                        barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
                     }
                 }
             }
@@ -70,11 +64,6 @@ namespace AlumnoEjemplos.RenderGroup
             foreach (BolaDeCanion tiro in disparosDisposables)
             {
                 InteractionManager.Disparos.Remove(tiro);
-            }
-
-            foreach (Barco barca in barcosDisposables)
-            {
-                InteractionManager.Barcos.Remove(barca);
             }
         }
     }

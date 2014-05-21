@@ -27,6 +27,7 @@ namespace AlumnoEjemplos.RenderGroup
         public float aceleracion = 0f;
 
         #region CONSTANTES
+        public const float ACELERACION = 0.02f;
         public const float VELOCIDAD = 300f;
         public const float VELOCIDAD_ROTACION = .7f;
         public const float COTA_DESACELERACION = 0.09f;
@@ -45,9 +46,10 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void mover(float cantidad) 
         {
-            Vector3 movimiento = DireccionXZ * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
+            Vector3 movimiento = DireccionXZ() * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
 
-            this.move(movimiento);
+            if (this.Position.X + movimiento.X < 4800 && this.Position.X + movimiento.X > -4800 && this.Position.Z + movimiento.Z < 4800 && this.Position.Z + movimiento.Z > -4800)
+                this.move(movimiento);
         }
 
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
@@ -105,10 +107,10 @@ namespace AlumnoEjemplos.RenderGroup
             throw new Exception("La aceleracion instantanea debe ser: -MAX < aceleracionInstantanea < MAX");
         }
 
-        public float desacelerar() 
+        public float desacelerar(float factorDesacelerativo) 
         {
             //si aceleracion > 0.01 || -0.01 < aceleracion dividirla hasta que lo este...en ese intervalo la seteamos a cero
-            return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= FACTOR_DESACELERATIVO : aceleracion = 0;
+            return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= factorDesacelerativo : aceleracion = 0;
         }
 
         override public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)

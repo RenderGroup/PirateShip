@@ -91,9 +91,9 @@ namespace AlumnoEjemplos.RenderGroup
             #region INICIALIZACIONES BARCO
 
             barcoProtagonista = ConstructorDeElementos.ConstruirProtagonista(new Vector2(0, -930f));
-            b1 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(500, 500));
-            b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960));
-            b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880));
+            b1 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(500, 500), barcoProtagonista);
+            b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960), barcoProtagonista);
+            b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880), barcoProtagonista);
 
             InteractionManager.Barcos.AddRange(new List<Barco>{b1,b2,b3,barcoProtagonista});
             InteractionManager.Resto.AddRange(new List<IUpdateRender> {isla, oceano });
@@ -111,7 +111,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             InteractionManager.RenderElementos();
 
-            setUsersVars();
+            Oceano.time += elapsedTime;
             renderizar();
             coordenadasMouse();
         }
@@ -240,7 +240,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void crearUserVars()
         {
-            GuiController.Instance.UserVars.addVar("time", 0f);
         }
 
         public void renderizar()
@@ -295,7 +294,7 @@ namespace AlumnoEjemplos.RenderGroup
         public void setUsersVars()
         {
             //mantenemos el tiempo a nivel global con una userVar, muestra el timer y lo usan otras clases, no sacar
-            GuiController.Instance.UserVars.setValue("time", ((float)GuiController.Instance.UserVars.getValue("time") + GuiController.Instance.ElapsedTime));
+            Oceano.time += GuiController.Instance.ElapsedTime; 
         }
 
         #endregion

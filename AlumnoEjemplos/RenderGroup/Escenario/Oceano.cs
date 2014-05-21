@@ -16,6 +16,7 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class Oceano : IUpdateRender
     {
+        public static float time = 0;
         public bool rayo = true;
         SmartTerrain terrain;
         SmartTerrain terrain2;
@@ -68,7 +69,7 @@ namespace AlumnoEjemplos.RenderGroup
         public static float alturaMarEnPunto(float X, float Z)
         {
             SmartTerrain terrain = (SmartTerrain)GuiController.Instance.UserVars.getValue("terreno");
-            float time = (float)GuiController.Instance.UserVars.getValue("time");
+            float time = Oceano.time;
             float heighM;
             terrain.interpoledHeight(X, Z, out heighM);
             float scaleY = (float)GuiController.Instance.Modifiers.getValue("AlturaMarea");
@@ -149,7 +150,7 @@ namespace AlumnoEjemplos.RenderGroup
             //modifiers para la transparencia del agua
             GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.7f);
 
-            GuiController.Instance.UserVars.addVar("ola");
+            //GuiController.Instance.UserVars.addVar("ola");
             //GuiController.Instance.Modifiers.addFloat("delta", 0.0f, 500.0f, 150f);
         }
         public void recargarHeightMap()
@@ -171,7 +172,7 @@ namespace AlumnoEjemplos.RenderGroup
             Vector3 lightPosition = new Vector3(-100, 140, 3000);// (Vector3)GuiController.Instance.Modifiers["LightPosition"];
 
             efectoOlas.SetValue("llueve", (Boolean)GuiController.Instance.Modifiers["lluvia"]);
-            efectoOlas.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
+            efectoOlas.SetValue("time", Oceano.time);
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
             efectoOlas.SetValue("fSpecularPower", 20.0f);//(float)GuiController.Instance.Modifiers["SpecularPower"]);
@@ -188,7 +189,7 @@ namespace AlumnoEjemplos.RenderGroup
             //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
 
-            efectoCascada.SetValue("time", (float)GuiController.Instance.UserVars.getValue("time"));
+            efectoCascada.SetValue("time", Oceano.time);
             efectoCascada.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoCascada.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoCascada.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);

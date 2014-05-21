@@ -46,7 +46,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             Vector3 movimientoY = new Vector3(0, velocidadY -= gravedad, 0);
 
-            Vector3 movimiento = DireccionXZ * velocidadX + movimientoY;
+            Vector3 movimiento = DireccionXZ() * velocidadX + movimientoY;
 
             this.move(movimiento * VELOCIDAD * GuiController.Instance.ElapsedTime);
         }

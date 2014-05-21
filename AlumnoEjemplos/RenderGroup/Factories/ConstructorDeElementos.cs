@@ -64,17 +64,21 @@ namespace AlumnoEjemplos.RenderGroup
         //overload del builder de un barco que carga el mesh del barco pirata default
         static public Barco ConstruirBarcoDefault(Vector2 position, TipoElemento tipo) 
         {
-            return ConstructorDeElementos.ConstruirBarco(defaultBarcoPath, position, 70f, tipo);
+            Barco barco = ConstructorDeElementos.ConstruirBarco(defaultBarcoPath, position, 70f, tipo);
+
+            barco.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
+            barco.Technique = "RenderScene";
+            barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
+            barco.Effect.SetValue("calado", 0f);
+
+            return barco;
         }
 
-        static public BarcoEnemigo ConstruirEnemigo(Vector2 position)
+        static public BarcoEnemigo ConstruirEnemigo(Vector2 position, BarcoProtagonista prota)
         {
             BarcoEnemigo enemigo = (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
 
-            enemigo.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
-            enemigo.Technique = "RenderScene";
-            enemigo.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
-            enemigo.Effect.SetValue("calado", 0f);
+            enemigo.protagonista = prota;
 
             return enemigo;
         }
