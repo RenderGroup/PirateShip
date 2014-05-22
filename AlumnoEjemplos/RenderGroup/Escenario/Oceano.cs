@@ -142,7 +142,7 @@ namespace AlumnoEjemplos.RenderGroup
             //modifiers para el fog
             GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
             GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 3000.0f);
-            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 3000.0f);
+            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 1800.0f);
           
      //modifiers que actuan solo cuando la camara NO esta en 3ª persona
             // para ver el reflejo del enviroment map sobre el agua

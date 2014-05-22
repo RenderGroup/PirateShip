@@ -16,6 +16,7 @@ using TgcViewer.Utils.Collision.ElipsoidCollision;
 using TgcViewer.Utils.Shaders;
 using System.Windows.Forms;
 using TgcViewer.Utils._2D;
+using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
@@ -80,7 +81,7 @@ namespace AlumnoEjemplos.RenderGroup
             #endregion
 
             #region INICIALIZACIONES PANTALLA
-
+            Postproceso.Cargar();
             crearModifiers();
             
             crearUserVars();
@@ -105,6 +106,23 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void render(float elapsedTime)
         {
+            #region CAMBIO DE RENDER TARGET
+            llueve = (Boolean)GuiController.Instance.Modifiers["lluvia"];
+            if (llueve)
+            {
+                Postproceso.CambiarRenderState();
+
+                Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+
+                d3dDevice.Clear(ClearFlags.ZBuffer | ClearFlags.Target, Color.Black, 1.0f, 0);
+
+                // pongo los rendering states
+                d3dDevice.RenderState.ZBufferEnable = true;
+                d3dDevice.RenderState.ZBufferWriteEnable = true;
+                d3dDevice.RenderState.ZBufferFunction = Compare.LessEqual;
+                d3dDevice.RenderState.AlphaBlendEnable = true;
+            }
+            #endregion
             InputManager.ManejarInput();
 
             InteractionManager.UpdateElementos();
@@ -113,6 +131,13 @@ namespace AlumnoEjemplos.RenderGroup
 
             Oceano.time += elapsedTime;
             renderizar();
+            GuiController.Instance.FpsCounterEnable = true;
+            if (llueve)
+            {
+                Postproceso.RenderPostProcesado();
+                // Volver a dibujar FPS
+                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            }
             coordenadasMouse();
         }
 
