@@ -17,7 +17,6 @@ namespace AlumnoEjemplos.RenderGroup
     class Oceano : IUpdateRender
     {
         public static float time = 0;
-        public bool rayo = true;
         SmartTerrain terrain;
         SmartTerrain terrain2;
         CubeTexture cubeMap;
@@ -34,10 +33,9 @@ namespace AlumnoEjemplos.RenderGroup
         {
             currentScaleXZ = XZ;
             currentScaleY = Y;
-            //Cargar textura de CubeMap para Environment Map
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            //Cargar textura de CubeMap para Environment Map
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-       
             crearModifiers(); 
             crearHeightmaps();
             cargarShaders();
@@ -60,10 +58,23 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void update() 
         {
-            this.rayo = false;
             this.setShadersValues();
         }
 
+        public void cambiarCubeMap(Boolean diaNoche)
+        {
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            if (diaNoche)
+            {
+                //Cargar textura de CubeMap para Environment Map
+                cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
+            }
+            else
+            {
+                //Cargar textura de CubeMap para Environment Map
+                cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemapNoche.dds");
+            }
+        }
         //refactorear esto...
         //dice la altura de un punto sobre el mar tomando en cuenta al shader
         public static float alturaMarEnPunto(float X, float Z)
@@ -128,31 +139,41 @@ namespace AlumnoEjemplos.RenderGroup
             terrain2.Technique = "RenderScene";
         }
 
+        public void cambiarTechnique(string technique)
+        {
+            terrain.Technique = technique;
+        }
+
         private void crearModifiers()
         {
             //modifiers para el mar
          //   GuiController.Instance.Modifiers.addFloat("WorldSize", 0.1f, 1000f, currentScaleXZ); //modifica el tamano del terreno (mar)
             GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, currentScaleY*2); //modifica la altura de las olas
            //para la luz dinamica
-         //   GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
+            GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
             GuiController.Instance.Modifiers.addFloat("Ambient", 0, 1, 0.5f);
-            //GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 2000, 20);
+
+            GuiController.Instance.Modifiers.addFloat("k_ld", 0, 1, 0.5f);
+            GuiController.Instance.Modifiers.addFloat("k_ls", 0, 1, 0.5f);
+
+            GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 20, 7);
 
      //modifiers que actuan solo cuando la camara esta en 3ª persona      
             //modifiers para el fog
             GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
-            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 3000.0f);
-            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 1800.0f);
+            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 1500.0f);
+            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 2800.0f);
           
      //modifiers que actuan solo cuando la camara NO esta en 3ª persona
             // para ver el reflejo del enviroment map sobre el agua
-            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.4f);
+            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.6f);
             //modifiers para la transparencia del agua
             GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.7f);
 
             //GuiController.Instance.UserVars.addVar("ola");
-            //GuiController.Instance.Modifiers.addFloat("delta", 0.0f, 500.0f, 150f);
+            GuiController.Instance.Modifiers.addFloat("delta", 0.0f, 500.0f, 150f);
         }
+
         public void recargarHeightMap()
         {
            // float selectedScaleXZ = (float)GuiController.Instance.Modifiers["WorldSize"];
@@ -166,16 +187,16 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-
         public void setShadersValues()
         {
-            Vector3 lightPosition = new Vector3(-100, 140, 3000);// (Vector3)GuiController.Instance.Modifiers["LightPosition"];
-
+            Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];//new Vector3(-100, 140, 3000);//
             efectoOlas.SetValue("llueve", (Boolean)GuiController.Instance.Modifiers["lluvia"]);
             efectoOlas.SetValue("time", Oceano.time);
             efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
-            efectoOlas.SetValue("fSpecularPower", 20.0f);//(float)GuiController.Instance.Modifiers["SpecularPower"]);
+            efectoOlas.SetValue("k_ld", (float)GuiController.Instance.Modifiers["k_ld"]);
+            efectoOlas.SetValue("k_ls", (float)GuiController.Instance.Modifiers["k_ls"]);
+            efectoOlas.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
             efectoOlas.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
@@ -183,8 +204,7 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
  
             efectoOlas.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
-            efectoOlas.SetValue("rayo", rayo);
-            efectoOlas.SetValue("delta", 150.0f);//(float)GuiController.Instance.Modifiers["delta"]);
+            efectoOlas.SetValue("delta", (float)GuiController.Instance.Modifiers["delta"]);
             efectoOlas.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
             //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
@@ -199,8 +219,6 @@ namespace AlumnoEjemplos.RenderGroup
             efectoCascada.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
         }
         #endregion
-
-           
 
     } //END CLASS Oceano
 

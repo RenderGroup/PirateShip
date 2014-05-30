@@ -59,7 +59,6 @@ samplerCUBE cubeMap = sampler_state
 };
 
 float time = 0;
-bool rayo = false;
 float blendAmount = 0.65;//nivel de translucides entre 0 y 1 , cero translucido, 1 opaco
 bool llueve = false;
 
@@ -78,7 +77,7 @@ float blendStart = 2000;
 
 float blur_intensity; 
 bool camara3p = true;
-float reflection;
+float reflection = 0.4;
 float delta = 150.0;
 
 float4 blur(float2 Texcoord: TEXCOORD0)
@@ -223,7 +222,7 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
     float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
 
    fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
-   float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart));
+   float blendfactor = saturate((5000.0f - Pos2.z ) / ( blendStart));
 
 	float4 RGBColor = 0;
 
@@ -234,29 +233,72 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXC
 	float3 R = reflect(Vn, Nn);
     float3 reflectionColor = texCUBE(cubeMap, R).rgb;
 
-        if (rayo)
-        {
-           RGBColor = fvBaseColor;
-           RGBColor.rgb = saturate(RGBColor*(saturate(k_la+ld)) + le);
-           RGBColor.rgb = RGBColor.rgb * 5;
-		   RGBColor.a = blendAmount; //aplica la transparencia estatica
-        }
-        else
-        {
-           if(camara3p) {
+    if(camara3p) {
       
-                    RGBColor =  blur(Texcoord); 
-                    RGBColor = (RGBColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
-                    fvBaseColor = (RGBColor * (1.0 - fogfactor)) + (fvBaseColor * fogfactor);
-                    RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
-                    RGBColor.a = blendfactor; //1.0 -  fogfactor;
-           }
-           else     {
-		            float4 MezclaTex = float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection), 1.0f);	
-                    RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
-				    RGBColor.a = blendAmount; //aplica la transparencia estatica
-                    }
-       }
+            fvBaseColor = float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection),1.0f);// blur(Texcoord); 
+            fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
+
+            RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+
+            RGBColor.a = blendfactor; //1.0 -  fogfactor;
+    }
+    else     {
+		    float4 MezclaTex =  float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection), 1.0f);
+            RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
+			RGBColor.a = blendAmount; //aplica la transparencia estatica
+            }
+       return RGBColor;
+}
+
+//Pixel Shader de noche
+float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 N:TEXCOORD1, float3 Pos: TEXCOORD2, float3 Pos2 : TEXCOORD3, float fogfactor : FOG, float3 WorldPosition : TEXCOORD4, float3 WorldNormal	: TEXCOORD5) : COLOR0
+{      
+	float ld = 0;		// luz difusa
+	float le = 0;		// luz specular
+	N = normalize(N);
+
+	// 1- calcula la luz diffusa
+	float3 LD = normalize(fvLightPosition-float3(Pos.x,Pos.y,Pos.z));
+	ld += saturate(dot(N, LD))*k_ld;
+	
+	// 2- calcula la reflexion specular
+	float3 D = normalize(float3(Pos.x,Pos.y,Pos.z)-fvEyePosition);
+	float ks = saturate(dot(reflect(LD,N), D));
+	ks = pow(ks,20);
+	le += ks*k_ls;
+
+	//Obtener el texel de textura
+    float4 fvBaseColor= tex2D( diffuseMap, Texcoord);
+
+   fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart)); // (fogEnd - z) /(fogEnd - fogStart)
+   float blendfactor = saturate((5000.0f - Pos2.z ) / ( blendStart));
+
+	float4 RGBColor = 0;
+
+	//Normalizar vectores
+	float3 Nn = normalize(WorldNormal);
+	//Obtener texel de CubeMap
+	float3 Vn = normalize(fvEyePosition - WorldPosition);
+	float3 R = reflect(Vn, Nn);
+    float3 reflectionColor = texCUBE(cubeMap, R).rgb;
+
+    fogColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    if(camara3p) {
+      
+            fvBaseColor = float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection),1.0f);
+            fvBaseColor = (fvBaseColor *  fogfactor) + (fogColor * (1.0 -  fogfactor));
+
+            RGBColor.rgb = saturate(fvBaseColor*(saturate(k_la+ld)) + le);
+
+            RGBColor.a = blendfactor;
+    }
+    else     {
+		    float4 MezclaTex =  float4( (fvBaseColor.xyz * (1-reflection)) + (reflectionColor * reflection), 1.0f);
+            RGBColor.rgb = saturate(MezclaTex*(saturate(k_la+ld)) + le);
+			RGBColor.a = blendAmount; //aplica la transparencia estatica
+            }
+
        return RGBColor;
 }
 
@@ -271,6 +313,20 @@ technique RenderScene
           SrcBlend= SRCALPHA;
 	  VertexShader = compile vs_2_0 vs_main();
 	  PixelShader = compile ps_2_0 ps_main();
+   }
+
+}
+
+technique RenderSceneNoche
+{
+   pass Pass_0
+
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+	  VertexShader = compile vs_2_0 vs_main();
+	  PixelShader = compile ps_2_0 ps_Noche();
    }
 
 }

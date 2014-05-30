@@ -20,18 +20,21 @@ namespace AlumnoEjemplos.RenderGroup
         string currentTexture2;
         float currentScaleXZ;
         float currentScaleY;
+        Microsoft.DirectX.Direct3D.Effect efecto;
 
         public Isla(float XZ, float Y)
         {
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             currentScaleXZ = XZ;
             currentScaleY = Y;
             //crearModifiers();
             crearHeightmaps();
-           // cargarShaders();
+            cargarShaders();
         }
         
         public void render()
         {
+            setShadersValues();
             terrain2.render();
         }
 
@@ -53,14 +56,25 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void cargarShaders()
         {
+            efecto = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderIsla.fx");
+            terrain2.Effect = efecto;
+            terrain2.Technique = "RenderScene";
+        }
+
+        public void cambiarTechnique(string technique)
+        {
+            terrain2.Technique = technique;
         }
 
         private void crearModifiers()
         {
         }
 
-        public void setShadersValues(Vector3 lightPosition, Boolean rayo, CubeTexture cubeMap)
+        public void setShadersValues()
         {
+            //efecto.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
+            efecto.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
+            
         }
     }
 

@@ -31,9 +31,11 @@ namespace AlumnoEjemplos.RenderGroup
 
         #region DECLARACIONES DEL ESCENARIO
         TgcSkyBox skyBox;
+        string texturesPath; 
         Boolean llueve;
+        Boolean dia = true;
         float currentScaleXZ = 165f;
-        float currentScaleY =0.8f;
+        float currentScaleY = 0.8f;
         TgcBox lightMesh;
         Oceano oceano;
         Isla isla;
@@ -72,21 +74,17 @@ namespace AlumnoEjemplos.RenderGroup
         public override void init()
         {
             #region INICIALIZACIONES ESCENARIO
-
             lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
             oceano = new Oceano(currentScaleXZ, currentScaleY);
             isla = new Isla(currentScaleXZ, currentScaleY);
             crearSkybox();
-
             #endregion
 
             #region INICIALIZACIONES PANTALLA
             Postproceso.Cargar();
             crearModifiers();
-            
             crearUserVars();
             crearSprites();
-
             #endregion
 
             #region INICIALIZACIONES BARCO
@@ -123,6 +121,7 @@ namespace AlumnoEjemplos.RenderGroup
                 d3dDevice.RenderState.AlphaBlendEnable = true;
             }
             #endregion
+
             InputManager.ManejarInput();
 
             InteractionManager.UpdateElementos();
@@ -138,6 +137,7 @@ namespace AlumnoEjemplos.RenderGroup
                 // Volver a dibujar FPS
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
             }
+            
             coordenadasMouse();
         }
 
@@ -149,7 +149,8 @@ namespace AlumnoEjemplos.RenderGroup
             timon.dispose();
             barra.dispose();
             animatedSprite.dispose();
-            animatedSprite2.dispose(); 
+            animatedSprite2.dispose();
+
         }
 
         #region NUEVO
@@ -173,7 +174,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
                 {
-                    oceano.rayo = true;
+                 
                     //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
@@ -197,34 +198,69 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false); 
             GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);
             GuiController.Instance.Modifiers.addBoolean("normales", "Render Normales", false);
+            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", new EventHandler(this.botonDiaNoche_Click)); 
         }
 
         public void crearSkybox()
         {
+            texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 2000, 0);
             skyBox.Size = new Vector3(10000, 5000, 10000);
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
-            //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
-            //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
             //Configurar color  
             //skyBox.Color = Color.OrangeRed;
             skyBox.SkyEpsilon = 9f; //para que no se noten las aristas del box
+            diaNoche();
+
+        }
+        private void diaNoche()
+        {
+            if (dia)
+            {
+                //Configurar las texturas para cada una de las 6 caras
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
+                //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "cielo.png");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
+            }
+            else
+            {
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "noche.jpg");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "noche.jpg");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "noche.jpg");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "noche.jpg");
+                //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "noche.jpg");
+                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "noche.jpg");
+            }
             skyBox.updateValues();
         }
-        
+
+        public void botonDiaNoche_Click(object sender, EventArgs args)
+        {
+            if (dia)
+            {
+                dia = false;
+                isla.cambiarTechnique("RenderSceneNoche");
+                oceano.cambiarTechnique("RenderSceneNoche"); 
+            }
+            else
+            {
+                dia = true;
+                isla.cambiarTechnique("RenderScene");
+                oceano.cambiarTechnique("RenderScene"); 
+            }
+            diaNoche();
+            oceano.cambiarCubeMap(dia);  
+        }
+
         private void crearSprites()
         {
-          
-
             boton1 = new TgcSprite();
-            boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
+            boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton2z.png");
             Size textureSize = boton1.Texture.Size;
             boton1.Position = new Vector2(screenSize.Width - textureSize.Width  , screenSize.Height - textureSize.Height);
 
@@ -272,6 +308,8 @@ namespace AlumnoEjemplos.RenderGroup
 
             #region RENDERIZAR ESCENARIO
             skyBox.render();
+            Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
+            lightMesh.Position = lightPosition; 
             lightMesh.render();
             #endregion
 
