@@ -12,27 +12,27 @@ namespace AlumnoEjemplos.RenderGroup
 {
     public class SmartTerrain
     {
-        #region Private fields
+        #region public fields
        
-        private float maxIntensity;
-        private float minIntensity;
-        private Vector3 traslation;
-        private VertexBuffer vbTerrain;
-        private CustomVertex.PositionColoredTextured[] vertices;
-        private Texture terrainTexture;
-        private TgcBoundingBox aabb;
+        public float maxIntensity;
+        public float minIntensity;
+        public Vector3 traslation;
+        public VertexBuffer vbTerrain;
+        public CustomVertex.PositionColoredTextured[] vertices;
+        public Texture terrainTexture;
+        public TgcBoundingBox aabb;
         #endregion
 
 
         #region Properties
 
-        private int totalVertices;
+        public int totalVertices;
         /// <summary>
         /// Cantidad de vertices del terrain
         /// </summary>
         public int TotalVertices { get { return totalVertices; } }
 
-        private float[,] heightmapData;
+        public float[,] heightmapData;
         /// <summary>
         /// Valor de Y para cada par (X,Z) del Heightmap. 
         /// </summary>
@@ -42,7 +42,7 @@ namespace AlumnoEjemplos.RenderGroup
             
         }
       
-        private bool enabled;
+        public bool enabled;
         /// <summary>
         /// Indica si la malla esta habilitada para ser renderizada
         /// </summary>
@@ -52,7 +52,7 @@ namespace AlumnoEjemplos.RenderGroup
             set { enabled = value; }
         }
 
-        private Vector3 center;
+        public Vector3 center;
         /// <summary>
         /// Centro del terreno
         /// </summary>
@@ -62,7 +62,7 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         
-        private bool alphaBlendEnable;
+        public bool alphaBlendEnable;
         /// <summary>
         /// Habilita el renderizado con AlphaBlending para los modelos
         /// con textura o colores por vértice de canal Alpha.
@@ -269,7 +269,7 @@ namespace AlumnoEjemplos.RenderGroup
         /// <summary>
         /// Crea los vertices
         /// </summary>
-        private void loadVertices()
+        public void loadVertices()
         {
             int dataIdx = 0;
 

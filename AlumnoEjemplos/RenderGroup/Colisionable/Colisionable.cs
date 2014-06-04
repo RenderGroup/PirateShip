@@ -18,9 +18,9 @@ namespace AlumnoEjemplos.RenderGroup
         public TgcBoundingSphere boundingSphere;
         
         //devuelve la direccion en el plano XZ
-        public Vector3 DireccionXZ
+        virtual public Vector3 DireccionXZ()
         {            
-            get { return new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y)); }
+            return new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y));
         }
 
         //redefine dispose para incluir al boundingsphere
@@ -63,7 +63,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             float Y;
 
-            SmartTerrain terreno = (SmartTerrain)GuiController.Instance.UserVars.getValue("terreno");
+            SmartTerrain terreno = Oceano.terreno;
 
             terreno.interpoledHeight(this.Position.X, this.Position.Z, out Y);
 

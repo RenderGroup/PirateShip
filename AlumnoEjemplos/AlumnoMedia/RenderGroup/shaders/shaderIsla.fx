@@ -21,21 +21,8 @@ sampler2D diffuseMap = sampler_state
 	MIPFILTER = LINEAR;
 };
 
-//Textura para calar el difuse map
-texture texCalar;
-sampler2D calar = sampler_state
-{
-	Texture = (texCalar);
-	ADDRESSU = WRAP;
-	ADDRESSV = WRAP;
-	MINFILTER = LINEAR;
-	MAGFILTER = LINEAR;
-	MIPFILTER = LINEAR;
-};
-
+float4 fogColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
 float blendStart = 2000;
-bool camara3p = true;
-float calado = 0.1;//nivel de calado, valores entre 0.0 (sin calar) y 1.0 (calado maximo, depende de la textura texCalar)
 
 /**************************************************************************************/
 /* RenderScene */
@@ -78,61 +65,35 @@ VS_OUTPUT vs_main( VS_INPUT Input )
 }
 
 // ------------------------------------------------------------------
-
-//Pixel Shader 
+//Pixel Shader dia
 float4 ps_main( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	float4 calarColor = tex2D( calar, Texcoord);
 
-    float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
+   // float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
 
-	if(camara3p) {
-		if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
-		{
-			   fvBaseColor.a = 0.0f;//descarta el pixel y no se ve por pantalla
-		}
-		else
-		{
-			   fvBaseColor.a = blendfactor;
-		}
-	}
-	else
-	{
-	    fvBaseColor.a = 1.0;
-	}
+    //fvBaseColor = (fvBaseColor * blendfactor) + (fogColor *  (1.0 - blendfactor));
+    fvBaseColor.rgb = saturate(fvBaseColor);
     return fvBaseColor;
 }
 
-//Pixel Shader de noche
+//Pixel Shader 
 float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	float4 calarColor = tex2D( calar, Texcoord);
 	float4 negro =  float4(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	fvBaseColor =(fvBaseColor * 0.4) + ( negro * 0.6);
 
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
 
-	if(camara3p) {
-		if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
-		{
-			   fvBaseColor.a = 0.0f;//descarta el pixel y no se ve por pantalla
-		}
-		else
-		{
-			   fvBaseColor.a = blendfactor;
-		}
-	}
-	else
-	{
-	    fvBaseColor.a = 1.0;
-	}
+    fvBaseColor = (fvBaseColor * blendfactor) + (fogColor *  (1.0 - blendfactor));
+    fvBaseColor.rgb = saturate(fvBaseColor);
     return fvBaseColor;
 }
+
 // ------------------------------------------------------------------
 technique RenderScene
 {
@@ -147,6 +108,7 @@ technique RenderScene
    }
 
 }
+
 technique RenderSceneNoche
 {
    pass Pass_0
@@ -160,5 +122,3 @@ technique RenderSceneNoche
    }
 
 }
-
-

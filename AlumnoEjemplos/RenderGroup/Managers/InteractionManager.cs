@@ -34,10 +34,10 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         //devuelve todos los barcos y las bolas de cañon
-        static private List<IUpdateRender> Elementos()
+        static public List<IUpdateRender> Elementos()
         {
             //juntamos las listas de Barcos y de Disparos para updatear todo
-            return Barcos.Cast<IUpdateRender>().Concat(Disparos.Cast<IUpdateRender>()).Concat(Resto).ToList();
+            return Resto.Concat(Barcos.Cast<IUpdateRender>()).Concat(Disparos.Cast<IUpdateRender>()).ToList();
         }
 
         //refactorizar este metodo
@@ -52,14 +52,11 @@ namespace AlumnoEjemplos.RenderGroup
                 {
                     if (TgcCollisionUtils.testSphereSphere(disparo.boundingSphere, barco.boundingSphere) && disparo.noEsDel(barco))
                     {
-                        disparosDisposables.Add(disparo);
+                        disparosDisposables.Add(disparo);                        
 
                         barco.vida--;
 
-                        if (barco.vida == 0)
-                        {
-                            barcosDisposables.Add(barco);
-                        }
+                        barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
                     }
                 }
             }
@@ -67,11 +64,6 @@ namespace AlumnoEjemplos.RenderGroup
             foreach (BolaDeCanion tiro in disparosDisposables)
             {
                 InteractionManager.Disparos.Remove(tiro);
-            }
-
-            foreach (Barco barca in barcosDisposables)
-            {
-                InteractionManager.Barcos.Remove(barca);
             }
         }
     }

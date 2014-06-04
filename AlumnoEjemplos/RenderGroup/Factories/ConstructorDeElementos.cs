@@ -7,6 +7,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
+using TgcViewer.Utils.Shaders;
 using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.Terrain;
 
@@ -17,21 +18,13 @@ using TgcViewer.Utils.Terrain;
 //muy distinto del protagonista
 namespace AlumnoEjemplos.RenderGroup
 {
-    #region TODO
-    /*
-     * 
-     * - necesito ver de donde sacar el terreno para no pasarlo por parametro
-     * - falta un ConstruirProtagonista y ConstruirEnemigo
-     * 
-     */
-    #endregion
-
     enum TipoElemento { BarcoProtagonista, BarcoEnemigo, BolaCanion }
 
     class ConstructorDeElementos
     {
         static public string defaultBarcoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirata-TgcScene.xml";
         static public string defaultBolaCanion = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Sphere-TgcScene.xml";
+        static public BarcoProtagonista protagonista;
 
         static public Colisionable ConstruirElemento(string path, Vector3 position, float radioElipsoide, TipoElemento tipoElemento)
         {
@@ -63,17 +56,32 @@ namespace AlumnoEjemplos.RenderGroup
         //overload del builder de un barco que carga el mesh del barco pirata default
         static public Barco ConstruirBarcoDefault(Vector2 position, TipoElemento tipo) 
         {
-            return ConstructorDeElementos.ConstruirBarco(defaultBarcoPath, position, 70f, tipo);
+            Barco barco = ConstructorDeElementos.ConstruirBarco(defaultBarcoPath, position, 70f, tipo);
+
+            barco.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
+            barco.Technique = "RenderScene";
+            barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
+            barco.Effect.SetValue("calado", 0f);
+
+            return barco;
         }
 
         static public BarcoEnemigo ConstruirEnemigo(Vector2 position)
         {
-            return (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
+            BarcoEnemigo enemigo = (BarcoEnemigo)ConstruirBarcoDefault(position, TipoElemento.BarcoEnemigo);
+
+            if (protagonista == null) throw new Exception("Antes de construir enemigos debe construirse un protagonista");
+
+            enemigo.protagonista = protagonista;
+
+            return enemigo;
         }
 
         static public BarcoProtagonista ConstruirProtagonista(Vector2 position) 
         {
-            return (BarcoProtagonista) ConstruirBarcoDefault(position, TipoElemento.BarcoProtagonista);
+            protagonista = (BarcoProtagonista)ConstruirBarcoDefault(position, TipoElemento.BarcoProtagonista);
+
+            return protagonista;
         }
 
         static public BolaDeCanion ConstruirCanionazo(Barco barco)

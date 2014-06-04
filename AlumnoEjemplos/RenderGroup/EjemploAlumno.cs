@@ -29,8 +29,8 @@ namespace AlumnoEjemplos.RenderGroup
         BarcoProtagonista barcoProtagonista;
         Barco b1, b2, b3;
 
-        #region DECLARACIONES DEL ESCENARIO
-        Boolean llueve;
+        #region DECLARACIONES DEL ESCENARIO 
+        Boolean llueve;    
         float currentScaleXZ = 165f;
         float currentScaleY = 0.8f;
         TgcBox lightMesh;
@@ -49,7 +49,8 @@ namespace AlumnoEjemplos.RenderGroup
         int traslacion = -150;
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Boolean camara;
-        Postproceso postproceso;
+        
+        Postproceso  postproceso;
         #endregion
 
         #region TEXTO PARA EL FRAMEWORK
@@ -65,7 +66,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override string getDescription()
         {
-            return "Movimiento con W, A, S, D; Disparar con 4 y 6";
+            return "Movimiento con W, A, S, D; Disparar con P";
         }
 
         #endregion
@@ -73,23 +74,17 @@ namespace AlumnoEjemplos.RenderGroup
         public override void init()
         {
             #region INICIALIZACIONES ESCENARIO
-
             lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
             oceano = new Oceano(currentScaleXZ, currentScaleY);
             isla = new Isla(currentScaleXZ, currentScaleY);
             skyBox = new PirateSkyBox();
-
             #endregion
 
             #region INICIALIZACIONES PANTALLA
-
-            crearModifiers();
-
-            crearUserVars();
+            crearModifiers(); 
             crearSprites();
             // Carga valores para el postprocesado
             Postproceso.Cargar();
-
             #endregion
 
             #region INICIALIZACIONES BARCO
@@ -99,7 +94,7 @@ namespace AlumnoEjemplos.RenderGroup
             b2 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(-700, 960));
             b3 = ConstructorDeElementos.ConstruirEnemigo(new Vector2(100, 880));
 
-            InteractionManager.Barcos.AddRange(new List<Barco> { b1, b2, b3, barcoProtagonista });
+            InteractionManager.Barcos.AddRange(new List<Barco> { b1, /*b2,*/ b3, barcoProtagonista });
             InteractionManager.Resto.AddRange(new List<IUpdateRender> { isla, oceano });
 
             InputManager.Add(barcoProtagonista);
@@ -110,17 +105,21 @@ namespace AlumnoEjemplos.RenderGroup
         public override void render(float elapsedTime)
         {
             #region CAMBIO DE RENDER TARGET
-            Postproceso.CambiarRenderState();
+            llueve = (Boolean)GuiController.Instance.Modifiers["lluvia"];
+            if (llueve)
+            {
+                Postproceso.CambiarRenderState();
 
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+                Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
-            d3dDevice.Clear(ClearFlags.ZBuffer | ClearFlags.Target, Color.Black, 1.0f, 0);
+                d3dDevice.Clear(ClearFlags.ZBuffer | ClearFlags.Target, Color.Black, 1.0f, 0);
 
-            // pongo los rendering states
-            d3dDevice.RenderState.ZBufferEnable = true;
-            d3dDevice.RenderState.ZBufferWriteEnable = true;
-            d3dDevice.RenderState.ZBufferFunction = Compare.LessEqual;
-            d3dDevice.RenderState.AlphaBlendEnable = true;
+                // pongo los rendering states
+                d3dDevice.RenderState.ZBufferEnable = true;
+                d3dDevice.RenderState.ZBufferWriteEnable = true;
+                d3dDevice.RenderState.ZBufferFunction = Compare.LessEqual;
+                d3dDevice.RenderState.AlphaBlendEnable = true;
+            }
             #endregion
 
             InputManager.ManejarInput();
@@ -129,15 +128,16 @@ namespace AlumnoEjemplos.RenderGroup
 
             InteractionManager.RenderElementos();
 
-            setUsersVars();
+            
             renderizar();
-
             GuiController.Instance.FpsCounterEnable = true;
-            Postproceso.RenderPostProcesado();
-            // Volver a dibujar FPS
-            GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
-            GuiController.Instance.AxisLines.render();
-
+            if (llueve)
+            {
+                Postproceso.RenderPostProcesado();
+                // Volver a dibujar FPS
+                GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
+            }
+            
             coordenadasMouse();
         }
 
@@ -156,7 +156,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         #region NUEVO
 
-        private void coordenadasMouse() //se fija si hace clic sobre un boton
+        public void coordenadasMouse() //se fija si hace clic sobre un boton
         {
             TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
             //Obtener variacion XY del mouse
@@ -175,7 +175,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                 if ((mouseX > boton1.Position.X) && (mouseX < botonX) && (mouseY > boton1.Position.Y) && (mouseY < botonY))
                 {
-                    oceano.rayo = true;
+                 
                     //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
                 }
                 if ((mouseX > boton2.Position.X) && (mouseX < boton2X) && (mouseY > boton2.Position.Y) && (mouseY < boton2Y))
@@ -193,20 +193,23 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-        private void crearModifiers()
+        public void crearModifiers()
         {
-            GuiController.Instance.Modifiers.addBoolean("lluvia", "lluvia", false);
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);
-            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);
-            GuiController.Instance.Modifiers.addBoolean("normales", "Render Normales", false);
+            GuiController.Instance.Modifiers.addBoolean("lluvia", "lluvia", false);//Escenario
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);//InteractionManager
+            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);//BarcoProta?
+            GuiController.Instance.Modifiers.addBoolean("normales", "Render Normales", false);//InteractionManager
+            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => skyBox.botonDiaNoche_Click(isla, oceano)); //skybox
+
         }
 
 
-        private void crearSprites()
-        {
 
+
+        public void crearSprites()
+        {
             boton1 = new TgcSprite();
-            boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png");
+            boton1.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton2z.png");
             Size textureSize = boton1.Texture.Size;
             boton1.Position = new Vector2(screenSize.Width - textureSize.Width, screenSize.Height - textureSize.Height);
 
@@ -245,15 +248,12 @@ namespace AlumnoEjemplos.RenderGroup
                 );
         }
 
-        private void crearUserVars()
-        {
-            GuiController.Instance.UserVars.addVar("time", 0f);
-        }
-
         public void renderizar()
         {
             #region RENDERIZAR ESCENARIO
             skyBox.render();
+            Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];
+            lightMesh.Position = lightPosition; 
             lightMesh.render();
             #endregion
 
@@ -297,13 +297,6 @@ namespace AlumnoEjemplos.RenderGroup
 
             GuiController.Instance.Drawer2D.endDrawSprite();
             #endregion
-        }
-
-
-        public void setUsersVars()
-        {
-            //mantenemos el tiempo a nivel global con una userVar, muestra el timer y lo usan otras clases, no sacar
-            GuiController.Instance.UserVars.setValue("time", ((float)GuiController.Instance.UserVars.getValue("time") + GuiController.Instance.ElapsedTime));
         }
 
         #endregion

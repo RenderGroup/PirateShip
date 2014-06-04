@@ -82,7 +82,7 @@ namespace AlumnoEjemplos.RenderGroup
             bool activar_efecto = (bool)GuiController.Instance.Modifiers["lluvia"];
             if (activar_efecto)
             {
-                float time = (float)GuiController.Instance.UserVars.getValue("time");
+                float time = Oceano.time;
                 Random random = new Random();
                 int randomNumber = random.Next(0, 10);
 

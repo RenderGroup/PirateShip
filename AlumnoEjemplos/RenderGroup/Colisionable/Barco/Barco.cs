@@ -23,30 +23,44 @@ namespace AlumnoEjemplos.RenderGroup
         //flecha que se dibujara para indicar la normal
         TgcArrow normalDibujable;
 
-        public float vida = 3;
+        public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
 
         #region CONSTANTES
+        public const float ACELERACION = 0.02f;
         public const float VELOCIDAD = 300f;
         public const float VELOCIDAD_ROTACION = .7f;
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
         public const float ACELERACION_MAX = 3f;
+        public const float MAX_VIDAS = 4;
         #endregion
 
-        public void disparar() 
+        public void disparar()
         {
-            //se agregan dos disparos en diagonal 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF/3));
+            BolaDeCanion disparo1 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF / 3);
+            BolaDeCanion disparo2 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF / 3);
 
-            InteractionManager.Disparos.Add(ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF/3));
+            //arreglar esto despues
+            if (this is BarcoEnemigo)
+            {
+                disparo1.rotateX(FastMath.PI);
+                disparo2.rotateX(FastMath.PI);
+                disparo1.rotateZ(FastMath.PI);
+                disparo2.rotateZ(FastMath.PI);
+            }
+
+            //se agregan dos disparos en diagonal 
+            InteractionManager.Disparos.Add(disparo1);
+            InteractionManager.Disparos.Add(disparo2);
         }
 
         public void mover(float cantidad) 
         {
-            Vector3 movimiento = DireccionXZ * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
+            Vector3 movimiento = DireccionXZ() * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
 
-            this.move(movimiento);
+            if (this.Position.X + movimiento.X < 4800 && this.Position.X + movimiento.X > -4800 && this.Position.Z + movimiento.Z < 4800 && this.Position.Z + movimiento.Z > -4800)
+                this.move(movimiento);
         }
 
         //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
@@ -60,10 +74,10 @@ namespace AlumnoEjemplos.RenderGroup
             float Y = Oceano.alturaEnPunto(this.Position.X, this.Position.Z);
 
             //ponemos el bounding sphere a la altura donde esta el barco
-            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 40, 0));
+            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 60, 0));
 
             //ubicamos al barco...
-            this.Position = new Vector3(this.Position.X, Y - 15, this.Position.Z);                  // ...en alto...
+            this.Position = new Vector3(this.Position.X, Y + 10, this.Position.Z);                  // ...en alto...
             this.rotation.Z = FastMath.Atan2(-normal.X * FastMath.Cos(this.rotation.Y), normal.Y) + FastMath.Atan2(normal.Z * FastMath.Sin(this.rotation.Y), normal.Y);  // ...con rotacion en Z...
             this.rotation.X = FastMath.Atan2(normal.Z * FastMath.Cos(this.rotation.Y), normal.Y) +  FastMath.Atan2(normal.X * FastMath.Sin(this.rotation.Y), normal.Y);  // ...con rotacion en Y...
         }
@@ -104,10 +118,10 @@ namespace AlumnoEjemplos.RenderGroup
             throw new Exception("La aceleracion instantanea debe ser: -MAX < aceleracionInstantanea < MAX");
         }
 
-        public float desacelerar() 
+        public float desacelerar(float factorDesacelerativo) 
         {
             //si aceleracion > 0.01 || -0.01 < aceleracion dividirla hasta que lo este...en ese intervalo la seteamos a cero
-            return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= FACTOR_DESACELERATIVO : aceleracion = 0;
+            return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= factorDesacelerativo : aceleracion = 0;
         }
 
         override public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
