@@ -61,7 +61,7 @@ namespace AlumnoEjemplos.RenderGroup
             terrain2.Technique = "RenderScene";
         }
 
-        public void cambiarTechnique(string technique)
+        public void tecnicas(string technique)//agregado*
         {
             terrain2.Technique = technique;
         }
@@ -72,9 +72,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
-            //efecto.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
-            efecto.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
-            
         }
     }
 

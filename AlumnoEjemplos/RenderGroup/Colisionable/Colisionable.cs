@@ -34,12 +34,13 @@ namespace AlumnoEjemplos.RenderGroup
         //cada subclases puede potencialmente sumar sus cosas al update
         virtual public void update() { }
 
+        virtual public void tecnicas(string tecnica)//agregado*
+        {
+          //  base.Technique = tecnica;
+        }
+
         virtual new public void render()
         {
-            //si el usuario quiere ver el bounding sphere...renderizarlo
-            if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
-                this.boundingSphere.render();
-
             base.render();
         }
 

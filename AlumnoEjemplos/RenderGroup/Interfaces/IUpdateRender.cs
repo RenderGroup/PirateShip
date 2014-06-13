@@ -10,5 +10,6 @@ namespace AlumnoEjemplos.RenderGroup
         void update();
         void render();
         void dispose();
+        void tecnicas(string tecnica);//agregado*
     }
 }

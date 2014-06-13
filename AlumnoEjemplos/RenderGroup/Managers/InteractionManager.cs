@@ -12,7 +12,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public List<Barco> Barcos = new List<Barco>();
         static public List<BolaDeCanion> Disparos = new List<BolaDeCanion>();
         static public List<IUpdateRender> Resto = new List<IUpdateRender>();
-
+        static public float contadorMuertos = 0;//agregado*
         static public void RenderElementos() 
         {
             foreach (IUpdateRender elemento in Elementos())
@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public void UpdateElementos() 
         {
             CheckColisions();
-
+            
             foreach (IUpdateRender elemento in Elementos())
                 elemento.update();
         }
@@ -31,6 +31,13 @@ namespace AlumnoEjemplos.RenderGroup
         {
             foreach (IUpdateRender elemento in Elementos())
                 elemento.dispose();
+        }
+
+
+        static public void TecnicasElementos(string tecnica)//agregado*
+        {
+            foreach (IUpdateRender elemento in Elementos())
+                elemento.tecnicas(tecnica);
         }
 
         //devuelve todos los barcos y las bolas de cañon
@@ -55,7 +62,8 @@ namespace AlumnoEjemplos.RenderGroup
                         disparosDisposables.Add(disparo);                        
 
                         barco.vida--;
-
+                        if (barco.vida == 0)//agregado*
+                            contadorMuertos++; //agregado*
                         barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
                     }
                 }

@@ -25,14 +25,16 @@ namespace AlumnoEjemplos.RenderGroup
 
         public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
+        public float ACELERACION = 0.02f;//agregado* 
+        public float ACELERACION_MAX = 3f;//agregado*
 
         #region CONSTANTES
-        public const float ACELERACION = 0.02f;
+        //public const float ACELERACION = 0.02f;
         public const float VELOCIDAD = 300f;
         public const float VELOCIDAD_ROTACION = .7f;
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
-        public const float ACELERACION_MAX = 3f;
+       // public const float ACELERACION_MAX = 3f;
         public const float MAX_VIDAS = 4;
         #endregion
 
@@ -86,25 +88,17 @@ namespace AlumnoEjemplos.RenderGroup
         override public void update()
         {
             this.flotar();
-
-            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
-            {
-                //calculos para poder dibujar la flecha que indica la normal
-                normalDibujable.PStart = this.Position;
-                normalDibujable.PEnd = this.Position + Vector3.Multiply(normal, 200);
-                normalDibujable.updateValues();
-            }
         }
 
         override public void render() 
         {
-            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
-            {
-                normalDibujable.render();                
-            }
-
             base.render();
-        }        
+        }
+
+        override public void tecnicas(string tecnica)//agregado*
+        {
+            this.Technique = tecnica;
+        } 
 
         //metodo que maneja la aceleracion...de mala manera...por ahora...
         public float acelerar(float aceleracionInstantanea) 

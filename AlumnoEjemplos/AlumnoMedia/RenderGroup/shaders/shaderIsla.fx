@@ -22,7 +22,7 @@ sampler2D diffuseMap = sampler_state
 };
 
 float4 fogColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
-float blendStart = 2000;
+float fogStart = 2000;
 
 /**************************************************************************************/
 /* RenderScene */
@@ -63,37 +63,62 @@ VS_OUTPUT vs_main( VS_INPUT Input )
     return( Output );  
    
 }
-
 // ------------------------------------------------------------------
 //Pixel Shader dia
 float4 ps_main( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-
-   // float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
-
-    //fvBaseColor = (fvBaseColor * blendfactor) + (fogColor *  (1.0 - blendfactor));
-    fvBaseColor.rgb = saturate(fvBaseColor);
     return fvBaseColor;
 }
 
-//Pixel Shader 
-float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+//Pixel Shader  noche
+float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3 ) : COLOR0
 {      
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
 	float4 negro =  float4(0.0f, 0.0f, 0.0f, 1.0f);
 	
+	//oscurecer la textura para simular la noche
 	fvBaseColor =(fvBaseColor * 0.4) + ( negro * 0.6);
 
-    float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
+	//calcular el nivel de fog dependiendo de la distancia del vertice respecto de la camara
+    float fogfactor = saturate(( 3000.0f - Pos2.z ) / (fogStart - 500));
 
-    fvBaseColor = (fvBaseColor * blendfactor) + (fogColor *  (1.0 - blendfactor));
+    fvBaseColor = (fvBaseColor * fogfactor) + (fogColor *  (1.0 - fogfactor));
     fvBaseColor.rgb = saturate(fvBaseColor);
     return fvBaseColor;
 }
 
+//Pixel Shader congelado
+float4 ps_hielo( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+{      
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
+    fogColor =  float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//saturar la textura para que sea mas blanca
+    fvBaseColor.rgb = saturate(fvBaseColor * 4);
+	fvBaseColor =(fvBaseColor * 0.4) + ( fogColor * 0.6);
+
+	fvBaseColor.a = 1.0;
+    return fvBaseColor;
+}     
+
+//Pixel Shader congelado
+float4 ps_hieloNoche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+{      
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
+    fogColor =  float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//oscurecer la textura 
+    fvBaseColor.rgb = saturate(fvBaseColor * 4);
+	fvBaseColor =(fvBaseColor * 0.1) + ( fogColor * 0.9);
+
+	fvBaseColor.a = 1.0;
+    return fvBaseColor;
+}  
 // ------------------------------------------------------------------
 technique RenderScene
 {
@@ -103,8 +128,8 @@ technique RenderScene
           AlphaBlendEnable =TRUE;
           DestBlend= INVSRCALPHA;
           SrcBlend= SRCALPHA;
-	  VertexShader = compile vs_2_0 vs_main();
-	  PixelShader = compile ps_2_0 ps_main();
+		  VertexShader = compile vs_2_0 vs_main();
+		  PixelShader = compile ps_2_0 ps_main();
    }
 
 }
@@ -117,8 +142,34 @@ technique RenderSceneNoche
           AlphaBlendEnable =TRUE;
           DestBlend= INVSRCALPHA;
           SrcBlend= SRCALPHA;
-	  VertexShader = compile vs_2_0 vs_main();
-	  PixelShader = compile ps_2_0 ps_Noche();
+		  VertexShader = compile vs_2_0 vs_main();
+		  PixelShader = compile ps_2_0 ps_Noche();
+   }
+
+}
+technique RenderSceneNocheCongelada
+{
+   pass Pass_0
+
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_2_0 vs_main();
+		  PixelShader = compile ps_2_0 ps_hieloNoche();
+   }
+
+}
+technique RenderSceneCongelada
+{
+   pass Pass_0
+
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_2_0 vs_main();
+		  PixelShader = compile ps_2_0 ps_hielo();
    }
 
 }
