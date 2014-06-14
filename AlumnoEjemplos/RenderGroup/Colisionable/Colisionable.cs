@@ -12,7 +12,7 @@ namespace AlumnoEjemplos.RenderGroup
 {
     //Un Elemento es un TgcMesh con una bounding sphere asociada
     //La responsabilidad de la clase es manejar el boundingsphere para moverla, renderearla, disposearla, etc.
-    class Colisionable : TgcMesh, IUpdateRender
+    abstract class Colisionable : TgcMesh, IUpdateRender
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;
@@ -30,9 +30,7 @@ namespace AlumnoEjemplos.RenderGroup
             base.dispose();
         }
 
-        //metodo virtual overrideable por sus subclases
-        //cada subclases puede potencialmente sumar sus cosas al update
-        virtual public void update() { }
+        abstract public void update();
 
         virtual new public void render()
         {
@@ -54,20 +52,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             base.move(movimiento);
             boundingSphere.moveCenter(movimiento);
-        }
-
-        //metodo que se ayuda del SmartTerrain para calcular la altura en un punto...no se si va en esta clase
-        //la idea inicial era que el interaction manager conozca al terreno y le pregunten a el, pero la verdad
-        //que el que conoce su posicion es el colisionable para pedirsela al terreno
-        public float alturaEnPunto(float X, float Z)
-        {
-            float Y;
-
-            SmartTerrain terreno = Oceano.terreno;
-
-            terreno.interpoledHeight(this.Position.X, this.Position.Z, out Y);
-
-            return Y;
         }
     }
 }

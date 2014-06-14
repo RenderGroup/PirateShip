@@ -27,7 +27,6 @@ namespace AlumnoEjemplos.RenderGroup
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             currentScaleXZ = XZ;
             currentScaleY = Y;
-            //crearModifiers();
             crearHeightmaps();
             cargarShaders();
         }
@@ -64,10 +63,6 @@ namespace AlumnoEjemplos.RenderGroup
         public void cambiarTechnique(string technique)
         {
             terrain2.Technique = technique;
-        }
-
-        public void crearModifiers()
-        {
         }
 
         public void setShadersValues()

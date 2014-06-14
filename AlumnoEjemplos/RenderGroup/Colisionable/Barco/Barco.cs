@@ -19,12 +19,10 @@ namespace AlumnoEjemplos.RenderGroup
     {
         //normal en la superficie donde esta flotando el barco
         Vector3 normal;
-
-        //flecha que se dibujara para indicar la normal
-        TgcArrow normalDibujable;
-
+        
         public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
+        public List<BolaDeCanion> disparos = new List<BolaDeCanion>();
 
         #region CONSTANTES
         public const float ACELERACION = 0.02f;
@@ -36,42 +34,27 @@ namespace AlumnoEjemplos.RenderGroup
         public const float MAX_VIDAS = 4;
         #endregion
 
-        public void disparar()
+        virtual public void disparar()
         {
-            BolaDeCanion disparo1 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(FastMath.PI_HALF / 3);
-            BolaDeCanion disparo2 = ConstructorDeElementos.ConstruirCanionazo(this).rotateY(-FastMath.PI_HALF / 3);
-
-            //arreglar esto despues
-            if (this is BarcoEnemigo)
-            {
-                disparo1.rotateX(FastMath.PI);
-                disparo2.rotateX(FastMath.PI);
-                disparo1.rotateZ(FastMath.PI);
-                disparo2.rotateZ(FastMath.PI);
-            }
-
-            //se agregan dos disparos en diagonal 
-            InteractionManager.Disparos.Add(disparo1);
-            InteractionManager.Disparos.Add(disparo2);
+            disparos.Add( Construir.Canionazo(this).rotateY(FastMath.PI_HALF / 3) );
+            disparos.Add( Construir.Canionazo(this).rotateY(-FastMath.PI_HALF / 3) );
         }
 
         public void mover(float cantidad) 
         {
             Vector3 movimiento = DireccionXZ() * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
 
-            if (this.Position.X + movimiento.X < 4800 && this.Position.X + movimiento.X > -4800 && this.Position.Z + movimiento.Z < 4800 && this.Position.Z + movimiento.Z > -4800)
+            if (Escenario.oceano.estaDentro(this.Position + movimiento))
                 this.move(movimiento);
         }
 
-        //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
-        //mueve el barco y su boundingspehere en Y; hay que refactorearlo...
         virtual public void flotar()
         {
             //normal del mar en el punto donde se encuentra el barco
-            normal = Oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
+            normal = Escenario.oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
 
             //altura del mar en el punto de se encuentra el barco
-            float Y = Oceano.alturaEnPunto(this.Position.X, this.Position.Z);
+            float Y = Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z);
 
             //ponemos el bounding sphere a la altura donde esta el barco
             this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 60, 0));
@@ -85,24 +68,15 @@ namespace AlumnoEjemplos.RenderGroup
         //define un update overrideable para todos los barcos
         override public void update()
         {
-            this.flotar();
+            disparos.ForEach((disparo) => disparo.update());
 
-            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
-            {
-                //calculos para poder dibujar la flecha que indica la normal
-                normalDibujable.PStart = this.Position;
-                normalDibujable.PEnd = this.Position + Vector3.Multiply(normal, 200);
-                normalDibujable.updateValues();
-            }
+            this.flotar();
         }
 
         override public void render() 
         {
-            if ((bool)GuiController.Instance.Modifiers.getValue("normales"))
-            {
-                normalDibujable.render();                
-            }
-
+            disparos.ForEach(disparo => disparo.render());
+            
             base.render();
         }        
 
@@ -124,15 +98,6 @@ namespace AlumnoEjemplos.RenderGroup
             return (aceleracion > COTA_DESACELERACION || aceleracion < -COTA_DESACELERACION) ? aceleracion /= factorDesacelerativo : aceleracion = 0;
         }
 
-        override public void initData(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
-        {
-            normalDibujable = new TgcArrow();
-            normalDibujable.BodyColor = Color.Red;
-            normalDibujable.HeadColor = Color.Yellow;
-            normalDibujable.Thickness = 1f;
-            normalDibujable.HeadSize = new Vector2(2, 5);
-
-            base.initData(d3dMesh, meshName, renderType);
-        }
+        public float velocidadActual() { return VELOCIDAD * aceleracion; }
     }
 }

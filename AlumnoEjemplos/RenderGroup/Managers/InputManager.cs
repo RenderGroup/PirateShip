@@ -14,12 +14,12 @@ namespace AlumnoEjemplos.RenderGroup
 
     class InputManager
     {
-        static List<IReceptorInput> interesados = new List<IReceptorInput>();
+        static List<ReceptorInput> interesados = new List<ReceptorInput>();
 
         static public TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
 
-        public static void Add(IReceptorInput i)
+        public static void Add(ReceptorInput i)
         {
             interesados.Add(i);
         }
@@ -27,21 +27,31 @@ namespace AlumnoEjemplos.RenderGroup
         public static void ManejarInput() 
         {
             if (d3dInput.keyDown(Key.W))
-                foreach (IReceptorInput i in interesados) { i.W_apretado(); }            
+                foreach (ReceptorInput i in interesados) { i.W_apretado(); }            
 
             if (d3dInput.keyDown(Key.S))
-                foreach (IReceptorInput i in interesados) { i.S_apretado(); }
+                foreach (ReceptorInput i in interesados) { i.S_apretado(); }
 
             if (d3dInput.keyDown(Key.D))
-                foreach (IReceptorInput i in interesados) { i.D_apretado(); }
+                foreach (ReceptorInput i in interesados) { i.D_apretado(); }
 
             if (d3dInput.keyDown(Key.A))
-                foreach (IReceptorInput i in interesados) { i.A_apretado(); }
+                foreach (ReceptorInput i in interesados) { i.A_apretado(); }
 
             if (d3dInput.keyDown(Key.P))
-                foreach (IReceptorInput i in interesados) { i.P_apretado(); }
+                foreach (ReceptorInput i in interesados) { i.P_apretado(); }
+
+            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+                foreach (ReceptorInput i in interesados) { i.ClickIzquierdo(); }
+
+            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_RIGHT))
+                foreach (ReceptorInput i in interesados) { i.ClickDerecho(); }
         }
 
+        static public void DisposeReceptoresInput() 
+        {
+            interesados = null; //asigna null para que el garbage collector junte la coleccion
+        }
     }
 }
 

@@ -16,7 +16,9 @@ namespace AlumnoEjemplos.RenderGroup
         public float velocidadX;
         public float velocidadY;
         public float gravedad = 0.02f;
-        public Barco barco;
+
+        public Barco duenio;
+        public List<Barco> objetivos = new List<Barco>();
 
         //redefine el rotate para devolverse a si mismo
         public new BolaDeCanion rotateY(float angulo)
@@ -30,14 +32,23 @@ namespace AlumnoEjemplos.RenderGroup
         {
             this.mover();
 
-            base.update();
-
-            //esto tambien
-            if (Oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
+            foreach (Barco barco in objetivos)
             {
-                InteractionManager.Disparos.Remove(this);
+                if (TgcCollisionUtils.testSphereSphere(boundingSphere, barco.boundingSphere))
+                {
+                    barco.vida--;
 
-                this.dispose();
+                    barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
+
+                    desaparecer();
+
+                    return;
+                }
+            }
+
+            if (Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
+            {
+                desaparecer();
             }
         }
 
@@ -51,10 +62,11 @@ namespace AlumnoEjemplos.RenderGroup
             this.move(movimiento * VELOCIDAD * GuiController.Instance.ElapsedTime);
         }
 
-        public bool noEsDel(Barco barco) 
+        void desaparecer() 
         {
-            return barco != this.barco;
-        }
+            duenio.disparos.Remove(this);
 
+            this.dispose();
+        }
     }
 }
