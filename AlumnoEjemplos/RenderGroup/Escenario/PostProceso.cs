@@ -46,12 +46,12 @@ namespace AlumnoEjemplos.RenderGroup
                         Format.X8R8G8B8, Pool.Default);
 
             #region VALORES DE INTERPOLACION
-		        intVaivenOscurecer = new InterpoladorVaiven();
-                intVaivenOscurecer.Min = 1;
-                intVaivenOscurecer.Max = 15;
-                intVaivenOscurecer.Speed = 40f;
-                intVaivenOscurecer.reset();
-	        #endregion
+            intVaivenOscurecer = new InterpoladorVaiven();
+            intVaivenOscurecer.Min = 1;
+            intVaivenOscurecer.Max = 15;
+            intVaivenOscurecer.Speed = 40f;
+            intVaivenOscurecer.reset();
+            #endregion
         }
 
         public static void CambiarRenderState()
@@ -67,7 +67,7 @@ namespace AlumnoEjemplos.RenderGroup
             d3dDevice.SetRenderTarget(0, pSurf);
         }
 
-        public static void RenderPostProcesado()
+        public static void RenderPostProcesado(Boolean lluvia)
         {
             Device d3dDevice = GuiController.Instance.D3dDevice;
 
@@ -79,7 +79,7 @@ namespace AlumnoEjemplos.RenderGroup
             d3dDevice.SetStreamSource(0, ScreenQuad, 0);
 
             // Cargo los parametros al shader
-            bool activar_efecto = (bool)GuiController.Instance.Modifiers["lluvia"];
+            bool activar_efecto = lluvia;//(bool)GuiController.Instance.Modifiers["lluvia"];
             if (activar_efecto)
             {
                 float time = Oceano.time;
@@ -89,7 +89,8 @@ namespace AlumnoEjemplos.RenderGroup
                 if (time % 5 > 4 && randomNumber > 5)
                 {
                     Shader.Technique = "RayoTechnique";
-                } else
+                }
+                else
                     Shader.Technique = "DefaultTechnique";
             }
             else
