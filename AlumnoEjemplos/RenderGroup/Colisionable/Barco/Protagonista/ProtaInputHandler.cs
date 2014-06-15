@@ -16,7 +16,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         override public void W_apretado()
         {
-            prota.mover(prota.acelerar(Barco.ACELERACION));
+            prota.desplazarse(Barco.ACELERACION);
         }
 
         override public void A_apretado()
@@ -26,7 +26,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         override public void S_apretado()
         {
-            prota.mover(prota.acelerar(-Barco.ACELERACION));
+            prota.desplazarse(-Barco.ACELERACION);
         }
 
         override public void D_apretado()

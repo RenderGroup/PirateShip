@@ -88,5 +88,10 @@ namespace AlumnoEjemplos.RenderGroup
             disparos.ForEach(disparo => disparo.objetivos.AddRange(enemigos));
         }
 
+        public void desplazarse(float valorAceleracion) 
+        {
+            mover(acelerar(valorAceleracion));
+        }
+
     }
 }
