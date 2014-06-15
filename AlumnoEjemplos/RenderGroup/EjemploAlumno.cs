@@ -149,7 +149,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             if (llueve)
             {
-                Postproceso.RenderPostProcesado(llueve);
+                Postproceso.RenderPostProcesado();
                 // Volver a dibujar FPS
                 GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
             }
