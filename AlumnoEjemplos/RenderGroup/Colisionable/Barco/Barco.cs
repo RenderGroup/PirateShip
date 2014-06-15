@@ -68,9 +68,9 @@ namespace AlumnoEjemplos.RenderGroup
         //define un update overrideable para todos los barcos
         override public void update()
         {
-            disparos.ForEach((disparo) => disparo.update());
+            updateDisparos();
 
-            this.flotar();
+            flotar();
         }
 
         override public void render() 
@@ -99,5 +99,14 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         public float velocidadActual() { return VELOCIDAD * aceleracion; }
+
+        public void updateDisparos() { disparos.ForEach((disparo) => disparo.update()); }
+
+        virtual public void teGolpearon() 
+        {
+            vida--;
+
+            Effect.SetValue("calado", (MAX_VIDAS - vida) / MAX_VIDAS);
+        }
     }
 }

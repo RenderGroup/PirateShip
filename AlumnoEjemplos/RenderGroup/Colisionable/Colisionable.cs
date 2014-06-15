@@ -53,5 +53,12 @@ namespace AlumnoEjemplos.RenderGroup
             base.move(movimiento);
             boundingSphere.moveCenter(movimiento);
         }
+
+        new public float rotateZ(float rotacion) 
+        {
+            base.rotateZ(rotacion);
+
+            return this.Rotation.Z;
+        }
     }
 }

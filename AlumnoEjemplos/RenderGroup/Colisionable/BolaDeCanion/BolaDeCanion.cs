@@ -32,18 +32,13 @@ namespace AlumnoEjemplos.RenderGroup
         {
             this.mover();
 
-            foreach (Barco barco in objetivos)
+            Barco barcoImpactado = objetivos.Find(barco => TgcCollisionUtils.testSphereSphere(boundingSphere, barco.boundingSphere));
+
+            if (barcoImpactado != null) 
             {
-                if (TgcCollisionUtils.testSphereSphere(boundingSphere, barco.boundingSphere))
-                {
-                    barco.vida--;
+                barcoImpactado.teGolpearon();
 
-                    barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
-
-                    desaparecer();
-
-                    return;
-                }
+                desaparecer();
             }
 
             if (Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
