@@ -108,6 +108,12 @@
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Oceano.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\SmartTerrain.cs" />
     <Compile Include="RenderGroup\ModifierBotonera.cs" />
+    <Compile Include="RenderGroup\EventosEscenarioControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RenderGroup\EventosEscenarioControl.designer.cs">
+      <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgcViewer\TgcViewer.csproj">
@@ -131,6 +137,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RenderGroup\EventosEscenarioControl.resx">
+      <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

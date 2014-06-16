@@ -15,8 +15,6 @@ namespace AlumnoEjemplos.RenderGroup
     {
         static bool borrarFlag = false;
 
-        TgcSprite botonMundo;
-        TgcSprite botonGaviota;
         TgcSprite timon;
         TgcSprite barra;
         TgcAnimatedSprite lluvia;
@@ -32,7 +30,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void update()
         {
-            coordenadasMouse();
         }
 
         public void render() 
@@ -42,61 +39,14 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void dispose()
         {
-            botonMundo.dispose();
-            botonGaviota.dispose();
             timon.dispose();
             barra.dispose();
             lluvia.dispose();
             gaviota.dispose();
         }
-
-        public void coordenadasMouse() //se fija si hace clic sobre un boton
-        {
-            TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
-            //Obtener variacion XY del mouse
-            float mouseX = 0f;
-            float mouseY = 0f;
-            float botonX = botonMundo.Position.X + botonMundo.Texture.Width;
-            float botonY = botonMundo.Position.Y + botonMundo.Texture.Height;
-
-            float boton2X = botonGaviota.Position.X + botonGaviota.Texture.Width;
-            float boton2Y = botonGaviota.Position.Y + botonGaviota.Texture.Height;
-
-            if (d3dInput.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                mouseX = d3dInput.Xpos;// XposRelative;
-                mouseY = d3dInput.Ypos;// YposRelative;
-
-                if ((mouseX > botonMundo.Position.X) && (mouseX < botonX) && (mouseY > botonMundo.Position.Y) && (mouseY < botonY))
-                {
-
-                    //MessageBox.Show("CLIC EN SPRITE CUADRADO DERECHO");
-                }
-                if ((mouseX > botonGaviota.Position.X) && (mouseX < boton2X) && (mouseY > botonGaviota.Position.Y) && (mouseY < boton2Y))
-                {
-                    traslacion = -150;
-                    //Crear Sprite animado para la gaviota
-                    gaviota = new TgcAnimatedSprite(
-                        GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\gaviotas2.png", //Textura de 1024 X 1024
-                        new Size(256, 256), //Tamaño de un frame (128x128px en este caso)
-                        16, //Cantidad de frames, (son 16 de 128x128px)
-                        1 //Velocidad de animacion, en cuadros x segundo
-                        );
-                    //MessageBox.Show("CLIC EN SPRITE CUADRADO IZQUIERDO");
-                }
-            }
-        }
         public void crearSprites()
         {
-            botonMundo = new TgcSprite();
-            botonMundo.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton2z.png");
-            Size textureSize = botonMundo.Texture.Size;
-            botonMundo.Position = new Vector2(screenSize.Width - textureSize.Width, screenSize.Height - textureSize.Height);
-
-            botonGaviota = new TgcSprite();
-            botonGaviota.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton2.png");
-            textureSize = botonGaviota.Texture.Size;
-            botonGaviota.Position = new Vector2((screenSize.Width - botonMundo.Texture.Size.Width) - textureSize.Width, screenSize.Height - textureSize.Height);
+            Size textureSize;
 
             timon = new TgcSprite();
             timon.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\timon.png");
@@ -161,8 +111,6 @@ namespace AlumnoEjemplos.RenderGroup
             {
                 lluvia.updateAndRender();
             }
-            botonMundo.render();
-            botonGaviota.render();
             barra.render();
             timon.render();
 
