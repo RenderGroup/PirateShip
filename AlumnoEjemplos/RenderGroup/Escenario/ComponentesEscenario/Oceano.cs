@@ -145,31 +145,15 @@ namespace AlumnoEjemplos.RenderGroup
         public void crearModifiers()
         {
             //modifiers para el mar
-            //GuiController.Instance.Modifiers.addFloat("WorldSize", 0.1f, 1000f, currentScaleXZ); //modifica el tamano del terreno (mar)
-            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, currentScaleY*2); //modifica la altura de las olas
-            //para la luz dinamica
-            GuiController.Instance.Modifiers.addVertex3f("LightPosition", new Vector3(-100, -100, -100), new Vector3(1000, 4000, 5000), new Vector3(-100, 140, 3000));
-            GuiController.Instance.Modifiers.addFloat("Ambient", 0, 1, 0.5f);
+            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, currentScaleY * 2); //modifica la altura de las olas
 
-            GuiController.Instance.Modifiers.addFloat("k_ld", 0, 1, 0.5f);
-            GuiController.Instance.Modifiers.addFloat("k_ls", 0, 1, 0.5f);
-
-            GuiController.Instance.Modifiers.addFloat("SpecularPower", 1, 20, 7);
-
-     //modifiers que actuan solo cuando la camara esta en 3ª persona      
             //modifiers para el fog
             GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
             GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 1500.0f);
             GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 2800.0f);
-          
-     //modifiers que actuan solo cuando la camara NO esta en 3ª persona
+
             // para ver el reflejo del enviroment map sobre el agua
             GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.6f);
-            //modifiers para la transparencia del agua
-            GuiController.Instance.Modifiers.addFloat("blending", 0, 1, 0.7f);
-
-            //GuiController.Instance.UserVars.addVar("ola");
-            GuiController.Instance.Modifiers.addFloat("delta", 0.0f, 500.0f, 150f);
         }
 
         public void recargarHeightMap()
