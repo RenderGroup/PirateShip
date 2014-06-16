@@ -1,4 +1,5 @@
-﻿using Microsoft.DirectX;
+﻿
+using Microsoft.DirectX;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -51,7 +52,9 @@ namespace AlumnoEjemplos.RenderGroup
             timon = new TgcSprite();
             timon.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\timon.png");
             textureSize = timon.Texture.Size;
-            timon.Position = new Vector2(0, screenSize.Height - textureSize.Height);
+            timon.Position = new Vector2(0, screenSize.Height - (textureSize.Height / 1.8f));
+            timon.RotationCenter = new Vector2(129, 129);
+            
 
             barra = new TgcSprite();
             barra.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\barra.png");
@@ -120,6 +123,16 @@ namespace AlumnoEjemplos.RenderGroup
         public static void llueve() 
         {
             borrarFlag = !borrarFlag;
+        }
+
+        public override void A_apretado()
+        {
+            timon.Rotation += Barco.VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
+        }
+
+        public override void D_apretado()
+        {
+            timon.Rotation -= Barco.VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
         }
 
     }
