@@ -34,10 +34,6 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual new public void render()
         {
-            //si el usuario quiere ver el bounding sphere...renderizarlo
-            if ((bool)GuiController.Instance.Modifiers.getValue("showBoundingBox"))
-                this.boundingSphere.render();
-
             base.render();
         }
 

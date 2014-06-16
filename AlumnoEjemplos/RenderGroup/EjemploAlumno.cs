@@ -58,11 +58,9 @@ namespace AlumnoEjemplos.RenderGroup
 
             PostProceso.Cargar();
 
-
-            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });//Escenario
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);//InteractionManager
-            GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => protagonista.cambioLaCamara());//BarcoProta?
-            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());//skybox
+            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });
+            GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => protagonista.cambioLaCamara());
+            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
         }
 
         public override void render(float elapsedTime)
