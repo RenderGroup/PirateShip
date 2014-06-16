@@ -14,7 +14,6 @@ namespace AlumnoEjemplos.RenderGroup
         public const float currentScaleXZ = 165f;
         public const float currentScaleY = 0.8f;
         
-        static public TgcBox lightMesh = TgcBox.fromSize(new Vector3(10, 10, 10), Color.Red);
         static public Oceano oceano = new Oceano(currentScaleXZ, currentScaleY);
         static public Isla isla = new Isla();
         static public PirateSkyBox skyBox = new PirateSkyBox();
@@ -34,7 +33,7 @@ namespace AlumnoEjemplos.RenderGroup
             foreach (IUpdateRender elemento in updateables) elemento.update();
         }
 
-        static public void RenderElementos() { foreach (IUpdateRender elemento in elementos) elemento.render(); lightMesh.render(); }
+        static public void RenderElementos() { foreach (IUpdateRender elemento in elementos) elemento.render(); }
 
         static public void DisposeElementos() { foreach (IUpdateRender elemento in elementos) elemento.dispose(); }
 
