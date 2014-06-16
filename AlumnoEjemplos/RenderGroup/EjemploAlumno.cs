@@ -46,19 +46,23 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
-            crearModifiers();
-
             var GUI = new GUI();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f));
+
+            InputManager.Add(new ProtaCamInputHandler(protagonista));
+            InputManager.Add(GUI);
 
             Escenario.Add(protagonista);
             Escenario.CrearCuantosEnemigos(3);
             Escenario.Add(GUI);
 
-            InputManager.Add(new ProtaInputHandler(protagonista));
-            InputManager.Add(GUI);
-
             PostProceso.Cargar();
+
+
+            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });//Escenario
+            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);//InteractionManager
+            GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => protagonista.cambioLaCamara());//BarcoProta?
+            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());//skybox
         }
 
         public override void render(float elapsedTime)
@@ -78,15 +82,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             InputManager.DisposeReceptoresInput();
             Escenario.DisposeElementos();
-        }
-
-        public void crearModifiers()
-        {
-            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });//Escenario
-            GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);//InteractionManager
-            GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);//BarcoProta?
-            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());//skybox
-
         }
     }
 }

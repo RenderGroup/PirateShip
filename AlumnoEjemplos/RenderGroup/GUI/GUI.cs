@@ -132,7 +132,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             GuiController.Instance.Drawer2D.beginDrawSprite();
 
-            camara = (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"];
+            camara = true;//(Boolean)GuiController.Instance.Modifiers["camaraEnBarco"];
 
             if (camara)
             {

@@ -69,10 +69,10 @@ namespace AlumnoEjemplos.RenderGroup
             this.rotation.Y = FastMath.Atan2(this.DireccionXZ().X, this.DireccionXZ().Z);
 
             if (distancia > 1000f)
-                mover(acelerar(ACELERACION / 2));
+                acelerar(ACELERACION / 2);
             else
             {
-                mover(desacelerar(FACTOR_DESACELERATIVO * 1.05f));
+                desacelerar(FACTOR_DESACELERATIVO * 1.05f);
 
                 if ((DateTime.Now - cooldown).TotalSeconds > 3)
                 {

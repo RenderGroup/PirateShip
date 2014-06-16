@@ -16,7 +16,6 @@ namespace AlumnoEjemplos.RenderGroup
         public float velocidadX;
         public float velocidadY;
         public float gravedad = 0.02f;
-
         public Barco duenio;
         public List<Barco> objetivos = new List<Barco>();
 
@@ -56,12 +55,10 @@ namespace AlumnoEjemplos.RenderGroup
 
             this.move(movimiento * VELOCIDAD * GuiController.Instance.ElapsedTime);
         }
-
+        
         void desaparecer() 
         {
             duenio.disparos.Remove(this);
-
-            this.dispose();
         }
     }
 }

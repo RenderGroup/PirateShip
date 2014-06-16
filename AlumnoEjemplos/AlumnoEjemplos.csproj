@@ -92,6 +92,7 @@
     <Compile Include="RenderGroup\Colisionable\Barco\Enemigo\BarcoEnemigo.cs" />
     <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\BarcoProtagonista.cs" />
     <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\ProtaInputHandler.cs" />
+    <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\ProtaYCamInputHandler.cs" />
     <Compile Include="RenderGroup\Colisionable\BolaDeCanion\BolaDeCanion.cs" />
     <Compile Include="RenderGroup\Escenario\Escenario.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PirateSkyBox.cs" />

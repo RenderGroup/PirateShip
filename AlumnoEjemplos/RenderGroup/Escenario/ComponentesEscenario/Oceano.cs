@@ -196,8 +196,6 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
             efectoOlas.SetValue("fogStart", (float)GuiController.Instance.Modifiers["fog start"]);
             efectoOlas.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
- 
-            efectoOlas.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
             efectoOlas.SetValue("delta", (float)GuiController.Instance.Modifiers["delta"]);
             //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
@@ -205,7 +203,6 @@ namespace AlumnoEjemplos.RenderGroup
             efectoCascada.SetValue("time", Escenario.time);
             efectoCascada.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoCascada.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
-            efectoCascada.SetValue("camara3p", (Boolean)GuiController.Instance.Modifiers["camaraEnBarco"]);
             efectoCascada.SetValue("texCubeMap", cubeMap);
             efectoCascada.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
             efectoCascada.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);

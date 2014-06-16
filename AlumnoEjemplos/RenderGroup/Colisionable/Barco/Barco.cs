@@ -40,9 +40,9 @@ namespace AlumnoEjemplos.RenderGroup
             disparos.Add( Construir.Canionazo(this).rotateY(-FastMath.PI_HALF / 3) );
         }
 
-        public void mover(float cantidad) 
+        public void mover() 
         {
-            Vector3 movimiento = DireccionXZ() * VELOCIDAD * cantidad * GuiController.Instance.ElapsedTime;
+            Vector3 movimiento = DireccionXZ() * VELOCIDAD * aceleracion * GuiController.Instance.ElapsedTime;
 
             if (Escenario.oceano.estaDentro(this.Position + movimiento))
                 this.move(movimiento);
@@ -69,6 +69,8 @@ namespace AlumnoEjemplos.RenderGroup
         override public void update()
         {
             updateDisparos();
+
+            mover();
 
             flotar();
         }
