@@ -46,7 +46,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
-            var GUI = new GUI();
+            var GUI = new HUB();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f));
 
             InputManager.Add(new ProtaCamInputHandler(protagonista));
@@ -59,7 +59,7 @@ namespace AlumnoEjemplos.RenderGroup
             PostProceso.Cargar();
 
             GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario", this));
-            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });
+            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); HUB.llueve(); });
             GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => protagonista.cambioLaCamara());
             GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
         }

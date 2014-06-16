@@ -12,7 +12,7 @@ using TgcViewer.Utils.TgcSceneLoader;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class GUI : ReceptorInput, IUpdateRender
+    class HUB : ReceptorInput, IUpdateRender
     {
         static bool borrarFlag = false;
 
@@ -24,7 +24,7 @@ namespace AlumnoEjemplos.RenderGroup
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Boolean camara;
 
-        public GUI()
+        public HUB()
         {
             crearSprites();
         }
