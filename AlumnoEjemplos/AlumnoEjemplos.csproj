@@ -97,7 +97,7 @@
     <Compile Include="RenderGroup\Escenario\Escenario.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PirateSkyBox.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PostProceso.cs" />
-    <Compile Include="RenderGroup\GUI\GUI.cs" />
+    <Compile Include="RenderGroup\GUI\HUB.cs" />
     <Compile Include="RenderGroup\Interfaces\IUpdateRender.cs" />
     <Compile Include="RenderGroup\Interfaces\ReceptorInput.cs" />
     <Compile Include="RenderGroup\Factory\ConstructorDeElementos.cs" />
@@ -107,11 +107,11 @@
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Isla.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Oceano.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\SmartTerrain.cs" />
-    <Compile Include="RenderGroup\ModifierBotonera.cs" />
-    <Compile Include="RenderGroup\EventosEscenarioControl.cs">
+    <Compile Include="RenderGroup\GUI\ModifierBotonera.cs" />
+    <Compile Include="RenderGroup\GUI\EventosEscenarioControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RenderGroup\EventosEscenarioControl.designer.cs">
+    <Compile Include="RenderGroup\GUI\EventosEscenarioControl.designer.cs">
       <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -139,7 +139,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="RenderGroup\EventosEscenarioControl.resx">
+    <EmbeddedResource Include="RenderGroup\GUI\EventosEscenarioControl.resx">
       <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
