@@ -169,28 +169,20 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
-            Vector3 lightPosition = (Vector3)GuiController.Instance.Modifiers["LightPosition"];//new Vector3(-100, 140, 3000);//
             efectoOlas.SetValue("time", Escenario.time);
-            efectoOlas.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
-            efectoOlas.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
-            efectoOlas.SetValue("k_ld", (float)GuiController.Instance.Modifiers["k_ld"]);
-            efectoOlas.SetValue("k_ls", (float)GuiController.Instance.Modifiers["k_ls"]);
-            efectoOlas.SetValue("fSpecularPower", (float)GuiController.Instance.Modifiers["SpecularPower"]);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
             efectoOlas.SetValue("fogStart", (float)GuiController.Instance.Modifiers["fog start"]);
             efectoOlas.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
-            efectoOlas.SetValue("delta", (float)GuiController.Instance.Modifiers["delta"]);
+
+            efectoOlas.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
             //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
 
             efectoCascada.SetValue("time", Escenario.time);
             efectoCascada.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
-            efectoCascada.SetValue("fvLightPosition", TgcParserUtils.vector3ToFloat3Array(lightPosition));
             efectoCascada.SetValue("texCubeMap", cubeMap);
             efectoCascada.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
-            efectoCascada.SetValue("blendAmount", (float)GuiController.Instance.Modifiers["blending"]);
-            efectoCascada.SetValue("k_la", (float)GuiController.Instance.Modifiers["Ambient"]);
         }
         #endregion
 
