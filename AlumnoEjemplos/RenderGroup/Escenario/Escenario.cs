@@ -11,39 +11,38 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class Escenario
     {
-        public const float currentScaleXZ = 165f;
-        public const float currentScaleY = 0.8f;
-        
-        static public Oceano oceano = new Oceano(currentScaleXZ, currentScaleY);
-        static public Isla isla = new Isla();
-        static public PirateSkyBox skyBox = new PirateSkyBox();
+        static public List<CamaraObserver> CamObservers = new List<CamaraObserver>();
+        static public List<LluviaObserver> LluviaObservers = new List<LluviaObserver>();
+        static public List<TemperaturaObserver> TemperaturaObservers = new List<TemperaturaObserver>();
 
-        static public List<IUpdateRender> elementos = new List<IUpdateRender> { skyBox, isla, oceano };
+        static public List<IUpdateRender> elementos;
 
         public static float time = 0;
         static bool lluvia = false;
 
         static public void UpdateElementos() 
         {
-            //usando "elementos" directamente hay un error por modificacion de lista en iteracion
+            //usando "elementos" directamente hay un error por modificacion de lista en iteracion cuando hay que quitar un enemigo
             var updateables = new List<IUpdateRender>(elementos);
 
             Escenario.time += GuiController.Instance.ElapsedTime;
 
-            foreach (IUpdateRender elemento in updateables) elemento.update();
+            updateables.ForEach(elemento => elemento.update());
         }
 
-        static public void RenderElementos() { foreach (IUpdateRender elemento in elementos) elemento.render(); }
+        static public void RenderElementos() { elementos.ForEach(elemento => elemento.render()); }
 
-        static public void DisposeElementos() { foreach (IUpdateRender elemento in elementos) elemento.dispose(); }
+        static public void DisposeElementos() { elementos.ForEach(elemento => elemento.dispose()); }
 
-        static public void CrearCuantosEnemigos(int cuantos) { for (int i = 0; i < cuantos; i++) Add(Construir.Enemigo()); }
+        static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) { for (int i = 0; i < cuantos; i++) Add(Construir.Enemigo(oceano)); }
 
-        static public void llueve() { oceano.mar.Effect.SetValue("llueve", lluvia = !lluvia); }
+        static public void CambioLluvia() { }//oceano.mar.Effect.SetValue("llueve", lluvia = !lluvia); }
+
+        static public void CambioLaCamara() { CamObservers.ForEach(observer => observer.cambioLaCamara()); }
 
         static public void BotonDiaNoche_Click() 
         {
-            skyBox.botonDiaNoche_Click(isla, oceano);
+            //skyBox.botonDiaNoche_Click(isla, oceano);
         }
 
         static public void Add(IUpdateRender elemento) { elementos.Add(elemento); }

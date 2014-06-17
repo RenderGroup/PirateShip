@@ -34,9 +34,6 @@ sampler2D calar = sampler_state
 };
 
 float blendStart = 2000;
-float calado = 0.1;//nivel de calado, valores entre 0.0 (sin calar) y 1.0 (calado maximo, depende de la textura texCalar)
-
-float sangre = 1;
 /**************************************************************************************/
 /* RenderScene */
 /**************************************************************************************/
@@ -68,9 +65,7 @@ VS_OUTPUT vs_main( VS_INPUT Input )
     // Se establece el vértice transformado como nueva posición
     Output.Position = mul( Input.Position, matWorldViewProj);
 
-    Output.Pos2.x = Input.Position.x;
-    Output.Pos2.y = Input.Position.y;
-    Output.Pos2.z = Output.Position.z;
+    Output.Pos2 = Output.Position;
 	
     //Propago las coordenadas de textura
     Output.Texcoord = Input.Texcoord;
@@ -78,89 +73,53 @@ VS_OUTPUT vs_main( VS_INPUT Input )
     return( Output );  
 }
 
-// ------------------------------------------------------------------
 
-//Pixel Shader 
-float4 ps_main( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+//Pixel Shader para el muelle
+float4 ps_muelle( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	float4 calarColor = tex2D( calar, Texcoord);
-
-    float bloodfactor = (85.0f - Pos2.y ) / 15.0f * sangre;// (fogEnd - y) /(fogEnd - fogStart)
-
-	if (bloodfactor > 0)
-	{
-	fvBaseColor.r = fvBaseColor.r * bloodfactor / sangre / 1.8;
-	fvBaseColor.g = fvBaseColor.g /  sangre / 1.12;
-	fvBaseColor.b = fvBaseColor.b /  bloodfactor / 1.12 ;
-	}
 
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
 
-	if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
-	{
-			fvBaseColor.a = 0.0f;//descarta el pixel y no se ve por pantalla
-	}
-	else
-	{
-			fvBaseColor.a = blendfactor;
-	}
-
+	fvBaseColor.a = blendfactor;
+	 
     return fvBaseColor;
 }
 
-//Pixel Shader de noche
-float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+//Pixel Shader para el muelle congelado
+float4 ps_muelleHielo( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
+    float4 blanco =  float4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	float4 calarColor = tex2D( calar, Texcoord);
-	float4 negro =  float4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	float bloodfactor = (85.0f - Pos2.y ) / 15.0f * sangre;// (fogEnd - y) /(fogEnd - fogStart)
-	if (bloodfactor > 0)
-	{
-	fvBaseColor.r = fvBaseColor.r * bloodfactor / sangre / 1.8;
-	fvBaseColor.g = fvBaseColor.g /  sangre / 1.12;
-	fvBaseColor.b = fvBaseColor.b /  bloodfactor / 1.12 ;
-	}
-
-	fvBaseColor =(fvBaseColor * 0.5) + ( negro * 0.5);
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
+	fvBaseColor = (fvBaseColor * 0.7) + (blanco * 0.3);
+	fvBaseColor =(fvBaseColor * 2);
 
-	if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
-	{
-			fvBaseColor.a = 0.0f;//descarta el pixel y no se ve por pantalla
-	}
-	else
-	{
-			fvBaseColor.a = blendfactor;
-	}
+	fvBaseColor.a = blendfactor;
+	 
     return fvBaseColor;
 }
 
-//Pixel Shader de con nieve
-float4 ps_Hielo( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
+//Pixel Shader para el muelle de noche
+float4 ps_muelleNoche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
 {      
+    float4 negro =  float4(0.0f, 0.0f, 0.0f, 1.0f);
+
 	//Obtener el texel de textura
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
-	float4 calarColor = tex2D( calar, Texcoord);
-	
-	fvBaseColor =(fvBaseColor * 3);
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
+	fvBaseColor = (fvBaseColor * 0.5) + (negro * 0.5);
+	//fvBaseColor =(fvBaseColor * 2);
 
-	if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
-	{
-			fvBaseColor.a = 0.0f;//descarta el pixel y no se ve por pantalla
-	}
-	else
-	{
-			fvBaseColor.a = blendfactor;
-	}
-
+	fvBaseColor.a = blendfactor;
+	 
     return fvBaseColor;
 }
+
+
 // ------------------------------------------------------------------
 technique RenderScene
 {
@@ -171,21 +130,7 @@ technique RenderScene
           DestBlend= INVSRCALPHA;
           SrcBlend= SRCALPHA;
 		  VertexShader = compile vs_2_0 vs_main();
-		  PixelShader = compile ps_2_0 ps_main();
-   }
-
-}
-
-technique RenderSceneNoche
-{
-   pass Pass_0
-
-   {
-          AlphaBlendEnable =TRUE;
-          DestBlend= INVSRCALPHA;
-          SrcBlend= SRCALPHA;
-		  VertexShader = compile vs_2_0 vs_main();
-		  PixelShader = compile ps_2_0 ps_Noche();
+		  PixelShader = compile ps_2_0 ps_muelle();
    }
 
 }
@@ -199,10 +144,25 @@ technique RenderSceneCongelada
           DestBlend= INVSRCALPHA;
           SrcBlend= SRCALPHA;
 		  VertexShader = compile vs_2_0 vs_main();
-		  PixelShader = compile ps_2_0 ps_Hielo();
+		  PixelShader = compile ps_2_0 ps_muelleHielo();
    }
 
 }
+
+technique RenderSceneNoche
+{
+   pass Pass_0
+
+   {
+          AlphaBlendEnable =TRUE;
+          DestBlend= INVSRCALPHA;
+          SrcBlend= SRCALPHA;
+		  VertexShader = compile vs_2_0 vs_main();
+		  PixelShader = compile ps_2_0 ps_muelleNoche();
+   }
+
+}
+
 
 technique RenderSceneNocheCongelada
 {
@@ -213,7 +173,7 @@ technique RenderSceneNocheCongelada
           DestBlend= INVSRCALPHA;
           SrcBlend= SRCALPHA;
 		  VertexShader = compile vs_2_0 vs_main();
-		  PixelShader = compile ps_2_0 ps_Noche();
+		  PixelShader = compile ps_2_0 ps_muelleNoche();
    }
 
 }

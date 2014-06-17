@@ -46,22 +46,22 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
-            var GUI = new HUB();
-            var protagonista = Construir.Protagonista(new Vector2(0, -930f));
+            cargarModifiers();
 
+            var oceano = new Oceano();
+            var skyBox = new PirateSkyBox();
+            var muelle = new Muelle();
+            var isla = new Isla();
+            var HUB = new HUB();
+            var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
+            
+            Escenario.elementos = new List<IUpdateRender> { skyBox, isla, oceano, muelle, protagonista, HUB };
+            Escenario.CrearCuantosEnemigos(3, oceano);
+            
             InputManager.Add(new ProtaCamInputHandler(protagonista));
-            InputManager.Add(GUI);
-
-            Escenario.Add(protagonista);
-            Escenario.CrearCuantosEnemigos(3);
-            Escenario.Add(GUI);
+            InputManager.Add(HUB);
 
             PostProceso.Cargar();
-
-            GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario", this));
-            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); HUB.llueve(); });
-            GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => protagonista.cambioLaCamara());
-            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
         }
 
         public override void render(float elapsedTime)
@@ -82,5 +82,19 @@ namespace AlumnoEjemplos.RenderGroup
             InputManager.DisposeReceptoresInput();
             Escenario.DisposeElementos();
         }
+
+        void cargarModifiers() 
+        {
+            GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario", this));
+            GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => Escenario.CambioLaCamara());
+            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
+            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, 1.6f);
+            GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
+            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 1500.0f);
+            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 2800.0f);
+            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.6f);
+
+        }
+
     }
 }

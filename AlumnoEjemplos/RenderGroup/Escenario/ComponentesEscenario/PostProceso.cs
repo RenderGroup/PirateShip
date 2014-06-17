@@ -122,7 +122,7 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Text3d.drawText("FPS: " + HighResolutionTimer.Instance.FramesPerSecond, 0, 0, Color.Yellow);
         }
 
-        public static void Llueve() 
+        public static void cambioLluvia() 
         {
             if (CambiarRenderState.Equals(RenderPostProcesado))
             {

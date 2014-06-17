@@ -27,13 +27,11 @@ namespace AlumnoEjemplos.RenderGroup
         string currentTexture;
         string currentHeightmap2;
         string currentTexture2;
-        float currentScaleXZ;
-        float currentScaleY;
+        float currentScaleXZ = 165f;
+        float currentScaleY = 0.8f;
 
-        public Oceano(float XZ, float Y)
+        public Oceano()
         {
-            currentScaleXZ = XZ;
-            currentScaleY = Y;
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             //Cargar textura de CubeMap para Environment Map
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
@@ -86,7 +84,7 @@ namespace AlumnoEjemplos.RenderGroup
             Vector2 texCoords;
             mar.xzToHeightmapCoords(X, Z, out texCoords);
             float frecuencia = 10;
-            float ola   =    frecuencia    * FastMath.Sin(texCoords.X / 5 -   time  ) *    frecuencia    * FastMath.Cos(texCoords.Y / 2 -   time  );
+            float ola   =    frecuencia    * FastMath.Sin(texCoords.X / 5 -   time  ) *    frecuencia    * FastMath.Cos(texCoords.Y / 5 -   time  );
             return (ola + heighM) * scaleY;
         }
 
@@ -144,16 +142,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void crearModifiers()
         {
-            //modifiers para el mar
-            GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, currentScaleY * 2); //modifica la altura de las olas
 
-            //modifiers para el fog
-            GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
-            GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 1500.0f);
-            GuiController.Instance.Modifiers.addFloat("blend start", 500.0f, 7000.0f, 2800.0f);
-
-            // para ver el reflejo del enviroment map sobre el agua
-            GuiController.Instance.Modifiers.addFloat("reflection", 0, 1, 0.6f);
         }
 
         public void recargarHeightMap()
@@ -169,6 +158,10 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
+            //float sangre = InteractionManager.contadorMuertos;//agregado*
+            efectoOlas.SetValue("sangre", 1);//agregado*
+
+
             efectoOlas.SetValue("time", Escenario.time);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));

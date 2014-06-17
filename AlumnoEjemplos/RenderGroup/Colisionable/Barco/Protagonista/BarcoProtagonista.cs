@@ -14,7 +14,7 @@ using TgcViewer.Utils.Terrain;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class BarcoProtagonista : Barco
+    class BarcoProtagonista : Barco, CamaraObserver
     {
         public List<BarcoEnemigo> enemigos = new List<BarcoEnemigo>();
         public DateTime cooldown = DateTime.Now;

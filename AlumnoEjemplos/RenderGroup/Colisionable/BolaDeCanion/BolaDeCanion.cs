@@ -17,6 +17,7 @@ namespace AlumnoEjemplos.RenderGroup
         public float velocidadY;
         public float gravedad = 0.02f;
         public Barco duenio;
+        public Oceano oceano;
         public List<Barco> objetivos = new List<Barco>();
 
         //redefine el rotate para devolverse a si mismo
@@ -40,7 +41,7 @@ namespace AlumnoEjemplos.RenderGroup
                 desaparecer();
             }
 
-            if (Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
+            if (oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 0.03f > this.Position.Y)
             {
                 desaparecer();
             }

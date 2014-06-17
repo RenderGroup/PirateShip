@@ -20,7 +20,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public delegate void UpdateVariante();
 
-        new public UpdateVariante updateVariante;
+        public UpdateVariante updateVariante;
 
         public BarcoEnemigo() { updateVariante = updateVivo; }
 
@@ -49,11 +49,11 @@ namespace AlumnoEjemplos.RenderGroup
         {
             if (protagonista.enemigos.Contains(this)) protagonista.enemigos.Remove(this);
 
-            this.Position = new Vector3(this.Position.X, Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z) + 10, this.Position.Z);
+            this.Position = new Vector3(this.Position.X, oceano.alturaEnPunto(this.Position.X, this.Position.Z) + 10, this.Position.Z);
 
             if (this.rotateZ(0.007f) > FastMath.PI)
             {
-                Escenario.CrearCuantosEnemigos(new Random().Next(3) + 1);   //cuando muere crea entre 1 y 3 enemigos nuevos
+                Escenario.CrearCuantosEnemigos(new Random().Next(3) + 1, oceano);   //cuando muere crea entre 1 y 3 enemigos nuevos
                 Escenario.Remove(this);                                     //y se encarga de limpiarse
                 this.dispose();
             }

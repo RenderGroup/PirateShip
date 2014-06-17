@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using TgcViewer.Utils.TgcSceneLoader;
-using TgcViewer.Utils.Terrain;
+﻿using TgcViewer.Utils.Terrain;
 using TgcViewer.Utils.Shaders;
 using TgcViewer;
-using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX;
-using TgcViewer.Utils.Modifiers;
-using TgcViewer.Utils.TgcGeometry;
-using System.Drawing;
 
 
 namespace AlumnoEjemplos.RenderGroup
@@ -19,8 +12,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         public Isla()
         {
-            crearHeightmaps();
             cargarShaders();
+            crearHeightmaps();
         }
 
         public void update() 
@@ -48,14 +41,14 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         public void cargarShaders()
-        {
+        {            
             suelo.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderIsla.fx");
             suelo.Technique = "RenderScene";
         }
 
         public void setShadersValues()
         {
-            suelo.Effect.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);            
+            suelo.Effect.SetValue("fogStart", (float)GuiController.Instance.Modifiers["blend start"]);            
         }
 
         public void cambiarTechnique(string technique) 

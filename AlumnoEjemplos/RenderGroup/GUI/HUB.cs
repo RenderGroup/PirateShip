@@ -120,7 +120,7 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.Drawer2D.endDrawSprite();
         }
 
-        public static void llueve() 
+        public static void cambioLluvia() 
         {
             borrarFlag = !borrarFlag;
         }
@@ -133,7 +133,6 @@ namespace AlumnoEjemplos.RenderGroup
         public override void D_apretado()
         {
             timon.Rotation -= Barco.VELOCIDAD_ROTACION * GuiController.Instance.ElapsedTime;
-        }
-
+        } 
     }
 }

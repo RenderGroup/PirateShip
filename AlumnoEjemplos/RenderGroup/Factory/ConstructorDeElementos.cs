@@ -50,28 +50,29 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
         //metodo de clase que construye un barco - necesario para poder instanciar barcos y que sean TgcMesh
-        static public Barco Barco(string path, Vector3 pos, float radioElipsoide, TipoElemento tipoBarco)
+        static public Barco Barco(string path, Vector3 pos, float radioElipsoide, Oceano oceano, TipoElemento tipoBarco)
         {
             //cuando mergee tengo que sacar la altura del Oceano
-            Vector3 posAlturaDelOceano = new Vector3(pos.X, Escenario.oceano.alturaEnPunto(pos.X, pos.Y), pos.Y); 
+            Vector3 posAlturaDelOceano = new Vector3(pos.X, oceano.alturaEnPunto(pos.X, pos.Y), pos.Y); 
 
             return (Barco)Elemento(path, posAlturaDelOceano, radioElipsoide, tipoBarco);
         }
 
         //overload del builder de un barco que carga el mesh del barco pirata default
-        static public Barco BarcoDefault(Vector3 position, TipoElemento tipo) 
+        static public Barco BarcoDefault(Vector3 position, Oceano oceano, TipoElemento tipo) 
         {
-            Barco barco = Construir.Barco(defaultBarcoPath, position, 70f, tipo);
+            Barco barco = Construir.Barco(defaultBarcoPath, position, 70f, oceano, tipo);
 
             barco.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
             barco.Technique = "RenderScene";
             barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
             barco.Effect.SetValue("calado", 0f);
+            barco.oceano = oceano;
 
             return barco;
         }
 
-        static public BarcoEnemigo Enemigo()
+        static public BarcoEnemigo Enemigo(Oceano oceano)
         {
             //angulo aleatoreo: 2pi*rand(0,1)
             float angulo = FastMath.TWO_PI * (float)new Random().NextDouble(); 
@@ -80,9 +81,9 @@ namespace AlumnoEjemplos.RenderGroup
             var posicion = new Vector3(FastMath.Cos(angulo), FastMath.Sin(angulo) , 0)*RADIO_RESPAWN - protagonista.Position;
             
             //si la posicion cae fuera del oceano: lo pongo en el centro(si pasa eso el protagonista esta lejos del centro)
-            posicion = Escenario.oceano.estaDentro(posicion) ? posicion : new Vector3(0, -930f, 0);
+            posicion = oceano.estaDentro(posicion) ? posicion : new Vector3(0, -930f, 0);
 
-            BarcoEnemigo enemigo = (BarcoEnemigo)BarcoDefault(posicion, TipoElemento.BarcoEnemigo);
+            BarcoEnemigo enemigo = (BarcoEnemigo)BarcoDefault(posicion, oceano, TipoElemento.BarcoEnemigo);
 
             if (protagonista == null) throw new Exception("Antes de construir enemigos debe construirse un protagonista");
 
@@ -92,14 +93,14 @@ namespace AlumnoEjemplos.RenderGroup
             return enemigo;
         }
 
-        static public BarcoProtagonista Protagonista(Vector2 position) 
+        static public BarcoProtagonista Protagonista(Vector2 position, Oceano oceano) 
         {
-            protagonista = (BarcoProtagonista)BarcoDefault(new Vector3(position.X, position.Y, 0), TipoElemento.BarcoProtagonista);
+            protagonista = (BarcoProtagonista)BarcoDefault(new Vector3(position.X, position.Y, 0), oceano, TipoElemento.BarcoProtagonista);
 
             return protagonista;
         }
 
-        static public BolaDeCanion Canionazo(Barco barco)
+        static public BolaDeCanion Canionazo(Barco barco, Oceano oceano)
         {
             //lo pongo un poco mas arriba para que no empiece en la altura del mar
             Vector3 posicion = barco.Position;
@@ -107,6 +108,10 @@ namespace AlumnoEjemplos.RenderGroup
      
             //creamos un disparo
             BolaDeCanion disparo = (BolaDeCanion)Elemento(defaultBolaCanion, posicion, 30f, TipoElemento.BolaCanion);
+
+            disparo.oceano = oceano;
+
+            shaderCanionazos.SetValue("sangre", 0);
 
             //asignamos shader
             disparo.Effect = shaderCanionazos;

@@ -20,6 +20,7 @@ namespace AlumnoEjemplos.RenderGroup
         //normal en la superficie donde esta flotando el barco
         Vector3 normal;
         
+        public Oceano oceano;
         public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
         public List<BolaDeCanion> disparos = new List<BolaDeCanion>();
@@ -36,25 +37,25 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual public void disparar()
         {
-            disparos.Add( Construir.Canionazo(this).rotateY(FastMath.PI_HALF / 3) );
-            disparos.Add( Construir.Canionazo(this).rotateY(-FastMath.PI_HALF / 3) );
+            disparos.Add( Construir.Canionazo(this, oceano).rotateY(FastMath.PI_HALF / 3) );
+            disparos.Add( Construir.Canionazo(this, oceano).rotateY(-FastMath.PI_HALF / 3) );
         }
 
         public void mover() 
         {
             Vector3 movimiento = DireccionXZ() * VELOCIDAD * aceleracion * GuiController.Instance.ElapsedTime;
 
-            if (Escenario.oceano.estaDentro(this.Position + movimiento))
+            if (oceano.estaDentro(this.Position + movimiento))
                 this.move(movimiento);
         }
 
         virtual public void flotar()
         {
             //normal del mar en el punto donde se encuentra el barco
-            normal = Escenario.oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
+            normal = oceano.normalEnPuntoXZ(this.Position.X, this.Position.Z);
 
             //altura del mar en el punto de se encuentra el barco
-            float Y = Escenario.oceano.alturaEnPunto(this.Position.X, this.Position.Z);
+            float Y = oceano.alturaEnPunto(this.Position.X, this.Position.Z);
 
             //ponemos el bounding sphere a la altura donde esta el barco
             this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 60, 0));
