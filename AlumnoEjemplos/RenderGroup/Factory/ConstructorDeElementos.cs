@@ -24,8 +24,9 @@ namespace AlumnoEjemplos.RenderGroup
     {
         static public Effect shaderCanionazos = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
 
-        static public string defaultBarcoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirata-TgcScene.xml";
+        static public string defaultBarcoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirataStandar-TgcScene.xml";
         static public string defaultBolaCanion = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Sphere-TgcScene.xml";
+        static public string defaultBandera = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\bandera-TgcScene.xml";
         
         static public BarcoProtagonista protagonista;
 

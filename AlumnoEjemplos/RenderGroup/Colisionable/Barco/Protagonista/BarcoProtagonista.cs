@@ -86,6 +86,9 @@ namespace AlumnoEjemplos.RenderGroup
             base.disparar();
 
             disparos.ForEach(disparo => disparo.objetivos.AddRange(enemigos));
+
+            AudioManager.Disparo.play();
+
         }
 
     }

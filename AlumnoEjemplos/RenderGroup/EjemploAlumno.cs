@@ -12,7 +12,6 @@ using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.Input;
 using Microsoft.DirectX.DirectInput;
 using TgcViewer.Utils.Terrain;
-using TgcViewer.Utils.Collision.ElipsoidCollision;
 using TgcViewer.Utils.Shaders;
 using System.Windows.Forms;
 using TgcViewer.Utils._2D;
@@ -59,6 +58,8 @@ namespace AlumnoEjemplos.RenderGroup
             InputManager.Add(GUI);
 
             PostProceso.Cargar();
+
+            AudioManager.Cargar();
         }
 
         public override void render(float elapsedTime)
@@ -72,17 +73,20 @@ namespace AlumnoEjemplos.RenderGroup
             Escenario.RenderElementos();
 
             PostProceso.RenderPostProcesado();
+
+            AudioManager.ReproducirMusicaDeFondo();
         }
 
         public override void close()
         {
             InputManager.DisposeReceptoresInput();
+            AudioManager.Dispose();
             Escenario.DisposeElementos();
         }
 
         public void crearModifiers()
         {
-            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); });//Escenario
+            GuiController.Instance.Modifiers.addButton("lluvia", "lluvia", (o, e) => { PostProceso.Llueve(); Escenario.llueve(); GUI.llueve(); AudioManager.llueve(); });//Escenario
             GuiController.Instance.Modifiers.addBoolean("showBoundingBox", "Bounding Box", false);//InteractionManager
             GuiController.Instance.Modifiers.addBoolean("camaraEnBarco", "Camara 3a persona", true);//BarcoProta?
             GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());//skybox

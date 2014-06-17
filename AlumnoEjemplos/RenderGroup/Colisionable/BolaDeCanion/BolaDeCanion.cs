@@ -36,6 +36,8 @@ namespace AlumnoEjemplos.RenderGroup
             {
                 if (TgcCollisionUtils.testSphereSphere(boundingSphere, barco.boundingSphere))
                 {
+                    AudioManager.Impacto.play();
+
                     barco.vida--;
 
                     barco.Effect.SetValue("calado", (Barco.MAX_VIDAS - barco.vida) / Barco.MAX_VIDAS);
