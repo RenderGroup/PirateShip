@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.RenderGroup
             if (Position.X > GuiController.Instance.Panel3d.Size.Width)
             {
                 Position = new Vector2(-150, Position.Y);
-                Escenario.Remove(this);
+                Escenario.Remover(this);
             }
         }
         

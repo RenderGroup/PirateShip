@@ -20,12 +20,12 @@ namespace AlumnoEjemplos.RenderGroup
 
         override public void W_apretado()
         {
-            setearAceleracionProta(Barco.ACELERACION);
+            setearAceleracionProta(prota.ACELERACION_INSTANTANEA);
         }
 
         override public void S_apretado()
         {
-            setearAceleracionProta(-Barco.ACELERACION);
+            setearAceleracionProta(-prota.ACELERACION_INSTANTANEA);
         }
 
         override public void D_apretado()

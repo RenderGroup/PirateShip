@@ -14,7 +14,7 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano : IUpdateRender, LluviaObserver
+    class Oceano : IUpdateRender, ILluviaObserver, ITemperaturaObserver, INocheDiaObserver
     {
         public const float LIMITE = 4800;
 
@@ -31,14 +31,20 @@ namespace AlumnoEjemplos.RenderGroup
         float currentScaleY = 0.8f;
         bool lluvia = false;
 
+        public delegate float CalculoDeAlturaEnPunto(float X, float Y);
+
+        public CalculoDeAlturaEnPunto alturaEnPunto;
+
         public Oceano()
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            //Cargar textura de CubeMap para Environment Map
+            
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-            crearModifiers(); 
+            
             crearHeightmaps();
             cargarShaders();
+
+            alturaEnPunto = alturaEnPuntoDescongelado;
         }
         
         public void render()
@@ -61,23 +67,9 @@ namespace AlumnoEjemplos.RenderGroup
             this.setShadersValues();
         }
 
-        public void cambiarCubeMap(Boolean diaNoche)
-        {
-            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            if (diaNoche)
-            {
-                //Cargar textura de CubeMap para Environment Map
-                cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-            }
-            else
-            {
-                //Cargar textura de CubeMap para Environment Map
-                cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemapNoche.dds");
-            }
-        }
-        //refactorear esto...
+
         //dice la altura de un punto sobre el mar tomando en cuenta al shader
-        public float alturaEnPunto(float X, float Z)
+        public float alturaEnPuntoDescongelado(float X, float Z)
         {
             float time = Escenario.time;
             float heighM = 90;
@@ -88,6 +80,8 @@ namespace AlumnoEjemplos.RenderGroup
             float ola   =    frecuencia    * FastMath.Sin(texCoords.X / 5 -   time  ) *    frecuencia    * FastMath.Cos(texCoords.Y / 5 -   time  );
             return (ola + heighM) * scaleY;
         }
+
+        public float alturaEnPuntoCongelado(float X, float Y) { return 0; }
 
 
         public Vector3 normalEnPuntoXZ(float X, float Z/*, float momento*/)
@@ -141,10 +135,6 @@ namespace AlumnoEjemplos.RenderGroup
             mar.Technique = technique;
         }
 
-        public void crearModifiers()
-        {
-
-        }
 
         public void recargarHeightMap()
         {
@@ -190,6 +180,43 @@ namespace AlumnoEjemplos.RenderGroup
             efectoOlas.SetValue("llueve", lluvia = !lluvia); 
         }
 
+
+        public void huboCongelamiento(string Technique)
+        {
+            setTechnique(Technique);
+
+            alturaEnPunto = alturaEnPuntoCongelado;
+        }
+
+        public void huboDescongelamiento(string Technique)
+        {
+            setTechnique(Technique);
+
+            alturaEnPunto = alturaEnPuntoDescongelado;
+        }
+
+        public void seHizoDeDia(string Technique)
+        {
+            setTechnique(Technique);
+
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+            
+            cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
+        }
+
+        public void seHizoDeNoche(string Technique)
+        {
+            setTechnique(Technique);
+
+            Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
+
+            cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemapNoche.dds");
+        }
+
+        public void setTechnique(string Technique)
+        {
+            mar.Technique = cascada.Technique = Technique;
+        }
     }
 
 }

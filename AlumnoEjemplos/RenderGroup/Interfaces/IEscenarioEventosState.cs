@@ -5,8 +5,10 @@ using System.Text;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    interface CamaraObserver
+    interface IEscenarioEventosState
     {
-        void cambioLaCamara();
+        void cambioNocheDia();
+
+        void cambioTemperatura();
     }
 }

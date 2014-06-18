@@ -5,8 +5,8 @@ using System.Text;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    interface TemperaturaObserver
+    interface ILluviaObserver
     {
-        void cambioTemperatura();
+        void cambioLluvia();
     }
 }

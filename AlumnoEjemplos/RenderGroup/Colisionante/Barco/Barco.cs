@@ -15,23 +15,23 @@ namespace AlumnoEjemplos.RenderGroup
 {
     //Un barco es un colisionable, ya que sera chequeado contra colisiones de cañonazos y otros barcos
     //Los barcos saben acelerar y desacelerar (punto del enunciado), flotar a la altura del agua y pegar cañonazos
-    class Barco : Colisionable
+    class Barco : Colisionante, INocheDiaObserver, ITemperaturaObserver
     {
-        //normal en la superficie donde esta flotando el barco
         Vector3 normal;
-        
         public Oceano oceano;
-        public float vida = MAX_VIDAS;
-        public float aceleracion = 0f;
         public List<BolaDeCanion> disparos = new List<BolaDeCanion>();
 
+        public float vida = MAX_VIDAS;
+        public float aceleracion = 0f;
+
+        public float ACELERACION_MAX = 3f;
+        public float ACELERACION_INSTANTANEA = 0.02f;
+
         #region CONSTANTES
-        public const float ACELERACION = 0.02f;
         public const float VELOCIDAD = 300f;
         public const float VELOCIDAD_ROTACION = .7f;
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
-        public const float ACELERACION_MAX = 3f;
         public const float MAX_VIDAS = 4;
         #endregion
 
@@ -110,6 +110,31 @@ namespace AlumnoEjemplos.RenderGroup
             vida--;
 
             Effect.SetValue("calado", (MAX_VIDAS - vida) / MAX_VIDAS);
+        }
+
+        virtual public void seHizoDeDia(string Technique)
+        {
+            setTechnique(Technique);
+        }
+
+        virtual public void seHizoDeNoche(string Technique)
+        {
+            setTechnique(Technique);
+        }
+
+        virtual public void huboCongelamiento(string Technique)
+        {
+            setTechnique(Technique);
+        }
+
+        virtual public void huboDescongelamiento(string Technique)
+        {
+            setTechnique(Technique);
+        }
+
+        virtual public void setTechnique(string Technique)
+        {
+            this.Technique = Technique;
         }
     }
 }

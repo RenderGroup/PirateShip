@@ -14,16 +14,15 @@ using TgcViewer.Utils.Terrain;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class BarcoProtagonista : Barco, CamaraObserver
+    class BarcoProtagonista : Barco, ICamaraObserver
     {
-        public List<BarcoEnemigo> enemigos = new List<BarcoEnemigo>();
-        public DateTime cooldown = DateTime.Now;
         public ProtaInputHandler inputManager;
+        public DateTime cooldown = DateTime.Now;
+        public List<BarcoEnemigo> enemigos = new List<BarcoEnemigo>();
 
         public delegate void AceleracionState();
-
         public AceleracionState acelerarSegunInput;
-
+        
         override public void update()
         {
             acelerarSegunInput();
@@ -43,6 +42,22 @@ namespace AlumnoEjemplos.RenderGroup
         public void cambioLaCamara() 
         {
             inputManager.cambiarCamara();
+        }
+
+        override public void huboCongelamiento(string Technique)
+        {
+            ACELERACION_INSTANTANEA = 7.0f;
+            ACELERACION_MAX = 8.0f;
+
+            base.huboCongelamiento(Technique);
+        }
+
+        override public void huboDescongelamiento(string Technique)
+        {
+            ACELERACION_INSTANTANEA = 0.02f;
+            ACELERACION_MAX = 3.0f;
+
+            base.huboDescongelamiento(Technique);
         }
     }
 }

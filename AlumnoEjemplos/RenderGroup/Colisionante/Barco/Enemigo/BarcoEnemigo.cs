@@ -54,7 +54,7 @@ namespace AlumnoEjemplos.RenderGroup
             if (this.rotateZ(0.007f) > FastMath.PI)
             {
                 Escenario.CrearCuantosEnemigos(new Random().Next(3) + 1, oceano);   //cuando muere crea entre 1 y 3 enemigos nuevos
-                Escenario.Remove(this);                                     //y se encarga de limpiarse
+                Escenario.Remover(this);                                     //y se encarga de limpiarse
                 this.dispose();
             }
 
@@ -69,7 +69,7 @@ namespace AlumnoEjemplos.RenderGroup
             this.rotation.Y = FastMath.Atan2(this.DireccionXZ().X, this.DireccionXZ().Z);
 
             if (distancia > 1000f)
-                acelerar(ACELERACION / 2);
+                acelerar(ACELERACION_INSTANTANEA / 2);
             else
             {
                 desacelerar(FACTOR_DESACELERATIVO * 1.05f);

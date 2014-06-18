@@ -12,7 +12,7 @@ namespace AlumnoEjemplos.RenderGroup
 {
     //Un Elemento es un TgcMesh con una bounding sphere asociada
     //La responsabilidad de la clase es manejar el boundingsphere para moverla, renderearla, disposearla, etc.
-    abstract class Colisionable : TgcMesh, IUpdateRender
+    abstract class Colisionante : TgcMesh, IUpdateRender
     {
         //esfera que vamos a usar para calcular colisiones
         public TgcBoundingSphere boundingSphere;

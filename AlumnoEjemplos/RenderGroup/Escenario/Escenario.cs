@@ -11,9 +11,12 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class Escenario
     {
-        static public List<CamaraObserver> CamObservers = new List<CamaraObserver>();
-        static public List<LluviaObserver> LluviaObservers = new List<LluviaObserver>();
-        static public List<TemperaturaObserver> TemperaturaObservers = new List<TemperaturaObserver>();
+        public static IEscenarioEventosState Estado = new DiaState();
+
+        static public List<ICamaraObserver> CamObservers = new List<ICamaraObserver>();
+        static public List<ILluviaObserver> LluviaObservers = new List<ILluviaObserver>();
+        static public List<INocheDiaObserver> NocheDiaObservers = new List<INocheDiaObserver>();
+        static public List<ITemperaturaObserver> TemperaturaObservers = new List<ITemperaturaObserver>();
 
         static public List<IUpdateRender> elementos = new List<IUpdateRender>();
 
@@ -29,11 +32,28 @@ namespace AlumnoEjemplos.RenderGroup
             updateables.ForEach(elemento => elemento.update());
         }
 
-        static public void RenderElementos() { elementos.ForEach(elemento => elemento.render()); }
+        static public void RenderElementos() 
+        {
+            elementos.ForEach(elemento => elemento.render());
+        }
 
-        static public void DisposeElementos() { elementos.ForEach(elemento => elemento.dispose()); }
+        static public void DisposeElementos()
+        {
+            //asignamos las collecciones a null para que las lleve el garbageCollector
+            CamObservers = null;
+            LluviaObservers = null;
+            NocheDiaObservers = null;
+            TemperaturaObservers = null;
 
-        static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) { for (int i = 0; i < cuantos; i++) Agregar(Construir.Enemigo(oceano)); }
+            elementos.ForEach(elemento => elemento.dispose()); 
+        }
+
+
+        static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) 
+        {
+            for (int i = 0; i < cuantos; i++)
+                Agregar(Construir.Enemigo(oceano)); 
+        }
 
         static public void CambioLluvia() 
         {
@@ -42,19 +62,32 @@ namespace AlumnoEjemplos.RenderGroup
             LluviaObservers.ForEach(observer => observer.cambioLluvia());
         }
 
-        static public void CambioLaCamara() { CamObservers.ForEach(observer => observer.cambioLaCamara()); }
-
-        static public void BotonDiaNoche_Click() 
+        static public void CambioLaCamara() 
         {
-            //skyBox.botonDiaNoche_Click(isla, oceano);
+            CamObservers.ForEach(observer => observer.cambioLaCamara()); 
+        }
+        
+        static public void SeHizoDeDia(string Technique)
+        {
+            NocheDiaObservers.ForEach(observer => observer.seHizoDeDia(Technique));
         }
 
-        static public void Animacion() 
+        static public void SeHizoDeNoche(string Technique)
         {
+            NocheDiaObservers.ForEach(observer => observer.seHizoDeNoche(Technique));
+        }
 
+        static public void HuboCongelamiento(string Technique)
+        {
+            TemperaturaObservers.ForEach(observer => observer.huboCongelamiento(Technique));
+        }
+
+        static public void HuboDescongelamiento(string Technique)
+        {
+            TemperaturaObservers.ForEach(observer => observer.huboDescongelamiento(Technique));
         }
 
         static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => elementos.Add(elemento)); }
-        static public void Remove(IUpdateRender elemento) { elementos.Remove(elemento);}
+        static public void Remover(IUpdateRender elemento) { elementos.Remove(elemento);}
     }
 }

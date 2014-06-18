@@ -31,7 +31,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public const float RADIO_RESPAWN = 2800;
 
-        static public Colisionable Elemento(string path, Vector3 position, float radioElipsoide, TipoElemento tipoElemento)
+        static public Colisionante Elemento(string path, Vector3 position, float radioElipsoide, TipoElemento tipoElemento)
         {
             //creo el loader y le agrego el factory para el elemento
             TgcSceneLoader loader = new TgcSceneLoader();
@@ -39,7 +39,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             //cargamos el elemento...
             TgcScene scene = loader.loadSceneFromFile(path);
-            Colisionable elemento = (Colisionable)scene.Meshes[0];
+            Colisionante elemento = (Colisionante)scene.Meshes[0];
 
             elemento.Position = position;
 
@@ -143,7 +143,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         TgcMesh TgcSceneLoader.IMeshFactory.createNewMesh(Mesh d3dMesh, string meshName, TgcMesh.MeshRenderType renderType)
         {
-            Colisionable mesh;
+            Colisionante mesh;
 
             switch (this.tipo) 
             {

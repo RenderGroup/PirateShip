@@ -9,7 +9,7 @@ using TgcViewer.Utils._2D;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Lluvia : TgcAnimatedSprite, IUpdateRender, LluviaObserver
+    class Lluvia : TgcAnimatedSprite, IUpdateRender, ILluviaObserver
     {
 
         public Lluvia() : base(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\LLUVIA2.png", new Size(128, 128),16,20)
@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.RenderGroup
             if (!Escenario.elementos.Contains(this))
                 Escenario.Agregar(this);
             else
-                Escenario.Remove(this);
+                Escenario.Remover(this);
         }
     }
 }

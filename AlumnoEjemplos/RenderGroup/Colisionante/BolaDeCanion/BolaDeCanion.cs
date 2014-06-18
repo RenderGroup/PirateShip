@@ -10,7 +10,7 @@ namespace AlumnoEjemplos.RenderGroup
 {
     //Una bola de cañon es un mesh con un bounding sphere circular que debe moverse con tiro parabolico
     //Mientas ve si hay algun barco en su camino para dañarlo...
-    class BolaDeCanion : Colisionable
+    class BolaDeCanion : Colisionante
     {
         public float VELOCIDAD = 1000f;
         public float velocidadX;

@@ -33,7 +33,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void btnDiaNoche_Click(object sender, EventArgs e)
         {
-            //ejemplo.btnDiaNoche();
+            Escenario.Estado.cambioNocheDia();
         }
 
         private void btnAnimacion_Click(object sender, EventArgs e)
@@ -48,7 +48,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void btnHielo_Click(object sender, EventArgs e)
         {
-            //ejemplo.btnHielo();
+            Escenario.Estado.cambioTemperatura();
         }
     }
 }

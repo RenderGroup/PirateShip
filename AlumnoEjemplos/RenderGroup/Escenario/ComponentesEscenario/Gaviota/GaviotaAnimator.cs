@@ -7,7 +7,7 @@ using TgcViewer;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class GaviotaAnimator : CamaraObserver
+    class GaviotaAnimator : ICamaraObserver
     {
         Gaviota gaviotaCamaraRotacional, gaviotaCamaraEnBarco, gaviotaAhora;
 

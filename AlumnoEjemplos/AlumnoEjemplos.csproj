@@ -87,12 +87,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RenderGroup\Colisionable\Barco\Barco.cs" />
-    <Compile Include="RenderGroup\Colisionable\Barco\Enemigo\BarcoEnemigo.cs" />
-    <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\BarcoProtagonista.cs" />
-    <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\ProtaInputHandler.cs" />
-    <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\ProtaYCamInputHandler.cs" />
-    <Compile Include="RenderGroup\Colisionable\BolaDeCanion\BolaDeCanion.cs" />
+    <Compile Include="RenderGroup\Colisionante\Barco\Barco.cs" />
+    <Compile Include="RenderGroup\Colisionante\Barco\Enemigo\BarcoEnemigo.cs" />
+    <Compile Include="RenderGroup\Colisionante\Barco\Protagonista\BarcoProtagonista.cs" />
+    <Compile Include="RenderGroup\Colisionante\Barco\Protagonista\ProtaInputHandler.cs" />
+    <Compile Include="RenderGroup\Colisionante\Barco\Protagonista\ProtaYCamInputHandler.cs" />
+    <Compile Include="RenderGroup\Colisionante\BolaDeCanion\BolaDeCanion.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Gaviota\Gaviota.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Gaviota\GaviotaAnimator.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Lluvia.cs" />
@@ -101,14 +101,16 @@
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PirateSkyBox.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PostProceso.cs" />
     <Compile Include="RenderGroup\GUI\HUB.cs" />
-    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\CamaraObserver.cs" />
+    <Compile Include="RenderGroup\Interfaces\IEscenarioEventosState.cs" />
+    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\ICamaraObserver.cs" />
     <Compile Include="RenderGroup\Interfaces\IUpdateRender.cs" />
-    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\LluviaObserver.cs" />
+    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\ILluviaObserver.cs" />
+    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\INocheDiaObserver.cs" />
     <Compile Include="RenderGroup\Interfaces\ReceptorInput.cs" />
     <Compile Include="RenderGroup\Factory\ConstructorDeElementos.cs" />
-    <Compile Include="RenderGroup\Colisionable\Colisionable.cs" />
+    <Compile Include="RenderGroup\Colisionante\Colisionante.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />
-    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\TemperaturaObserver.cs" />
+    <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\ITemperaturaObserver.cs" />
     <Compile Include="RenderGroup\Managers\InputManager.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\SueloMarino.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Oceano.cs" />
@@ -120,6 +122,10 @@
     <Compile Include="RenderGroup\GUI\EventosEscenarioControl.designer.cs">
       <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="RenderGroup\Estados\DiaCongeladoState.cs" />
+    <Compile Include="RenderGroup\Estados\DiaState.cs" />
+    <Compile Include="RenderGroup\Estados\NocheCongeladaState.cs" />
+    <Compile Include="RenderGroup\Estados\NocheState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgcViewer\TgcViewer.csproj">

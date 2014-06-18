@@ -21,7 +21,7 @@ using TgcViewer.Utils;
 namespace AlumnoEjemplos.RenderGroup
 {
     /// <summary>
-    /// TP del barco pirata que lucha a ca�onazos en mar
+    /// TP del barco pirata que lucha a cañonazos en mar
     /// </summary>
     public class EjemploAlumno : TgcExample
     {
@@ -51,17 +51,27 @@ namespace AlumnoEjemplos.RenderGroup
             var oceano = new Oceano();
             var skyBox = new PirateSkyBox();
             var muelle = new Muelle();
-            var isla = new SueloMarino();
+            var sueloMarino = new SueloMarino();
             var HUB = new HUB();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
             
-            Escenario.Agregar(skyBox, isla, oceano, muelle, protagonista, HUB);
+            Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
             Escenario.CrearCuantosEnemigos(3, oceano);
 
             Escenario.CamObservers.Add(protagonista);
             Escenario.CamObservers.Add(Gaviota.AnimadorDeGaviota);
             Escenario.LluviaObservers.Add(new Lluvia());
             Escenario.LluviaObservers.Add(oceano);
+            Escenario.TemperaturaObservers.Add(oceano);
+            Escenario.TemperaturaObservers.Add(protagonista);
+            Escenario.TemperaturaObservers.Add(muelle);
+            Escenario.TemperaturaObservers.Add(sueloMarino);
+            Escenario.NocheDiaObservers.Add(oceano);
+            Escenario.NocheDiaObservers.Add(protagonista);
+            Escenario.NocheDiaObservers.Add(muelle);
+            Escenario.NocheDiaObservers.Add(sueloMarino);
+            Escenario.NocheDiaObservers.Add(skyBox);
+
 
             InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
 
@@ -91,7 +101,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario"));
             GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => Escenario.CambioLaCamara());
-            GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
             GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, 1.6f);
             GuiController.Instance.Modifiers.addColor("fog color", Color.Cyan);
             GuiController.Instance.Modifiers.addFloat("fog start", 50.0f, 7000.0f, 1500.0f);

@@ -14,10 +14,11 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class PirateSkyBox : IUpdateRender
+    class PirateSkyBox : IUpdateRender, INocheDiaObserver
     {
+        string TexturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
+
         TgcSkyBox skyBox;
-        Boolean dia = true;
 
         public  PirateSkyBox()
         {
@@ -26,7 +27,6 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.Size = new Vector3(10000, 5000, 10000);
             cargarTexturas();
             skyBox.SkyEpsilon = 9f; //para que no se noten las aristas del box
-            skyBox.updateValues();
         }
 
         public void render()
@@ -40,84 +40,40 @@ namespace AlumnoEjemplos.RenderGroup
         {
             skyBox.dispose();
         }
-
         
-
-
-        #region DESARROLLO
-
         public void cargarTexturas()
         {
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
-            //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
-            //Configurar color  
-            //skyBox.Color = Color.OrangeRed;
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, TexturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, TexturesPath + "algo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, TexturesPath + "cielo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, TexturesPath + "cielo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "cielo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "cielo.png");
+
+            skyBox.updateValues();
+        }
+        
+
+        public void seHizoDeDia(string Technique)
+        {
+            cargarTexturas();            
         }
 
-        public void botonDiaNoche_Click(SueloMarino isla, Oceano oceano)
+        public void seHizoDeNoche(string Technique)
         {
 
-            if (dia)
-            {
-                dia = false;
-                isla.cambiarTechnique("RenderSceneNoche");
-                oceano.cambiarTechnique("RenderSceneNoche");
-            }
-            else
-            {
-                dia = true;
-                isla.cambiarTechnique("RenderScene");
-                oceano.cambiarTechnique("RenderScene");
-            }
-            diaNoche();
-            oceano.cambiarCubeMap(dia);
-        }
-
-        public void diaNoche()
-        {
-            string texturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
-
-            if (dia)
-            {
-                //Configurar las texturas para cada una de las 6 caras
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "topax2.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "algo.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "cielo.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "cielo.png");
-                //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "cielo.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "cielo.png");
-            }
-            else
-            {
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath + "noche.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath + "noche.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath + "noche.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath + "noche.png");
-                //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath + "noche.png");
-                skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath + "noche.png");
-            }
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, TexturesPath + "nocheO2.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, TexturesPath + "noche.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, TexturesPath + "noche.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, TexturesPath + "noche.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "noche.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "noche.png");
 
             skyBox.updateValues();
         }
 
-        public void cargarTexturasNublado()
-        {
-            cargarTexturas();  //cambio por texturas grises
-        }
-
-
-        #endregion
-
-
-    } //END CLASS
+        public void setTechnique(string Technique) { }
+    }
 
 }
