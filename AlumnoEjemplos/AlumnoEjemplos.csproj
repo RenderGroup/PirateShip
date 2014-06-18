@@ -94,11 +94,11 @@
     <Compile Include="RenderGroup\Colisionable\Barco\Protagonista\ProtaYCamInputHandler.cs" />
     <Compile Include="RenderGroup\Colisionable\BolaDeCanion\BolaDeCanion.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Gaviota.cs" />
+    <Compile Include="RenderGroup\Escenario\ComponentesEscenario\GaviotaAnimator.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Muelle.cs" />
     <Compile Include="RenderGroup\Escenario\Escenario.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PirateSkyBox.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PostProceso.cs" />
-    <Compile Include="RenderGroup\Escenario\GaviotaAnimator.cs" />
     <Compile Include="RenderGroup\GUI\HUB.cs" />
     <Compile Include="RenderGroup\Interfaces\ObserverInterfaces\CamaraObserver.cs" />
     <Compile Include="RenderGroup\Interfaces\IUpdateRender.cs" />
