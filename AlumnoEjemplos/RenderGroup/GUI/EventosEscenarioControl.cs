@@ -12,8 +12,6 @@ namespace AlumnoEjemplos.RenderGroup
 {
     public partial class EventosEscenarioControl : UserControl
     {
-        Boolean llueve = false;
-
         public EventosEscenarioControl()
         {            
             InitializeComponent();
@@ -45,15 +43,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void btnLluvia_Click(object sender, EventArgs e)
         {
-            if (llueve)
-            {
-                llueve = false;
-            }
-            else
-            {
-                llueve = true;
-            }
-            //ejemplo.btnLluvia(llueve);  
+            Escenario.CambioLluvia();
         }
 
         private void btnHielo_Click(object sender, EventArgs e)
