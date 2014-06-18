@@ -35,7 +35,6 @@ namespace AlumnoEjemplos.RenderGroup
                 Position = new Vector2(-150, Position.Y);
                 Escenario.Remove(this);
             }
-
         }
         
         new public void render() 
