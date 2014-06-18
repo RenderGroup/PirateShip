@@ -14,10 +14,16 @@ namespace AlumnoEjemplos.RenderGroup
 
     class InputManager
     {
-        static List<ReceptorInput> interesados = new List<ReceptorInput>();
+        static List<ReceptorInput> interesados;
 
-        static public TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
+        static public TgcD3dInput d3dInput;
 
+        public static void Cargar() 
+        {
+            interesados = new List<ReceptorInput>();
+
+            d3dInput = GuiController.Instance.D3dInput;
+        }
 
         public static void Agregar(params ReceptorInput[] i)
         {

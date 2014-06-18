@@ -48,6 +48,11 @@ namespace AlumnoEjemplos.RenderGroup
         {
             cargarModifiers();
 
+            Escenario.Cargar();
+            PostProceso.Cargar();
+            InputManager.Cargar();
+            AudioManager.Cargar();
+
             var HUB = new HUB();
             var muelle = new Muelle();
             var oceano = new Oceano();
@@ -63,8 +68,6 @@ namespace AlumnoEjemplos.RenderGroup
             Escenario.AgregarNocheDiaTemperaturaObservers(oceano, protagonista, muelle, sueloMarino, sueloMarino, skyBox);
 
             InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
-
-            PostProceso.Cargar();
         }
 
         public override void render(float elapsedTime)
@@ -78,12 +81,15 @@ namespace AlumnoEjemplos.RenderGroup
             Escenario.RenderElementos();
 
             PostProceso.RenderPostProcesado();
+
+            AudioManager.ReproducirMusicaDeFondo();
         }
 
         public override void close()
         {
             InputManager.DisposeReceptoresInput();
             Escenario.DisposeElementos();
+            AudioManager.Dispose();
         }
 
         void cargarModifiers() 

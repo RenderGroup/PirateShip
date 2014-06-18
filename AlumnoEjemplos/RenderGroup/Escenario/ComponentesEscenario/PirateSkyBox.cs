@@ -28,7 +28,7 @@ namespace AlumnoEjemplos.RenderGroup
 
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 2000, 0);
-            skyBox.Size = new Vector3(10000, 5000, 10000);
+            skyBox.Size = new Vector3(15000, 10000, 15000);
             cargarTexturas();
             skyBox.SkyEpsilon = 9f; //para que no se noten las aristas del box
         }
@@ -55,6 +55,8 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "cielo.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "cielo.png");
 
+            GuiController.Instance.BackgroundColor = Color.DarkCyan;
+
             skyBox.updateValues();
         }
         
@@ -67,6 +69,8 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, TexturesPath + "noche.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "noche.png");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "noche.png");
+
+            GuiController.Instance.BackgroundColor = Color.Black;
 
             skyBox.updateValues();
         }

@@ -22,7 +22,7 @@ namespace AlumnoEjemplos.RenderGroup
         Effect efectoOlas;
         Effect efectoCascada;
         string marHeightmap;
-        float currentScaleXZ = 165f;
+        float currentScaleXZ = 190f;
         float currentScaleY = 0.8f;
         bool lluvia = false;
 

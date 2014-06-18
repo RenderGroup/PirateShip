@@ -24,6 +24,10 @@ namespace AlumnoEjemplos.RenderGroup
 
             updateAndRender();
 
+            //si no es el ultimo elemento lo pone al final... por cuestiones de render
+            if (Escenario.Elementos.Last() != this)
+                Escenario.Agregar(Escenario.Remover(this));
+
             GuiController.Instance.Drawer2D.endDrawSprite();
         }
 

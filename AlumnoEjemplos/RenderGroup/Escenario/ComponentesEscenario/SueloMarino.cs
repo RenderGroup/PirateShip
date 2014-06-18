@@ -40,7 +40,7 @@ namespace AlumnoEjemplos.RenderGroup
             var sueloHeighmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedra2.jpg";
             var sueloTextura = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\piedras.JPG";
             
-            suelo.loadHeightmap(sueloHeighmap, 165f, 5.3f, new Vector3(0, -30, 0));
+            suelo.loadHeightmap(sueloHeighmap, 190f, 5.3f, new Vector3(0, -30, 0));
             suelo.loadTexture(sueloTextura);
         }
 

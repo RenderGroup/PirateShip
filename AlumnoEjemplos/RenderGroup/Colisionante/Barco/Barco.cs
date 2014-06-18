@@ -111,6 +111,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual public void teGolpearon() 
         {
+            AudioManager.Impacto.play();
+
             vida--;
 
             Effect.SetValue("calado", (MAX_VIDAS - vida) / MAX_VIDAS);

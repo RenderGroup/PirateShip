@@ -114,6 +114,7 @@
     <Compile Include="RenderGroup\Factory\ConstructorDeElementos.cs" />
     <Compile Include="RenderGroup\Colisionante\Colisionante.cs" />
     <Compile Include="RenderGroup\EjemploAlumno.cs" />
+    <Compile Include="RenderGroup\Managers\AudioManager.cs" />
     <Compile Include="RenderGroup\Managers\InputManager.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\SueloMarino.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Oceano.cs" />

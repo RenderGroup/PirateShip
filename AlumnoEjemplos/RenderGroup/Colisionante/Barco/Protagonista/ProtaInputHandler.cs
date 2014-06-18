@@ -40,10 +40,11 @@ namespace AlumnoEjemplos.RenderGroup
 
         override public void P_apretado()
         {
-            if ((DateTime.Now - prota.cooldown).TotalSeconds > .5)
+            if ((DateTime.Now - prota.cooldown).TotalSeconds > 1.5)
             {
                 prota.disparar();
                 prota.cooldown = DateTime.Now;
+                AudioManager.Disparo.play();
             }
         }
 

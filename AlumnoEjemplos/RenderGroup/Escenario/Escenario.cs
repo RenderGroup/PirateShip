@@ -13,15 +13,28 @@ namespace AlumnoEjemplos.RenderGroup
     {
         public static IEscenarioEventosState Estado = new DiaState();
 
-        static public List<ICamaraObserver> CamObservers = new List<ICamaraObserver>();
-        static public List<ILluviaObserver> LluviaObservers = new List<ILluviaObserver>();
-        static public List<INocheDiaTemperaturaObserver> NocheDiaTemperaturaObservers = new List<INocheDiaTemperaturaObserver>();
+        static public List<ICamaraObserver> CamObservers;
+        static public List<ILluviaObserver> LluviaObservers;
+        static public List<INocheDiaTemperaturaObserver> NocheDiaTemperaturaObservers;
 
-        static public List<IUpdateRender> Elementos = new List<IUpdateRender>();
+        static public List<IUpdateRender> Elementos;
 
-        public static int contadorEnemigos = 0;
-        public static int limiteEnemigos = 12;
-        public static float time = 0;
+        public static int contadorEnemigos;
+        public static int limiteEnemigos;
+        public static float time;
+
+        static public void Cargar() 
+        {
+            CamObservers = new List<ICamaraObserver>();
+            LluviaObservers = new List<ILluviaObserver>();
+            NocheDiaTemperaturaObservers = new List<INocheDiaTemperaturaObserver>();
+
+            Elementos = new List<IUpdateRender>();
+
+            contadorEnemigos = 0;
+            limiteEnemigos = 12;
+            time = 0;
+        }
 
         static public void UpdateElementos() 
         {
@@ -45,7 +58,7 @@ namespace AlumnoEjemplos.RenderGroup
             LluviaObservers = null;
             NocheDiaTemperaturaObservers = null;
 
-            Elementos.ForEach(elemento => elemento.dispose()); 
+            Elementos.ForEach(elemento => elemento.dispose());
         }
 
 
@@ -64,6 +77,8 @@ namespace AlumnoEjemplos.RenderGroup
         static public void CambioLluvia() 
         {
             PostProceso.cambioLluvia();
+
+            AudioManager.CambioLlueve();
 
             LluviaObservers.ForEach(observer => observer.cambioLluvia());
         }
@@ -98,6 +113,6 @@ namespace AlumnoEjemplos.RenderGroup
         
         static public void AgregarNocheDiaTemperaturaObservers(params INocheDiaTemperaturaObserver[] obs) { obs.ToList().ForEach(observer => NocheDiaTemperaturaObservers.Add(observer)); }
         static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => Elementos.Add(elemento)); }
-        static public void Remover(IUpdateRender elemento) { Elementos.Remove(elemento);}
+        static public IUpdateRender Remover(IUpdateRender elemento) { Elementos.Remove(elemento); return elemento; }
     }
 }
