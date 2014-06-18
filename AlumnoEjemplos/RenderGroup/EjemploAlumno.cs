@@ -51,7 +51,7 @@ namespace AlumnoEjemplos.RenderGroup
             var oceano = new Oceano();
             var skyBox = new PirateSkyBox();
             var muelle = new Muelle();
-            var isla = new Isla();
+            var isla = new SueloMarino();
             var HUB = new HUB();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
             
@@ -60,6 +60,8 @@ namespace AlumnoEjemplos.RenderGroup
 
             Escenario.CamObservers.Add(protagonista);
             Escenario.CamObservers.Add(Gaviota.AnimadorDeGaviota);
+            Escenario.LluviaObservers.Add(new Lluvia());
+            Escenario.LluviaObservers.Add(oceano);
 
             InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
 

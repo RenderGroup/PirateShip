@@ -61,7 +61,7 @@ namespace AlumnoEjemplos.RenderGroup
             //skyBox.Color = Color.OrangeRed;
         }
 
-        public void botonDiaNoche_Click(Isla isla, Oceano oceano)
+        public void botonDiaNoche_Click(SueloMarino isla, Oceano oceano)
         {
 
             if (dia)

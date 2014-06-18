@@ -35,11 +35,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             GuiController.Instance.Drawer2D.beginDrawSprite();
 
-            if (borrarFlag)
-            {
-                lluvia.updateAndRender();
-            }
-
             barra.render();
             timon.render();
 
@@ -50,7 +45,6 @@ namespace AlumnoEjemplos.RenderGroup
         {
             timon.dispose();
             barra.dispose();
-            lluvia.dispose();
         }
         public void crearSprites()
         {
@@ -67,27 +61,6 @@ namespace AlumnoEjemplos.RenderGroup
             barra.Texture = TgcTexture.createTexture(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\barra.png");
             textureSize = barra.Texture.Size;
             barra.Position = new Vector2(0, screenSize.Height - textureSize.Height);
-
-            //Crear Sprite animado para la lluvia
-            lluvia = new TgcAnimatedSprite(
-                GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\LLUVIA2.png", //Textura de 512 X 512
-                new Size(128, 128), //Tamaño de un frame (128x128px en este caso)
-                16, //Cantidad de frames, (son 16 de 128x128px)
-                20 //Velocidad de animacion, en cuadros x segundo
-                );
-
-            lluvia.Position = new Vector2(-10, 0);
-            lluvia.Scaling = new Vector2(8, 4);
-
-        }
-
-        public void renderizar()
-        {
-            }
-
-        public static void cambioLluvia() 
-        {
-            borrarFlag = !borrarFlag;
         }
 
         public override void A_apretado()

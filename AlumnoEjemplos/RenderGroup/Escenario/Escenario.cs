@@ -18,7 +18,6 @@ namespace AlumnoEjemplos.RenderGroup
         static public List<IUpdateRender> elementos = new List<IUpdateRender>();
 
         public static float time = 0;
-        static bool lluvia = false;
 
         static public void UpdateElementos() 
         {
@@ -36,7 +35,12 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) { for (int i = 0; i < cuantos; i++) Agregar(Construir.Enemigo(oceano)); }
 
-        static public void CambioLluvia() { }//oceano.mar.Effect.SetValue("llueve", lluvia = !lluvia); }
+        static public void CambioLluvia() 
+        {
+            PostProceso.cambioLluvia();
+
+            LluviaObservers.ForEach(observer => observer.cambioLluvia());
+        }
 
         static public void CambioLaCamara() { CamObservers.ForEach(observer => observer.cambioLaCamara()); }
 

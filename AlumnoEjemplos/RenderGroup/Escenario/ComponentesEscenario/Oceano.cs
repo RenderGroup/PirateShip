@@ -14,7 +14,7 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano : IUpdateRender
+    class Oceano : IUpdateRender, LluviaObserver
     {
         public const float LIMITE = 4800;
 
@@ -29,6 +29,7 @@ namespace AlumnoEjemplos.RenderGroup
         string currentTexture2;
         float currentScaleXZ = 165f;
         float currentScaleY = 0.8f;
+        bool lluvia = false;
 
         public Oceano()
         {
@@ -182,6 +183,11 @@ namespace AlumnoEjemplos.RenderGroup
         public bool estaDentro(Vector3 punto)
         {
             return punto.X < LIMITE && punto.X > -LIMITE && punto.Z < LIMITE && punto.Z > -LIMITE;
+        }
+
+        public void cambioLluvia() 
+        {
+            efectoOlas.SetValue("llueve", lluvia = !lluvia); 
         }
 
     }

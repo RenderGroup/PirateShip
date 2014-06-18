@@ -6,11 +6,11 @@ using Microsoft.DirectX;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Isla : IUpdateRender
+    class SueloMarino : IUpdateRender
     {
         TgcSimpleTerrain suelo = new TgcSimpleTerrain();
 
-        public Isla()
+        public SueloMarino()
         {
             cargarShaders();
             crearHeightmaps();
