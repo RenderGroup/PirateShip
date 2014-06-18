@@ -23,7 +23,7 @@ namespace AlumnoEjemplos.RenderGroup
     class Construir
     {
         static public Effect shaderCanionazos = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
-
+        static public string defaultBarcoEnemigoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barco-armada-TgcScene.xml";
         static public string defaultBarcoPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\barcoPirata-TgcScene.xml";
         static public string defaultBolaCanion = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Sphere-TgcScene.xml";
         
@@ -53,21 +53,24 @@ namespace AlumnoEjemplos.RenderGroup
         static public Barco Barco(string path, Vector3 pos, float radioElipsoide, Oceano oceano, TipoElemento tipoBarco)
         {
             //cuando mergee tengo que sacar la altura del Oceano
-            Vector3 posAlturaDelOceano = new Vector3(pos.X, oceano.alturaEnPunto(pos.X, pos.Y), pos.Y); 
+            Vector3 posAlturaDelOceano = new Vector3(pos.X, oceano.alturaEnPunto(pos.X, pos.Y), pos.Y);
 
-            return (Barco)Elemento(path, posAlturaDelOceano, radioElipsoide, tipoBarco);
-        }
-
-        //overload del builder de un barco que carga el mesh del barco pirata default
-        static public Barco BarcoDefault(Vector3 position, Oceano oceano, TipoElemento tipo) 
-        {
-            Barco barco = Construir.Barco(defaultBarcoPath, position, 70f, oceano, tipo);
+            var barco = (Barco)Elemento(path, posAlturaDelOceano, radioElipsoide, tipoBarco);
 
             barco.Effect = TgcShaders.loadEffect(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\shaders\\shaderFog.fx");
             barco.Technique = "RenderScene";
             barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
             barco.Effect.SetValue("calado", 0f);
             barco.oceano = oceano;
+
+
+            return barco;
+        }
+
+        //overload del builder de un barco que carga el mesh del barco pirata default
+        static public Barco BarcoDefault(Vector3 position, Oceano oceano, TipoElemento tipo) 
+        {
+            Barco barco = Construir.Barco(defaultBarcoPath, position, 70f, oceano, tipo);
 
             return barco;
         }
@@ -83,7 +86,7 @@ namespace AlumnoEjemplos.RenderGroup
             //si la posicion cae fuera del oceano: lo pongo en el centro(si pasa eso el protagonista esta lejos del centro)
             posicion = oceano.estaDentro(posicion) ? posicion : new Vector3(0, -930f, 0);
 
-            BarcoEnemigo enemigo = (BarcoEnemigo)BarcoDefault(posicion, oceano, TipoElemento.BarcoEnemigo);
+            BarcoEnemigo enemigo = (BarcoEnemigo)Barco(defaultBarcoEnemigoPath, posicion, 70f, oceano, TipoElemento.BarcoEnemigo);
 
             if (protagonista == null) throw new Exception("Antes de construir enemigos debe construirse un protagonista");
 

@@ -15,6 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public const float LIMITE = 4800;
 
+        public int sangre = 1;
         public SmartTerrain mar;
         public SmartTerrain cascada;
         CubeTexture cubeMap;
@@ -141,8 +142,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
-            //float sangre = InteractionManager.contadorMuertos;//agregado*
-            efectoOlas.SetValue("sangre", 1);//agregado*
+            efectoOlas.SetValue("sangre", sangre);
 
             efectoOlas.SetValue("time", Escenario.time);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));

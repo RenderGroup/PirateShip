@@ -53,8 +53,10 @@ namespace AlumnoEjemplos.RenderGroup
 
             if (this.rotateZ(0.007f) > FastMath.PI)
             {
-                Escenario.CrearCuantosEnemigos(new Random().Next(3) + 1, oceano);   //cuando muere crea entre 1 y 3 enemigos nuevos
+                Escenario.CrearCuantosEnemigos(new Random().Next(2) + 1, oceano);   //cuando muere crea entre 1 y 2 enemigos nuevos
                 Escenario.Remover(this);                                            //y se encarga de limpiarse
+                Escenario.NocheDiaTemperaturaObservers.Remove(this);
+                oceano.sangre++;
                 this.dispose();
             }
 

@@ -17,14 +17,16 @@ namespace AlumnoEjemplos.RenderGroup
         static public List<ILluviaObserver> LluviaObservers = new List<ILluviaObserver>();
         static public List<INocheDiaTemperaturaObserver> NocheDiaTemperaturaObservers = new List<INocheDiaTemperaturaObserver>();
 
-        static public List<IUpdateRender> elementos = new List<IUpdateRender>();
+        static public List<IUpdateRender> Elementos = new List<IUpdateRender>();
 
+        public static int contadorEnemigos = 0;
+        public static int limiteEnemigos = 12;
         public static float time = 0;
 
         static public void UpdateElementos() 
         {
             //usando "elementos" directamente hay un error por modificacion de lista en iteracion cuando hay que quitar un enemigo
-            var updateables = new List<IUpdateRender>(elementos);
+            var updateables = new List<IUpdateRender>(Elementos);
 
             Escenario.time += GuiController.Instance.ElapsedTime;
 
@@ -33,7 +35,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public void RenderElementos() 
         {
-            elementos.ForEach(elemento => elemento.render());
+            Elementos.ForEach(elemento => elemento.render());
         }
 
         static public void DisposeElementos()
@@ -43,13 +45,13 @@ namespace AlumnoEjemplos.RenderGroup
             LluviaObservers = null;
             NocheDiaTemperaturaObservers = null;
 
-            elementos.ForEach(elemento => elemento.dispose()); 
+            Elementos.ForEach(elemento => elemento.dispose()); 
         }
 
 
         static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) 
         {
-            for (int i = 0; i < cuantos; i++)
+            for (int i = 0; i < cuantos && (i+contadorEnemigos)<=limiteEnemigos; i++)
             {
                 var enemigo = Construir.Enemigo(oceano);
 
@@ -95,7 +97,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public void AgregarLluviaObservers(params ILluviaObserver[] obs) { obs.ToList().ForEach(observer => LluviaObservers.Add(observer)); }
         
         static public void AgregarNocheDiaTemperaturaObservers(params INocheDiaTemperaturaObserver[] obs) { obs.ToList().ForEach(observer => NocheDiaTemperaturaObservers.Add(observer)); }
-        static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => elementos.Add(elemento)); }
-        static public void Remover(IUpdateRender elemento) { elementos.Remove(elemento);}
+        static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => Elementos.Add(elemento)); }
+        static public void Remover(IUpdateRender elemento) { Elementos.Remove(elemento);}
     }
 }

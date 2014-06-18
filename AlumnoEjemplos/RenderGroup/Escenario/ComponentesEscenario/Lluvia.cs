@@ -29,7 +29,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void cambioLluvia() 
         {
-            if (!Escenario.elementos.Contains(this))
+            if (!Escenario.Elementos.Contains(this))
                 Escenario.Agregar(this);
             else
                 Escenario.Remover(this);
