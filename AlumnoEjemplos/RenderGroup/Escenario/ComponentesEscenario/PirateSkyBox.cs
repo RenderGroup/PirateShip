@@ -14,14 +14,18 @@ using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class PirateSkyBox : IUpdateRender, INocheDiaObserver
+    class PirateSkyBox : IUpdateRender, INocheDiaTemperaturaObserver
     {
         string TexturesPath = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\celeste\\";
+
+        public AccionSobreEvento Accion { get; set; }
 
         TgcSkyBox skyBox;
 
         public  PirateSkyBox()
         {
+            Accion = new AccionSkybox(this);
+
             skyBox = new TgcSkyBox();
             skyBox.Center = new Vector3(0, 2000, 0);
             skyBox.Size = new Vector3(10000, 5000, 10000);
@@ -54,13 +58,7 @@ namespace AlumnoEjemplos.RenderGroup
             skyBox.updateValues();
         }
         
-
-        public void seHizoDeDia(string Technique)
-        {
-            cargarTexturas();            
-        }
-
-        public void seHizoDeNoche(string Technique)
+        public void cargarTexturasNoche()
         {
 
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, TexturesPath + "nocheO2.jpg");

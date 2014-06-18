@@ -22,7 +22,9 @@ namespace AlumnoEjemplos.RenderGroup
 
         public delegate void AceleracionState();
         public AceleracionState acelerarSegunInput;
-        
+
+        public BarcoProtagonista() { Accion = new AccionProtagonista(this); }
+
         override public void update()
         {
             acelerarSegunInput();
@@ -44,20 +46,16 @@ namespace AlumnoEjemplos.RenderGroup
             inputManager.cambiarCamara();
         }
 
-        override public void huboCongelamiento(string Technique)
+        public void movimientoDeslizante()
         {
             ACELERACION_INSTANTANEA = 7.0f;
             ACELERACION_MAX = 8.0f;
-
-            base.huboCongelamiento(Technique);
         }
 
-        override public void huboDescongelamiento(string Technique)
+        public void movimientoNormal()
         {
             ACELERACION_INSTANTANEA = 0.02f;
             ACELERACION_MAX = 3.0f;
-
-            base.huboDescongelamiento(Technique);
         }
     }
 }

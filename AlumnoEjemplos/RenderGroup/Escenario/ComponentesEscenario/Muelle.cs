@@ -11,13 +11,17 @@ using System.Drawing;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Muelle : IUpdateRender, ITemperaturaObserver, INocheDiaObserver
+    class Muelle : IUpdateRender, INocheDiaTemperaturaObserver
     {
+        public AccionSobreEvento Accion{ set; get; }
+
         Microsoft.DirectX.Direct3D.Effect efecto;
         List<TgcMesh> mesh;
 
         public Muelle()
-        {          
+        {
+            Accion = new AccionSobreEvento(this);
+
             crearMeshes();
             cargarShaders();
         }
@@ -67,33 +71,12 @@ namespace AlumnoEjemplos.RenderGroup
             }
         }
 
-
-        public void huboCongelamiento(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        public void huboDescongelamiento(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
         public void setTechnique(string Technique)
         {
             for (int i = 0; i < 13; i++)
             {
                 mesh[i].Technique = Technique;
             }
-        }
-
-        public void seHizoDeDia(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        public void seHizoDeNoche(string Technique)
-        {
-            setTechnique(Technique);
         }
     }
 }

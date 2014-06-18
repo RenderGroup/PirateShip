@@ -15,8 +15,10 @@ namespace AlumnoEjemplos.RenderGroup
 {
     //Un barco es un colisionable, ya que sera chequeado contra colisiones de cañonazos y otros barcos
     //Los barcos saben acelerar y desacelerar (punto del enunciado), flotar a la altura del agua y pegar cañonazos
-    class Barco : Colisionante, INocheDiaObserver, ITemperaturaObserver
+    class Barco : Colisionante, INocheDiaTemperaturaObserver
     {
+        public AccionSobreEvento Accion { get; set; }
+
         Vector3 normal;
         public Oceano oceano;
         public List<BolaDeCanion> disparos = new List<BolaDeCanion>();
@@ -34,6 +36,8 @@ namespace AlumnoEjemplos.RenderGroup
         public const float FACTOR_DESACELERATIVO = 1.015f;
         public const float MAX_VIDAS = 4;
         #endregion
+
+        public Barco() { Accion = new AccionSobreEvento(this); }
 
         virtual public void disparar()
         {
@@ -110,26 +114,6 @@ namespace AlumnoEjemplos.RenderGroup
             vida--;
 
             Effect.SetValue("calado", (MAX_VIDAS - vida) / MAX_VIDAS);
-        }
-
-        virtual public void seHizoDeDia(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        virtual public void seHizoDeNoche(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        virtual public void huboCongelamiento(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        virtual public void huboDescongelamiento(string Technique)
-        {
-            setTechnique(Technique);
         }
 
         virtual public void setTechnique(string Technique)

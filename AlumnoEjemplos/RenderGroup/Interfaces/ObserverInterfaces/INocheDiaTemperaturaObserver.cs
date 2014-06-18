@@ -5,11 +5,9 @@ using System.Text;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    interface INocheDiaObserver
+    interface INocheDiaTemperaturaObserver
     {
-        void seHizoDeDia(string Technique);
-
-        void seHizoDeNoche(string Technique);
+        AccionSobreEvento Accion { get; set; }
 
         void setTechnique(string Technique);
     }

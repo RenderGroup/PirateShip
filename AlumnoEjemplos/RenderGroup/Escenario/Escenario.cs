@@ -15,8 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public List<ICamaraObserver> CamObservers = new List<ICamaraObserver>();
         static public List<ILluviaObserver> LluviaObservers = new List<ILluviaObserver>();
-        static public List<INocheDiaObserver> NocheDiaObservers = new List<INocheDiaObserver>();
-        static public List<ITemperaturaObserver> TemperaturaObservers = new List<ITemperaturaObserver>();
+        static public List<INocheDiaTemperaturaObserver> NocheDiaTemperaturaObservers = new List<INocheDiaTemperaturaObserver>();
 
         static public List<IUpdateRender> elementos = new List<IUpdateRender>();
 
@@ -42,8 +41,7 @@ namespace AlumnoEjemplos.RenderGroup
             //asignamos las collecciones a null para que las lleve el garbageCollector
             CamObservers = null;
             LluviaObservers = null;
-            NocheDiaObservers = null;
-            TemperaturaObservers = null;
+            NocheDiaTemperaturaObservers = null;
 
             elementos.ForEach(elemento => elemento.dispose()); 
         }
@@ -57,8 +55,7 @@ namespace AlumnoEjemplos.RenderGroup
 
                 Agregar(enemigo);
 
-                NocheDiaObservers.Add(enemigo);
-                TemperaturaObservers.Add(enemigo);
+                NocheDiaTemperaturaObservers.Add(enemigo);
             }
         }
 
@@ -76,28 +73,28 @@ namespace AlumnoEjemplos.RenderGroup
         
         static public void SeHizoDeDia(string Technique)
         {
-            NocheDiaObservers.ForEach(observer => observer.seHizoDeDia(Technique));
+            NocheDiaTemperaturaObservers.ForEach(observer => observer.Accion.seHizoDeDia(Technique));
         }
 
         static public void SeHizoDeNoche(string Technique)
         {
-            NocheDiaObservers.ForEach(observer => observer.seHizoDeNoche(Technique));
+            NocheDiaTemperaturaObservers.ForEach(observer => observer.Accion.seHizoDeNoche(Technique));
         }
 
         static public void HuboCongelamiento(string Technique)
         {
-            TemperaturaObservers.ForEach(observer => observer.huboCongelamiento(Technique));
+            NocheDiaTemperaturaObservers.ForEach(observer => observer.Accion.huboCongelamiento(Technique));
         }
 
         static public void HuboDescongelamiento(string Technique)
         {
-            TemperaturaObservers.ForEach(observer => observer.huboDescongelamiento(Technique));
+            NocheDiaTemperaturaObservers.ForEach(observer => observer.Accion.huboDescongelamiento(Technique));
         }
 
         static public void AgregarCamaraObservers(params ICamaraObserver[] obs) { obs.ToList().ForEach(observer => CamObservers.Add(observer)); }
         static public void AgregarLluviaObservers(params ILluviaObserver[] obs) { obs.ToList().ForEach(observer => LluviaObservers.Add(observer)); }
-        static public void AgregarNocheDiaObservers(params INocheDiaObserver[] obs) { obs.ToList().ForEach(observer => NocheDiaObservers.Add(observer)); }
-        static public void AgregarTemperaturaObservers(params ITemperaturaObserver[] obs) { obs.ToList().ForEach(observer => TemperaturaObservers.Add(observer)); }
+        
+        static public void AgregarNocheDiaTemperaturaObservers(params INocheDiaTemperaturaObserver[] obs) { obs.ToList().ForEach(observer => NocheDiaTemperaturaObservers.Add(observer)); }
         static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => elementos.Add(elemento)); }
         static public void Remover(IUpdateRender elemento) { elementos.Remove(elemento);}
     }

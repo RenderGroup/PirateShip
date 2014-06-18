@@ -1,32 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using TgcViewer.Utils.TgcSceneLoader;
-using TgcViewer.Utils.Terrain;
+﻿using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.Shaders;
 using TgcViewer;
 using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX;
-using TgcViewer.Utils.Modifiers;
 using TgcViewer.Utils.TgcGeometry;
 using System.Drawing;
-using TgcViewer.Utils;
 
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class Oceano : IUpdateRender, ILluviaObserver, ITemperaturaObserver, INocheDiaObserver
+    class Oceano : IUpdateRender, ILluviaObserver, INocheDiaTemperaturaObserver
     {
+        public AccionSobreEvento Accion { get; set; }
+
         public const float LIMITE = 4800;
 
         public SmartTerrain mar;
         public SmartTerrain cascada;
         CubeTexture cubeMap;
-        Microsoft.DirectX.Direct3D.Effect efectoOlas;
-        Microsoft.DirectX.Direct3D.Effect efectoCascada;
-        string currentHeightmap;
-        string currentTexture;
-        string currentHeightmap2;
-        string currentTexture2;
+        Effect efectoOlas;
+        Effect efectoCascada;
+        string marHeightmap;
         float currentScaleXZ = 165f;
         float currentScaleY = 0.8f;
         bool lluvia = false;
@@ -38,9 +32,10 @@ namespace AlumnoEjemplos.RenderGroup
         public Oceano()
         {
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
-            
-            cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
-            
+
+            Accion = new AccionesOceano(this);
+
+            cubemapDia();            
             crearHeightmaps();
             cargarShaders();
 
@@ -67,25 +62,25 @@ namespace AlumnoEjemplos.RenderGroup
             this.setShadersValues();
         }
 
-
         //dice la altura de un punto sobre el mar tomando en cuenta al shader
         public float alturaEnPuntoDescongelado(float X, float Z)
         {
-            float time = Escenario.time;
-            float heighM = 90;
+            float heighM = 90, frecuencia = 10, time = Escenario.time;
             float scaleY = (float)GuiController.Instance.Modifiers.getValue("AlturaMarea");
+            
             Vector2 texCoords;
             mar.xzToHeightmapCoords(X, Z, out texCoords);
-            float frecuencia = 10;
-            float ola   =    frecuencia    * FastMath.Sin(texCoords.X / 5 -   time  ) *    frecuencia    * FastMath.Cos(texCoords.Y / 5 -   time  );
+            
+            float ola = frecuencia * FastMath.Sin(texCoords.X / 5 - time) * frecuencia * FastMath.Cos(texCoords.Y / 5 - time);
             return (ola + heighM) * scaleY;
         }
 
         public float alturaEnPuntoCongelado(float X, float Y) { return 0; }
 
 
-        public Vector3 normalEnPuntoXZ(float X, float Z/*, float momento*/)
+        public Vector3 normalEnPuntoXZ(float X, float Z)
         {
+            //se toman alturas a deltas de distancia sobre el punto...
             float delta = 2f;
             float alturaN = alturaEnPunto(X, Z + delta);
             float alturaS = alturaEnPunto(X, Z - delta);
@@ -96,28 +91,25 @@ namespace AlumnoEjemplos.RenderGroup
 
             Vector3 vector2 = new Vector3(0, alturaN - alturaS, delta * 2);
 
-            return Vector3.Cross(vector2, vector1);
+            return Vector3.Cross(vector2, vector1); //se devuelve el producto vectorial(la normal)
         }
-
-        #region DESARROLLO
 
         public void crearHeightmaps()
         {
             //crea el plano del oceano
-            currentHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\PerlinNoise.jpg";
-            currentTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
+            marHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\PerlinNoise.jpg";
+            var marTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\color_agua5.png";
             mar = new SmartTerrain();
-            mar.loadHeightmap(currentHeightmap, currentScaleXZ,/* (float)GuiController.Instance.Modifiers["WorldSize"], (float)GuiController.Instance.Modifiers["AlturaMarea"]*/0, new Vector3(0, 0, 0)); 
-            mar.loadTexture(currentTexture);
-
-            
+            mar.loadHeightmap(marHeightmap, currentScaleXZ, 0, new Vector3(0, 0, 0)); 
+            mar.loadTexture(marTexture);
+                       
 
             //crea el plano de la cascada
-            currentHeightmap2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\cascadaAltura.jpg";
-            currentTexture2 = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\cascada.png";
+            var cascadaHeightmap = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\cascadaAltura.jpg";
+            var cascadaTexture = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\\\texturas\\cascada.png";
             cascada = new SmartTerrain();
-            cascada.loadHeightmap(currentHeightmap2, currentScaleXZ /*(float)GuiController.Instance.Modifiers["WorldSize"]*/, 5.7f, new Vector3(0, -30, 0)); 
-            cascada.loadTexture(currentTexture2);
+            cascada.loadHeightmap(cascadaHeightmap, currentScaleXZ, 5.7f, new Vector3(0, -30, 0)); 
+            cascada.loadTexture(cascadaTexture);
         }
 
         public void cargarShaders()
@@ -143,7 +135,7 @@ namespace AlumnoEjemplos.RenderGroup
             {
                 //Volver a cargar el Heightmap si cambiaron los modifiers
                 currentScaleY = selectedScaleY;
-                mar.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 5, 0));
+                mar.loadHeightmap(marHeightmap, currentScaleXZ, currentScaleY, new Vector3(0, 5, 0));
             }
         }
 
@@ -152,23 +144,18 @@ namespace AlumnoEjemplos.RenderGroup
             //float sangre = InteractionManager.contadorMuertos;//agregado*
             efectoOlas.SetValue("sangre", 1);//agregado*
 
-
             efectoOlas.SetValue("time", Escenario.time);
             efectoOlas.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoOlas.SetValue("fogColor", ColorValue.FromColor((Color)GuiController.Instance.Modifiers["fog color"]));
             efectoOlas.SetValue("fogStart", (float)GuiController.Instance.Modifiers["fog start"]);
             efectoOlas.SetValue("blendStart", (float)GuiController.Instance.Modifiers["blend start"]);
-
             efectoOlas.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
-            //CubeMap
             efectoOlas.SetValue("texCubeMap", cubeMap);
-
             efectoCascada.SetValue("time", Escenario.time);
             efectoCascada.SetValue("fvEyePosition", TgcParserUtils.vector3ToFloat3Array(GuiController.Instance.CurrentCamera.getPosition()));
             efectoCascada.SetValue("texCubeMap", cubeMap);
             efectoCascada.SetValue("reflection", (float)GuiController.Instance.Modifiers["reflection"]);
         }
-        #endregion
 
         public bool estaDentro(Vector3 punto)
         {
@@ -181,33 +168,25 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
 
-        public void huboCongelamiento(string Technique)
+        public void huboCongelamiento()
         {
-            setTechnique(Technique);
-
             alturaEnPunto = alturaEnPuntoCongelado;
         }
 
-        public void huboDescongelamiento(string Technique)
+        public void huboDescongelamiento()
         {
-            setTechnique(Technique);
-
             alturaEnPunto = alturaEnPuntoDescongelado;
         }
 
-        public void seHizoDeDia(string Technique)
+        public void cubemapDia()
         {
-            setTechnique(Technique);
-
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
             
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemap-evul2.dds");
         }
 
-        public void seHizoDeNoche(string Technique)
+        public void cubemapNoche()
         {
-            setTechnique(Technique);
-
             Microsoft.DirectX.Direct3D.Device d3dDevice = GuiController.Instance.D3dDevice;
 
             cubeMap = TextureLoader.FromCubeFile(d3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\Shaders\\cubemapNoche.dds");

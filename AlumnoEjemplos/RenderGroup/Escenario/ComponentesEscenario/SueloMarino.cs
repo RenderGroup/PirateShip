@@ -6,12 +6,16 @@ using Microsoft.DirectX;
 
 namespace AlumnoEjemplos.RenderGroup
 {
-    class SueloMarino : IUpdateRender, INocheDiaObserver, ITemperaturaObserver
+    class SueloMarino : IUpdateRender, INocheDiaTemperaturaObserver
     {
+        public AccionSobreEvento Accion { get; set; }
+
         TgcSimpleTerrain suelo = new TgcSimpleTerrain();
 
         public SueloMarino()
         {
+            Accion = new AccionSobreEvento(this);
+
             cargarShaders();
             crearHeightmaps();
         }
@@ -51,30 +55,9 @@ namespace AlumnoEjemplos.RenderGroup
             suelo.Effect.SetValue("fogStart", (float)GuiController.Instance.Modifiers["blend start"]);            
         }
 
-        public void seHizoDeDia(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        public void seHizoDeNoche(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
         public void setTechnique(string Technique)
         {
             suelo.Technique = Technique;
         }
-
-        public void huboCongelamiento(string Technique)
-        {
-            setTechnique(Technique);
-        }
-
-        public void huboDescongelamiento(string Technique)
-        {
-            setTechnique(Technique);
-        }
     }
-
 }

@@ -49,12 +49,12 @@ namespace AlumnoEjemplos.RenderGroup
         {
             if (protagonista.enemigos.Contains(this)) protagonista.enemigos.Remove(this);
 
-            this.Position = new Vector3(this.Position.X, oceano.alturaEnPunto(this.Position.X, this.Position.Z) + 10, this.Position.Z);
+            this.Position = new Vector3(this.Position.X, oceano.alturaEnPunto(this.Position.X, this.Position.Z) - 13, this.Position.Z);
 
             if (this.rotateZ(0.007f) > FastMath.PI)
             {
                 Escenario.CrearCuantosEnemigos(new Random().Next(3) + 1, oceano);   //cuando muere crea entre 1 y 3 enemigos nuevos
-                Escenario.Remover(this);                                     //y se encarga de limpiarse
+                Escenario.Remover(this);                                            //y se encarga de limpiarse
                 this.dispose();
             }
 

@@ -54,14 +54,13 @@ namespace AlumnoEjemplos.RenderGroup
             var skyBox = new PirateSkyBox();
             var sueloMarino = new SueloMarino();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
-
-            Escenario.CrearCuantosEnemigos(3, oceano);
-            Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
             
+            Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
+            Escenario.CrearCuantosEnemigos(3, oceano);
+
             Escenario.AgregarCamaraObservers(protagonista, Gaviota.AnimadorDeGaviota);            
             Escenario.AgregarLluviaObservers(new Lluvia(), oceano);
-            Escenario.AgregarTemperaturaObservers(oceano, protagonista, muelle, sueloMarino, oceano);
-            Escenario.AgregarNocheDiaObservers(protagonista, muelle, sueloMarino, skyBox);
+            Escenario.AgregarNocheDiaTemperaturaObservers(oceano, protagonista, muelle, sueloMarino, sueloMarino, skyBox);
 
             InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
 
