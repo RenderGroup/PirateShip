@@ -14,13 +14,10 @@ namespace AlumnoEjemplos.RenderGroup
 {
     class HUB : ReceptorInput, IUpdateRender
     {
-        static bool borrarFlag = false;
-
         TgcSprite timon;
         TgcSprite barra;
-        TgcAnimatedSprite lluvia;
         Size screenSize = GuiController.Instance.Panel3d.Size;
-        Boolean camara;
+        
 
         public HUB()
         {
