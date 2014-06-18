@@ -52,7 +52,14 @@ namespace AlumnoEjemplos.RenderGroup
         static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) 
         {
             for (int i = 0; i < cuantos; i++)
-                Agregar(Construir.Enemigo(oceano)); 
+            {
+                var enemigo = Construir.Enemigo(oceano);
+
+                Agregar(enemigo);
+
+                NocheDiaObservers.Add(enemigo);
+                TemperaturaObservers.Add(enemigo);
+            }
         }
 
         static public void CambioLluvia() 
@@ -87,6 +94,10 @@ namespace AlumnoEjemplos.RenderGroup
             TemperaturaObservers.ForEach(observer => observer.huboDescongelamiento(Technique));
         }
 
+        static public void AgregarCamaraObservers(params ICamaraObserver[] obs) { obs.ToList().ForEach(observer => CamObservers.Add(observer)); }
+        static public void AgregarLluviaObservers(params ILluviaObserver[] obs) { obs.ToList().ForEach(observer => LluviaObservers.Add(observer)); }
+        static public void AgregarNocheDiaObservers(params INocheDiaObserver[] obs) { obs.ToList().ForEach(observer => NocheDiaObservers.Add(observer)); }
+        static public void AgregarTemperaturaObservers(params ITemperaturaObserver[] obs) { obs.ToList().ForEach(observer => TemperaturaObservers.Add(observer)); }
         static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => elementos.Add(elemento)); }
         static public void Remover(IUpdateRender elemento) { elementos.Remove(elemento);}
     }

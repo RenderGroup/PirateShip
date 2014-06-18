@@ -48,30 +48,20 @@ namespace AlumnoEjemplos.RenderGroup
         {
             cargarModifiers();
 
+            var HUB = new HUB();
+            var muelle = new Muelle();
             var oceano = new Oceano();
             var skyBox = new PirateSkyBox();
-            var muelle = new Muelle();
             var sueloMarino = new SueloMarino();
-            var HUB = new HUB();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
-            
-            Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
+
             Escenario.CrearCuantosEnemigos(3, oceano);
-
-            Escenario.CamObservers.Add(protagonista);
-            Escenario.CamObservers.Add(Gaviota.AnimadorDeGaviota);
-            Escenario.LluviaObservers.Add(new Lluvia());
-            Escenario.LluviaObservers.Add(oceano);
-            Escenario.TemperaturaObservers.Add(oceano);
-            Escenario.TemperaturaObservers.Add(protagonista);
-            Escenario.TemperaturaObservers.Add(muelle);
-            Escenario.TemperaturaObservers.Add(sueloMarino);
-            Escenario.NocheDiaObservers.Add(oceano);
-            Escenario.NocheDiaObservers.Add(protagonista);
-            Escenario.NocheDiaObservers.Add(muelle);
-            Escenario.NocheDiaObservers.Add(sueloMarino);
-            Escenario.NocheDiaObservers.Add(skyBox);
-
+            Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
+            
+            Escenario.AgregarCamaraObservers(protagonista, Gaviota.AnimadorDeGaviota);            
+            Escenario.AgregarLluviaObservers(new Lluvia(), oceano);
+            Escenario.AgregarTemperaturaObservers(oceano, protagonista, muelle, sueloMarino, oceano);
+            Escenario.AgregarNocheDiaObservers(protagonista, muelle, sueloMarino, skyBox);
 
             InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
 

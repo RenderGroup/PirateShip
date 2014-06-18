@@ -122,10 +122,10 @@
     <Compile Include="RenderGroup\GUI\EventosEscenarioControl.designer.cs">
       <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="RenderGroup\Estados\DiaCongeladoState.cs" />
-    <Compile Include="RenderGroup\Estados\DiaState.cs" />
-    <Compile Include="RenderGroup\Estados\NocheCongeladaState.cs" />
-    <Compile Include="RenderGroup\Estados\NocheState.cs" />
+    <Compile Include="RenderGroup\Escenario\EstadosEscenario\DiaCongeladoState.cs" />
+    <Compile Include="RenderGroup\Escenario\EstadosEscenario\DiaState.cs" />
+    <Compile Include="RenderGroup\Escenario\EstadosEscenario\NocheCongeladaState.cs" />
+    <Compile Include="RenderGroup\Escenario\EstadosEscenario\NocheState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TgcViewer\TgcViewer.csproj">
