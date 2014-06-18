@@ -15,7 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public List<LluviaObserver> LluviaObservers = new List<LluviaObserver>();
         static public List<TemperaturaObserver> TemperaturaObservers = new List<TemperaturaObserver>();
 
-        static public List<IUpdateRender> elementos;
+        static public List<IUpdateRender> elementos = new List<IUpdateRender>();
 
         public static float time = 0;
         static bool lluvia = false;
@@ -34,7 +34,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         static public void DisposeElementos() { elementos.ForEach(elemento => elemento.dispose()); }
 
-        static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) { for (int i = 0; i < cuantos; i++) Add(Construir.Enemigo(oceano)); }
+        static public void CrearCuantosEnemigos(int cuantos, Oceano oceano) { for (int i = 0; i < cuantos; i++) Agregar(Construir.Enemigo(oceano)); }
 
         static public void CambioLluvia() { }//oceano.mar.Effect.SetValue("llueve", lluvia = !lluvia); }
 
@@ -45,7 +45,12 @@ namespace AlumnoEjemplos.RenderGroup
             //skyBox.botonDiaNoche_Click(isla, oceano);
         }
 
-        static public void Add(IUpdateRender elemento) { elementos.Add(elemento); }
+        static public void Animacion() 
+        {
+
+        }
+
+        static public void Agregar(params IUpdateRender[] elems) { elems.ToList().ForEach(elemento => elementos.Add(elemento)); }
         static public void Remove(IUpdateRender elemento) { elementos.Remove(elemento);}
     }
 }

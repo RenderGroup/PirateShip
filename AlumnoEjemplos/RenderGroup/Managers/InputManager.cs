@@ -19,9 +19,9 @@ namespace AlumnoEjemplos.RenderGroup
         static public TgcD3dInput d3dInput = GuiController.Instance.D3dInput;
 
 
-        public static void Add(ReceptorInput i)
+        public static void Agregar(params ReceptorInput[] i)
         {
-            interesados.Add(i);
+            i.ToList().ForEach(interesado => interesados.Add(interesado));
         }
 
         public static void ManejarInput() 

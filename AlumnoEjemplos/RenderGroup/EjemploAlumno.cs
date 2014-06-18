@@ -55,11 +55,13 @@ namespace AlumnoEjemplos.RenderGroup
             var HUB = new HUB();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
             
-            Escenario.elementos = new List<IUpdateRender> { skyBox, isla, oceano, muelle, protagonista, HUB };
+            Escenario.Agregar(skyBox, isla, oceano, muelle, protagonista, HUB);
             Escenario.CrearCuantosEnemigos(3, oceano);
-            
-            InputManager.Add(new ProtaCamInputHandler(protagonista));
-            InputManager.Add(HUB);
+
+            Escenario.CamObservers.Add(protagonista);
+            Escenario.CamObservers.Add(Gaviota.AnimadorDeGaviota);
+
+            InputManager.Agregar(new ProtaCamInputHandler(protagonista), HUB);
 
             PostProceso.Cargar();
         }
@@ -85,7 +87,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         void cargarModifiers() 
         {
-            GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario", this));
+            GuiController.Instance.Modifiers.add(new ModifierBotonera("eventos en el escenario"));
             GuiController.Instance.Modifiers.addButton("camaraEnBarco", "Camara 3a persona",(o,e) => Escenario.CambioLaCamara());
             GuiController.Instance.Modifiers.addButton("botonDiaNoche", "dia noche", (o, e) => Escenario.BotonDiaNoche_Click());
             GuiController.Instance.Modifiers.addFloat("AlturaMarea", 0.1f, 6f, 1.6f);

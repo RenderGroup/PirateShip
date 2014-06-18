@@ -19,8 +19,6 @@ namespace AlumnoEjemplos.RenderGroup
         TgcSprite timon;
         TgcSprite barra;
         TgcAnimatedSprite lluvia;
-        TgcAnimatedSprite gaviota;
-        int traslacion = -150;
         Size screenSize = GuiController.Instance.Panel3d.Size;
         Boolean camara;
 
@@ -35,7 +33,17 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void render() 
         {
-            renderizar();
+            GuiController.Instance.Drawer2D.beginDrawSprite();
+
+            if (borrarFlag)
+            {
+                lluvia.updateAndRender();
+            }
+
+            barra.render();
+            timon.render();
+
+            GuiController.Instance.Drawer2D.endDrawSprite();
         }
 
         public void dispose()
@@ -43,7 +51,6 @@ namespace AlumnoEjemplos.RenderGroup
             timon.dispose();
             barra.dispose();
             lluvia.dispose();
-            gaviota.dispose();
         }
         public void crearSprites()
         {
@@ -72,53 +79,11 @@ namespace AlumnoEjemplos.RenderGroup
             lluvia.Position = new Vector2(-10, 0);
             lluvia.Scaling = new Vector2(8, 4);
 
-            //Crear Sprite animado para la gaviota
-            gaviota = new TgcAnimatedSprite(
-                GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\gaviotas2.png", //Textura de 1024 X 1024
-                new Size(256, 256), //Tamaño de un frame (128x128px en este caso)
-                16, //Cantidad de frames, (son 16 de 128x128px)
-                1 //Velocidad de animacion, en cuadros x segundo
-                );
         }
 
         public void renderizar()
         {
-            GuiController.Instance.Drawer2D.beginDrawSprite();
-
-            camara = true;//(Boolean)GuiController.Instance.Modifiers["camaraEnBarco"];
-
-            if (camara)
-            {
-                gaviota.Scaling = new Vector2(1.4f, 1.4f);
-                gaviota.Position = new Vector2(traslacion, 0);
-                gaviota.setFrameRate(3);
-                traslacion = traslacion + 12;
             }
-            else
-            {
-                gaviota.Scaling = new Vector2(0.4f, 0.4f);
-                gaviota.Position = new Vector2(traslacion, screenSize.Height / 3);
-                gaviota.setFrameRate(1);
-                traslacion = traslacion + 4;
-            }
-            if (traslacion > screenSize.Width)
-            {
-                gaviota.dispose();
-            }
-            else
-            {
-                gaviota.updateAndRender();
-            }
-
-            if (borrarFlag)
-            {
-                lluvia.updateAndRender();
-            }
-            barra.render();
-            timon.render();
-
-            GuiController.Instance.Drawer2D.endDrawSprite();
-        }
 
         public static void cambioLluvia() 
         {

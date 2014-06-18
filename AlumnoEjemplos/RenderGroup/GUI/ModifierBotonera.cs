@@ -8,9 +8,9 @@ namespace AlumnoEjemplos.RenderGroup
 {
     public class ModifierBotonera : TgcModifierPanel
     {
-        public ModifierBotonera(string varName, EjemploAlumno ejemplo) : base(varName)
+        public ModifierBotonera(string varName) : base(varName)
         {
-            contentPanel.Controls.Add(new EventosEscenarioControl(ejemplo));
+            contentPanel.Controls.Add(new EventosEscenarioControl());
         }
 
         public override object getValue()

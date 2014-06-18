@@ -13,12 +13,9 @@ namespace AlumnoEjemplos.RenderGroup
     public partial class EventosEscenarioControl : UserControl
     {
         Boolean llueve = false;
-        EjemploAlumno ejemplo;
 
-        public EventosEscenarioControl(EjemploAlumno ejemplo)
-        {
-            this.ejemplo = ejemplo;
-            
+        public EventosEscenarioControl()
+        {            
             InitializeComponent();
             agregarImagenesImageList();
         }
@@ -28,7 +25,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             string path = GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\";
 
-            this.BackgroundImage = Image.FromFile(path + "barra2.png");
+            BackgroundImage = Image.FromFile(path + "barra2.png");
             btnAnimacion.BackgroundImage = Image.FromFile(path + "botonGaviota.png");
             btnDiaNoche.BackgroundImage = Image.FromFile(path + "botonNoche.png");
             btnLluvia.BackgroundImage = Image.FromFile(path + "botonLluvia.png");
@@ -43,7 +40,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         private void btnAnimacion_Click(object sender, EventArgs e)
         {
-           // ejemplo.btnGaviota(); 
+            Gaviota.AnimadorDeGaviota.animar();
         }
 
         private void btnLluvia_Click(object sender, EventArgs e)
