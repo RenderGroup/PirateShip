@@ -13,7 +13,7 @@ namespace AlumnoEjemplos.RenderGroup
     {
         public AccionSobreEvento Accion { get; set; }
 
-        public const float LIMITE = 4800;
+        public const float LIMITE = 4300;
 
         public int sangre = 1;
         public SmartTerrain mar;

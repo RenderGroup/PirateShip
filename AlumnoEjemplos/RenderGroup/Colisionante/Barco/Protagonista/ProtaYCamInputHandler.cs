@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TgcViewer;
+using TgcViewer.Utils;
 using TgcViewer.Utils.Input;
 
 namespace AlumnoEjemplos.RenderGroup
@@ -56,6 +57,8 @@ namespace AlumnoEjemplos.RenderGroup
             GuiController.Instance.RotCamera.Enable = true;
 
             GuiController.Instance.RotCamera.CameraCenter = new Vector3(0, 900, 1000);
+
+            TgcD3dDevice.zFarPlaneDistance = 15000f;
 
             prota.inputManager = new ProtaInputHandler(prota);
         }
