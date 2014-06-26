@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer;
+using TgcViewer.Utils.TgcSceneLoader;
 using TgcViewer.Utils.TgcGeometry;
-using TgcViewer.Utils.Terrain;
 
 namespace AlumnoEjemplos.RenderGroup
 {
@@ -48,9 +43,15 @@ namespace AlumnoEjemplos.RenderGroup
         public void mover() 
         {
             Vector3 movimiento = DireccionXZ() * VELOCIDAD * aceleracion * GuiController.Instance.ElapsedTime;
-
-            if (oceano.estaDentro(this.Position + movimiento))
-                this.move(movimiento);
+            Vector3 posicionPotencial = this.Position + movimiento;
+            if (oceano.estaDentro(posicionPotencial))
+            {
+                float alturaSuelo;
+                SueloMarino.suelo.interpoledHeight(posicionPotencial.X, posicionPotencial.Z, out alturaSuelo);
+                if(posicionPotencial.Y > (alturaSuelo + 40))
+                    this.move(movimiento);
+            }
+                
         }
 
         virtual public void flotar()

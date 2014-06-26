@@ -54,11 +54,11 @@ namespace AlumnoEjemplos.RenderGroup
             for (int i = 1; i < 13; i++)
             {
                 mesh[i].Scale = new Vector3(80.5f, 80.5f, 60.5f);
-                mesh[i].Position = new Vector3(mesh[i].Position.X + 3900f, mesh[i].Position.Y, mesh[i].Position.Z - 3000);
+                mesh[i].Position = new Vector3(mesh[i].Position.X + 4600f, mesh[i].Position.Y, mesh[i].Position.Z - 3000);
             }
 
             mesh[0].Scale = new Vector3(80.5f, 60.5f, 60.5f);
-            mesh[0].Position = new Vector3(mesh[0].Position.X + 3900f, mesh[0].Position.Y + 100, mesh[0].Position.Z - 3000);
+            mesh[0].Position = new Vector3(mesh[0].Position.X + 4600f, mesh[0].Position.Y + 100, mesh[0].Position.Z - 3000);
         }
 
         private void cargarShaders()

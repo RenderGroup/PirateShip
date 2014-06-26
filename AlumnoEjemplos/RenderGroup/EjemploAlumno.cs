@@ -1,22 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TgcViewer.Example;
-using TgcViewer;
-using Microsoft.DirectX.Direct3D;
 using System.Drawing;
+using TgcViewer;
+using TgcViewer.Example;
 using Microsoft.DirectX;
-using TgcViewer.Utils.Modifiers;
-using TgcViewer.Utils.TgcSceneLoader;
-using TgcViewer.Utils.TgcGeometry;
-using TgcViewer.Utils.Input;
-using Microsoft.DirectX.DirectInput;
-using TgcViewer.Utils.Terrain;
+using Microsoft.DirectX.Direct3D;
 using TgcViewer.Utils.Collision.ElipsoidCollision;
-using TgcViewer.Utils.Shaders;
-using System.Windows.Forms;
-using TgcViewer.Utils._2D;
-using TgcViewer.Utils;
 
 namespace AlumnoEjemplos.RenderGroup
 {

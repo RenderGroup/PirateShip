@@ -10,7 +10,7 @@ namespace AlumnoEjemplos.RenderGroup
     {
         public AccionSobreEvento Accion { get; set; }
 
-        TgcSimpleTerrain suelo = new TgcSimpleTerrain();
+        public static SmartTerrain suelo = new SmartTerrain();
 
         public SueloMarino()
         {

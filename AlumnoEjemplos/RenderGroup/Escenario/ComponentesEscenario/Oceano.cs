@@ -13,7 +13,7 @@ namespace AlumnoEjemplos.RenderGroup
     {
         public AccionSobreEvento Accion { get; set; }
 
-        public const float LIMITE = 4300;
+        public const float LIMITE = 5100;
 
         public int sangre = 1;
         public SmartTerrain mar;
@@ -196,6 +196,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             mar.Technique = cascada.Technique = Technique;
         }
+
     }
 
 }
