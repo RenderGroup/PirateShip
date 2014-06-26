@@ -17,8 +17,8 @@ namespace AlumnoEjemplos.RenderGroup
         {
             camara = GuiController.Instance.ThirdPersonCamera;
             camara.Enable = true;
-            camara.setCamera(prota.Position, 350, -700);
-            camara.TargetDisplacement = new Vector3(0, 200, 0);
+            camara.setCamera(prota.Position, 100, -700);
+            camara.TargetDisplacement = new Vector3(0, 250, 0);
             camara.RotationY = prota.Rotation.Y;
         }
 
