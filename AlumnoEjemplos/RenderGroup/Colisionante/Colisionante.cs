@@ -32,7 +32,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual new public void render()
         {
-            base.render();
+            if (TgcCollisionUtils.classifyPlaneAABB(GuiController.Instance.Frustum.NearPlane, BoundingBox) == TgcCollisionUtils.PlaneBoxResult.IN_FRONT_OF)
+                base.render();
         }
 
         //metodo que usan los factory de TgcMesh
