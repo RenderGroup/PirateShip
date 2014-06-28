@@ -104,14 +104,13 @@ float3 superficie(float x, float z)
 {
   float y;
   float frecuencia = 10;
-  float ola   = frecuencia   * sin(x/5 - time  ) *  frecuencia   * cos(z/5 - time  );
+  float ola = frecuencia * sin(x/5 - time) * frecuencia * cos(z/5 - time);
   float olita;
 
       if (llueve)
         olita = (frecuencia/2.5) * cos(x - time*8) * (frecuencia/2  )* sin(z - time*8);
       else
         olita = (frecuencia/3  ) * cos(x - time*3) * (frecuencia/2.5)* sin(z - time*3);  //mar agitado
-
 
   y = ola + olita + 90;
   return float3(x,y,z);

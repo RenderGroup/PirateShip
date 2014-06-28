@@ -46,6 +46,7 @@ namespace AlumnoEjemplos.RenderGroup
             var skyBox = new PirateSkyBox();
             var sueloMarino = new SueloMarino();
             var protagonista = Construir.Protagonista(new Vector2(0, -930f), oceano);
+            GuiController.Instance.DirectSound.ListenerTracking = protagonista;
             
             Escenario.Agregar(skyBox, sueloMarino, oceano, muelle, protagonista, HUB);
             Escenario.CrearCuantosEnemigos(3, oceano);

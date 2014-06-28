@@ -14,19 +14,17 @@ namespace AlumnoEjemplos.RenderGroup
     //La responsabilidad de la clase es manejar el boundingsphere para moverla, renderearla, disposearla, etc.
     abstract class Colisionante : TgcMesh, IUpdateRender
     {
-        //esfera que vamos a usar para calcular colisiones
-        public TgcBoundingSphere boundingSphere;
-        
         //devuelve la direccion en el plano XZ
         virtual public Vector3 DireccionXZ()
         {            
             return new Vector3(FastMath.Sin(this.rotation.Y), 0, FastMath.Cos(rotation.Y));
         }
 
-        //redefine dispose para incluir al boundingsphere
+        //redefine dispose para incluir al boundingBox
         new public void dispose()
         {
-            boundingSphere.dispose();
+            Escenario.listaBBEnemigos.Remove(this.BoundingBox);
+            boundingBox.dispose();
             base.dispose();
         }
 
@@ -47,7 +45,6 @@ namespace AlumnoEjemplos.RenderGroup
         new public void move(Vector3 movimiento)
         {
             base.move(movimiento);
-            boundingSphere.moveCenter(movimiento);
         }
 
         new public float rotateZ(float rotacion) 

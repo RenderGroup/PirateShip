@@ -44,7 +44,7 @@ namespace AlumnoEjemplos.RenderGroup
             elemento.Position = position;
 
             //inicializamos la esfera que hace de bounding box en el 
-            elemento.boundingSphere = new TgcBoundingSphere(position, radioElipsoide);
+            //elemento.boundingSphere = new TgcBoundingSphere(position, radioElipsoide);
 
             return elemento;
         }
@@ -70,7 +70,7 @@ namespace AlumnoEjemplos.RenderGroup
         //overload del builder de un barco que carga el mesh del barco pirata default
         static public Barco BarcoDefault(Vector3 position, Oceano oceano, TipoElemento tipo) 
         {
-            Barco barco = Construir.Barco(defaultBarcoPath, position, 70f, oceano, tipo);
+            Barco barco = Construir.Barco(defaultBarcoPath, position, 110f, oceano, tipo);
 
             return barco;
         }

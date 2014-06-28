@@ -42,14 +42,39 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void mover() 
         {
+            Vector3 originalPos = this.Position;
+
             Vector3 movimiento = DireccionXZ() * VELOCIDAD * aceleracion * GuiController.Instance.ElapsedTime;
-            Vector3 posicionPotencial = this.Position + movimiento;
-            if (oceano.estaDentro(posicionPotencial))
+            this.move(movimiento);
+
+            bool collisionFound = false;
+            foreach (TgcBoundingBox barcoBB in Escenario.listaBBEnemigos)
             {
-                float alturaSuelo;
-                SueloMarino.suelo.interpoledHeight(posicionPotencial.X, posicionPotencial.Z, out alturaSuelo);
-                if(posicionPotencial.Y > (alturaSuelo + 40))
-                    this.move(movimiento);
+                if (barcoBB != this.BoundingBox)
+                {
+                    //Se testea con cada barco
+                    TgcBoundingBox miBoundingBox = this.boundingBox;
+                    TgcBoundingBox otraBoundingBox = barcoBB;
+
+                    //Ejecuta algoritmo de detección de colisiones
+                    TgcCollisionUtils.BoxBoxResult collisionResult = TgcCollisionUtils.classifyBoxBox(miBoundingBox, otraBoundingBox);
+
+                    //Si hubo colisión con un objeto aborta loop.
+                    if (collisionResult != TgcCollisionUtils.BoxBoxResult.Afuera)
+                    {
+                        collisionFound = true;
+                        break;
+                    }
+                }
+            }
+
+            float alturaSuelo;
+            SueloMarino.suelo.interpoledHeight(this.Position.X, this.Position.Z, out alturaSuelo);
+
+            //Si se fue del mapa, hay una piedra o hubo alguna colisión, entonces vuelve a su posicion
+            if (!oceano.estaDentro(this.Position) || (this.Position.Y < (alturaSuelo + 60)) || collisionFound)
+            {
+                this.Position = originalPos;
             }
                 
         }
@@ -61,9 +86,6 @@ namespace AlumnoEjemplos.RenderGroup
 
             //altura del mar en el punto de se encuentra el barco
             float Y = oceano.alturaEnPunto(this.Position.X, this.Position.Z);
-
-            //ponemos el bounding sphere a la altura donde esta el barco
-            this.boundingSphere.moveCenter(new Vector3(0, Y - boundingSphere.Position.Y + 60, 0));
 
             //ubicamos al barco...
             this.Position = new Vector3(this.Position.X, Y - 10, this.Position.Z);                  // ...en alto...

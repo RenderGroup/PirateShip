@@ -18,6 +18,7 @@ namespace AlumnoEjemplos.RenderGroup
         static public List<INocheDiaTemperaturaObserver> NocheDiaTemperaturaObservers;
 
         static public List<IUpdateRender> Elementos;
+        static public List<TgcBoundingBox> listaBBEnemigos;
 
         public static int contadorEnemigos;
         public static int limiteEnemigos;
@@ -30,6 +31,7 @@ namespace AlumnoEjemplos.RenderGroup
             NocheDiaTemperaturaObservers = new List<INocheDiaTemperaturaObserver>();
 
             Elementos = new List<IUpdateRender>();
+            listaBBEnemigos = new List<TgcBoundingBox>();
 
             contadorEnemigos = 0;
             limiteEnemigos = 12;
@@ -67,6 +69,7 @@ namespace AlumnoEjemplos.RenderGroup
             for (int i = 0; i < cuantos && (i+contadorEnemigos)<=limiteEnemigos; i++)
             {
                 var enemigo = Construir.Enemigo(oceano);
+                listaBBEnemigos.Add(enemigo.BoundingBox);
 
                 Agregar(enemigo);
 

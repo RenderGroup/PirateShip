@@ -12,10 +12,10 @@ namespace AlumnoEjemplos.RenderGroup
     //Mientas ve si hay algun barco en su camino para dañarlo...
     class BolaDeCanion : Colisionante
     {
-        public float VELOCIDAD = 1000f;
+        public float VELOCIDAD = 1300f;
         public float velocidadX;
         public float velocidadY;
-        public float gravedad = 0.02f;
+        public float gravedad = 0.006f;
         public Barco duenio;
         public Oceano oceano;
         public List<Barco> objetivos = new List<Barco>();
@@ -32,7 +32,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             this.mover();
 
-            Barco barcoImpactado = objetivos.Find(barco => TgcCollisionUtils.testSphereSphere(boundingSphere, barco.boundingSphere));
+            Barco barcoImpactado = objetivos.Find(barco => TgcCollisionUtils.testAABBAABB(boundingBox, barco.BoundingBox));
 
             if (barcoImpactado != null) 
             {

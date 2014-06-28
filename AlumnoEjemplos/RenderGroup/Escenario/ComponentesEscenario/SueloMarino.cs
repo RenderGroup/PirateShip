@@ -3,7 +3,6 @@ using TgcViewer.Utils.Shaders;
 using TgcViewer;
 using Microsoft.DirectX;
 
-
 namespace AlumnoEjemplos.RenderGroup
 {
     class SueloMarino : IUpdateRender, INocheDiaTemperaturaObserver
@@ -52,7 +51,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public void setShadersValues()
         {
-            suelo.Effect.SetValue("fogStart", (float)GuiController.Instance.Modifiers["blend start"]);            
+            suelo.Effect.SetValue("fogStart", (float)GuiController.Instance.Modifiers["blend start"]);
         }
 
         public void setTechnique(string Technique)

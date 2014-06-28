@@ -1,5 +1,6 @@
 ﻿using TgcViewer.Utils.Sound;
 using TgcViewer;
+using Microsoft.DirectX;
 
 namespace AlumnoEjemplos.RenderGroup
 {
@@ -14,6 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
         public static TgcStaticSound Disparo;
         public static TgcStaticSound Impacto;
         public static bool Llueve = false;
+        private static Tgc3dSound cascada;
 
         /// <summary>
         /// Método que carga los sonidos inicialmente.
@@ -31,6 +33,10 @@ namespace AlumnoEjemplos.RenderGroup
             AmbienteLluvia = new TgcStaticSound();
             AmbienteLluvia.loadSound(AlumnosAudioDir + "ambienteLluvia.wav");
             GuiController.Instance.Modifiers.addBoolean("musica", "Musica", true);
+
+            cascada = new Tgc3dSound(AlumnosAudioDir + "cascada.wav", new Vector3(0, 70, 4800));
+            cascada.MinDistance = 300f;
+            cascada.play(true);
         }
 
 
@@ -80,6 +86,7 @@ namespace AlumnoEjemplos.RenderGroup
             AmbienteLluvia.dispose();
             Disparo.dispose();
             Impacto.dispose();
+            cascada.dispose();
         }
 
         internal static void CambioLlueve()
