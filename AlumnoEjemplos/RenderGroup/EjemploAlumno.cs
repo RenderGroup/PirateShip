@@ -33,6 +33,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public override void init()
         {
+            configurarFrustum();
             cargarModifiers();
 
             Escenario.Cargar();
@@ -78,6 +79,14 @@ namespace AlumnoEjemplos.RenderGroup
             InputManager.DisposeReceptoresInput();
             Escenario.DisposeElementos();
             AudioManager.Dispose();
+        }
+
+        void configurarFrustum() 
+        {
+            var d3dDevice = GuiController.Instance.D3dDevice;
+
+            d3dDevice.Transform.Projection = Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+                (float)d3dDevice.CreationParameters.FocusWindow.Width / d3dDevice.CreationParameters.FocusWindow.Height, 1f, 18000f);
         }
 
         void cargarModifiers() 
