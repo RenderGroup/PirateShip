@@ -62,8 +62,11 @@ namespace AlumnoEjemplos.RenderGroup
             barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
             barco.Effect.SetValue("calado", 0f);
             barco.oceano = oceano;
-
-
+            /*
+            barco.astillas.MinSizeParticle = 2;
+            barco.astillas.MaxSizeParticle = 15;
+            barco.astillas.ParticleTimeToLive = 2;
+            */
             return barco;
         }
 
@@ -113,8 +116,6 @@ namespace AlumnoEjemplos.RenderGroup
             BolaDeCanion disparo = (BolaDeCanion)Elemento(defaultBolaCanion, posicion, 30f, TipoElemento.BolaCanion);
 
             disparo.oceano = oceano;
-
-            shaderCanionazos.SetValue("sangre", 0);
 
             //asignamos shader
             disparo.Effect = shaderCanionazos;

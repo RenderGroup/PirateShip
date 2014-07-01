@@ -15,7 +15,7 @@ namespace AlumnoEjemplos.RenderGroup
         public float VELOCIDAD = 1300f;
         public float velocidadX;
         public float velocidadY;
-        public float gravedad = 0.006f;
+        public float gravedad = 0.01f;
         public Barco duenio;
         public Oceano oceano;
         public List<Barco> objetivos = new List<Barco>();

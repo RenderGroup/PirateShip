@@ -23,6 +23,7 @@ namespace AlumnoEjemplos.RenderGroup
         public static int contadorEnemigos;
         public static int limiteEnemigos;
         public static float time;
+        public static int MUERTES = 0;
 
         static public void Cargar() 
         {

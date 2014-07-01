@@ -20,6 +20,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
+        public TgcViewer.Utils.Particles.ParticleEmitter astillas =
+            new TgcViewer.Utils.Particles.ParticleEmitter(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png", 5);
 
         public float ACELERACION_MAX = 3f;
         public float ACELERACION_INSTANTANEA = 0.02f;
@@ -76,6 +78,7 @@ namespace AlumnoEjemplos.RenderGroup
             {
                 this.Position = originalPos;
             }
+            this.astillas.Position = this.Position;
                 
         }
 
@@ -134,6 +137,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual public void teGolpearon() 
         {
+            this.astillas.Playing = true;
             AudioManager.Impacto.play();
 
             vida--;

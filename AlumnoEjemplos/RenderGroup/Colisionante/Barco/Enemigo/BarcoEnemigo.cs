@@ -91,8 +91,12 @@ namespace AlumnoEjemplos.RenderGroup
             base.teGolpearon();
 
             //si tiene 0 vida y no esta seteado con update de muerto..
-            if (0 >= vida && !updateVariante.Equals(new UpdateVariante(updateMuerto)))
+            if (0 >= vida && !updateVariante.Equals(new UpdateVariante(updateMuerto))){
                 updateVariante = updateMuerto;
+                Escenario.MUERTES++;
+            }
+
+            astillas.Playing = true;
         }
     }
 }

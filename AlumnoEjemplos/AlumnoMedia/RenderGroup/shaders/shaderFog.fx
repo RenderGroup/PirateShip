@@ -36,7 +36,6 @@ sampler2D calar = sampler_state
 float blendStart = 2000;
 float calado = 0.1;//nivel de calado, valores entre 0.0 (sin calar) y 1.0 (calado maximo, depende de la textura texCalar)
 
-float sangre = 1;
 /**************************************************************************************/
 /* RenderScene */
 /**************************************************************************************/
@@ -87,15 +86,6 @@ float4 ps_main( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
 	float4 calarColor = tex2D( calar, Texcoord);
 
-    float bloodfactor = (85.0f - Pos2.y ) / 15.0f * sangre;// (fogEnd - y) /(fogEnd - fogStart)
-
-	if (bloodfactor > 0)
-	{
-	fvBaseColor.r = fvBaseColor.r * bloodfactor / sangre / 1.8;
-	fvBaseColor.g = fvBaseColor.g /  sangre / 1.12;
-	fvBaseColor.b = fvBaseColor.b /  bloodfactor / 1.12 ;
-	}
-
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
 
 	if ((calarColor.r > 0.7) && (calarColor.g < calado) && (calarColor.b < calado))
@@ -117,14 +107,6 @@ float4 ps_Noche( float3 Texcoord: TEXCOORD0, float3 Pos2 : TEXCOORD3) : COLOR0
     float4 fvBaseColor = tex2D( diffuseMap, Texcoord);
 	float4 calarColor = tex2D( calar, Texcoord);
 	float4 negro =  float4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	float bloodfactor = (85.0f - Pos2.y ) / 15.0f * sangre;// (fogEnd - y) /(fogEnd - fogStart)
-	if (bloodfactor > 0)
-	{
-	fvBaseColor.r = fvBaseColor.r * bloodfactor / sangre / 1.8;
-	fvBaseColor.g = fvBaseColor.g /  sangre / 1.12;
-	fvBaseColor.b = fvBaseColor.b /  bloodfactor / 1.12 ;
-	}
 
 	fvBaseColor =(fvBaseColor * 0.5) + ( negro * 0.5);
     float blendfactor = saturate(( 3000.0f - Pos2.z ) / (blendStart - 500));
