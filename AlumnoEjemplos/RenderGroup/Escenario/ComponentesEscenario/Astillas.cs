@@ -1,4 +1,5 @@
 ﻿using TgcViewer;
+using TgcViewer.Utils.TgcGeometry;
 using TgcViewer.Utils.Particles;
 using Microsoft.DirectX;
 
@@ -48,9 +49,14 @@ namespace AlumnoEjemplos.RenderGroup
         }
 
 
-        internal void position(Vector3 vector3)
+        internal void position(Vector3 origenDeExplosion)
         {
-            emitter.Position = vector3 + new Vector3(0, 50, 0);
+            Vector3 cameraPos = GuiController.Instance.CurrentCamera.getPosition();
+            cameraPos.Subtract(origenDeExplosion);   //  O -----> cam
+            cameraPos.Multiply(0.2f);   //  O ->     cam
+
+            //se ubica el emisor de particulas levemente mas cerca de la camara
+            emitter.Position = origenDeExplosion + cameraPos + new Vector3(0, 50, 0);
         }
     }
 }
