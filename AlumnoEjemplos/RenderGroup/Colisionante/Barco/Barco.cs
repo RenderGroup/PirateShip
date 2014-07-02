@@ -20,9 +20,7 @@ namespace AlumnoEjemplos.RenderGroup
 
         public float vida = MAX_VIDAS;
         public float aceleracion = 0f;
-        public TgcViewer.Utils.Particles.ParticleEmitter astillas =
-            new TgcViewer.Utils.Particles.ParticleEmitter(GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\texturas\\boton.png", 5);
-
+        public Astillas astillas;
         public float ACELERACION_MAX = 3f;
         public float ACELERACION_INSTANTANEA = 0.02f;
 
@@ -32,6 +30,7 @@ namespace AlumnoEjemplos.RenderGroup
         public const float COTA_DESACELERACION = 0.09f;
         public const float FACTOR_DESACELERATIVO = 1.015f;
         public const float MAX_VIDAS = 4;
+        private float momentoDelGolpe;
         #endregion
 
         public Barco() { Accion = new AccionSobreEvento(this); }
@@ -78,8 +77,7 @@ namespace AlumnoEjemplos.RenderGroup
             {
                 this.Position = originalPos;
             }
-            this.astillas.Position = this.Position;
-                
+            astillas.position(this.Position);
         }
 
         virtual public void flotar()
@@ -99,11 +97,14 @@ namespace AlumnoEjemplos.RenderGroup
         //define un update overrideable para todos los barcos
         override public void update()
         {
+            astillas.update();
+
             updateDisparos();
 
             mover();
 
             flotar();
+
         }
 
         override public void render() 
@@ -111,6 +112,8 @@ namespace AlumnoEjemplos.RenderGroup
             disparos.ForEach(disparo => disparo.render());
             
             base.render();
+
+            astillas.render();
         }        
 
         //metodo que maneja la aceleracion...de mala manera...por ahora...
@@ -137,7 +140,8 @@ namespace AlumnoEjemplos.RenderGroup
 
         virtual public void teGolpearon() 
         {
-            this.astillas.Playing = true;
+            astillas.activar();
+
             AudioManager.Impacto.play();
 
             vida--;

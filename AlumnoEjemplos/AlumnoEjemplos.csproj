@@ -87,6 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderGroup\AccionesAnteEventos\AccionesOceano.cs" />
     <Compile Include="RenderGroup\AccionesAnteEventos\AccionProtagonista.cs" />
     <Compile Include="RenderGroup\AccionesAnteEventos\AccionSkybox.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Gaviota\Gaviota.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Gaviota\GaviotaAnimator.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Lluvia.cs" />
+    <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Astillas.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\Muelle.cs" />
     <Compile Include="RenderGroup\Escenario\Escenario.cs" />
     <Compile Include="RenderGroup\Escenario\ComponentesEscenario\PirateSkyBox.cs" />
@@ -159,9 +161,7 @@
       <DependentUpon>EventosEscenarioControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -62,11 +62,8 @@ namespace AlumnoEjemplos.RenderGroup
             barco.Effect.SetValue("texCalar", TextureLoader.FromFile(GuiController.Instance.D3dDevice, GuiController.Instance.AlumnoEjemplosMediaDir + "RenderGroup\\meshes\\Textures\\text-barcoRecorte.jpg"));
             barco.Effect.SetValue("calado", 0f);
             barco.oceano = oceano;
-            /*
-            barco.astillas.MinSizeParticle = 2;
-            barco.astillas.MaxSizeParticle = 15;
-            barco.astillas.ParticleTimeToLive = 2;
-            */
+            barco.astillas = new Astillas();
+
             return barco;
         }
 

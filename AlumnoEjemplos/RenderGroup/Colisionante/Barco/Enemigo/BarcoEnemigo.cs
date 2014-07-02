@@ -57,6 +57,7 @@ namespace AlumnoEjemplos.RenderGroup
                 Escenario.Remover(this);                                            //y se encarga de limpiarse
                 Escenario.NocheDiaTemperaturaObservers.Remove(this);
                 oceano.sangre++;
+                astillas.dispose();
                 this.dispose();
             }
 
@@ -96,7 +97,6 @@ namespace AlumnoEjemplos.RenderGroup
                 Escenario.MUERTES++;
             }
 
-            astillas.Playing = true;
         }
     }
 }
