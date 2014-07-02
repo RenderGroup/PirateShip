@@ -27,7 +27,7 @@ namespace AlumnoEjemplos.RenderGroup
             Accion = new AccionSkybox(this);
 
             skyBox = new TgcSkyBox();
-            skyBox.Center = new Vector3(0, 2000, 0);
+            skyBox.Center = new Vector3(0,600, 0);
             skyBox.Size = new Vector3(15000, 10000, 15000);
             cargarTexturas();
             skyBox.SkyEpsilon = 9f; //para que no se noten las aristas del box
@@ -48,12 +48,12 @@ namespace AlumnoEjemplos.RenderGroup
         public void cargarTexturas()
         {
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, TexturesPath + "topax2.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, TexturesPath + "top.jpg");
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, TexturesPath + "algo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, TexturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, TexturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "cielo.png");
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "cielo.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, TexturesPath + "back.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, TexturesPath + "front.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, TexturesPath + "left.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, TexturesPath + "right.jpg");
 
             GuiController.Instance.BackgroundColor = Color.DarkCyan;
 
