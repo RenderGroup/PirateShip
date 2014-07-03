@@ -17,7 +17,7 @@ namespace AlumnoEjemplos.RenderGroup
             emitter.MinSizeParticle = 0.2f;
             emitter.MaxSizeParticle = 7f;
             emitter.ParticleTimeToLive = 3f;
-            emitter.Speed = new Vector3(600, -60, 600);
+            emitter.Speed = new Vector3(600, -70, 600);
             emitter.CreationFrecuency = 0.01f;
             emitter.Playing = false;
             emitter.Dispersion = 200;
@@ -53,7 +53,7 @@ namespace AlumnoEjemplos.RenderGroup
         {
             Vector3 cameraPos = GuiController.Instance.CurrentCamera.getPosition();
             cameraPos.Subtract(origenDeExplosion);   //  O -----> cam
-            cameraPos.Multiply(0.2f);   //  O ->     cam
+            cameraPos.Multiply(0.1f);   //  O ->     cam
 
             //se ubica el emisor de particulas levemente mas cerca de la camara
             emitter.Position = origenDeExplosion + cameraPos + new Vector3(0, 50, 0);
